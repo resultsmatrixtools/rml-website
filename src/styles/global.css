@@ -1,1 +1,52 @@
 @import "tailwindcss";
+
+/*
+ * RML design tokens (BRIEF.md §3).
+ * Proposed deep blue / teal professional palette — no extractable brand
+ * colours on the old site, so this is flagged for client approval.
+ * "brand" = deep blue (primary ink, headers, footer)
+ * "accent" = teal (links, CTAs, highlights)
+ */
+@theme {
+  --color-brand-50: #f2f6fa;
+  --color-brand-100: #e0e9f2;
+  --color-brand-200: #c2d3e4;
+  --color-brand-300: #93b1cc;
+  --color-brand-400: #5d88ad;
+  --color-brand-500: #3b6a93;
+  --color-brand-600: #2b547a;
+  --color-brand-700: #234463;
+  --color-brand-800: #1c3650;
+  --color-brand-900: #152a40;
+  --color-brand-950: #0d1b2b;
+
+  --color-accent-50: #effaf8;
+  --color-accent-100: #d6f1ed;
+  --color-accent-200: #ade2dc;
+  --color-accent-300: #7accc5;
+  --color-accent-400: #45b0a8;
+  --color-accent-500: #26948d;
+  --color-accent-600: #187772;
+  --color-accent-700: #155f5c;
+  --color-accent-800: #144c4a;
+  --color-accent-900: #123f3e;
+  --color-accent-950: #082625;
+
+  --font-sans: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial,
+    sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white font-sans text-slate-700 antialiased;
+  }
+
+  /* Visible focus for keyboard users, site-wide (WCAG 2.1 AA). */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent-600;
+  }
+}

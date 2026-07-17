@@ -1,0 +1,90 @@
+---
+// Site footer. Acceptance-critical: renders on every page via BaseLayout.
+// Holds the firm's contact details (moved out of the About page — BRIEF.md §2).
+
+const year = new Date().getFullYear();
+
+const practiceLinks = [
+  { href: '/services/strategy-advisory', label: 'Strategy & Advisory' },
+  { href: '/services/research-analytics', label: 'Research & Data Analytics' },
+  { href: '/services/mel', label: 'Monitoring, Evaluation & Learning' },
+];
+
+const siteLinks = [
+  { href: '/about', label: 'About' },
+  { href: '/work', label: 'Work' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/resources', label: 'Resources' },
+  { href: '/consultations', label: 'Consultations' },
+  { href: '/contact', label: 'Contact' },
+];
+---
+
+<footer class="bg-brand-900 text-brand-100">
+  <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:py-16">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="sm:col-span-2 lg:col-span-1">
+        <p class="text-lg font-bold tracking-tight text-white">
+          Results Matrix <span class="font-medium text-accent-300">Limited</span>
+        </p>
+        <p class="mt-3 text-sm leading-relaxed text-brand-200">
+          Caribbean-based development solutions firm delivering strategy,
+          research, and monitoring, evaluation &amp; learning services across
+          the region and beyond.
+        </p>
+      </div>
+
+      <nav aria-label="Practice areas">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-white">Practice areas</h2>
+        <ul class="mt-4 space-y-2.5">
+          {
+            practiceLinks.map((item) => (
+              <li>
+                <a href={item.href} class="text-sm text-brand-200 transition-colors hover:text-white">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <nav aria-label="Company">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-white">Company</h2>
+        <ul class="mt-4 space-y-2.5">
+          {
+            siteLinks.map((item) => (
+              <li>
+                <a href={item.href} class="text-sm text-brand-200 transition-colors hover:text-white">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div>
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-white">Contact</h2>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          <li>
+            <a href="tel:+18762986545" class="text-brand-200 transition-colors hover:text-white">
+              876&nbsp;298&nbsp;6545
+            </a>
+          </li>
+          <li>
+            <a href="mailto:info@resultsmatrix.com" class="text-brand-200 transition-colors hover:text-white">
+              info@resultsmatrix.com
+            </a>
+          </li>
+          <li class="text-brand-200">Jamaica</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 flex flex-col gap-3 border-t border-brand-800 pt-6 text-sm text-brand-300 sm:flex-row sm:items-center sm:justify-between">
+      <p>&copy; {year} Results Matrix Limited. All rights reserved.</p>
+      <a href="/privacy" class="transition-colors hover:text-white">Privacy &amp; cookie policy</a>
+    </div>
+  </div>
+</footer>
