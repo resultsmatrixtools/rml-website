@@ -1,0 +1,42 @@
+# DigitalOcean App Platform spec — STAGING
+# Deploys the static site from the `staging` branch as a separate app.
+#
+# Usage: doctl apps create --spec .do/app-staging.yaml
+#
+# After the first deploy, set PUBLIC_SITE_URL to the app's generated
+# ondigitalocean.app URL so canonical/OG URLs are correct on staging.
+# Staging may share the production HubSpot portal or use a test portal —
+# set the values in the DO dashboard either way.
+
+name: rml-website-staging
+region: nyc
+
+static_sites:
+  - name: site
+    github:
+      repo: results-matrix/rml-website
+      branch: staging
+      deploy_on_push: true
+    build_command: npm ci && npm run build
+    output_dir: dist
+    environment_slug: node-js
+    error_document: 404.html
+    envs:
+      - key: PUBLIC_HUBSPOT_PORTAL_ID
+        scope: BUILD_TIME
+        value: ""
+      - key: PUBLIC_HUBSPOT_FORM_GUID_CONTACT
+        scope: BUILD_TIME
+        value: ""
+      - key: PUBLIC_HUBSPOT_FORM_GUID_RESOURCE
+        scope: BUILD_TIME
+        value: ""
+      - key: PUBLIC_HUBSPOT_FORM_GUID_CONSULT
+        scope: BUILD_TIME
+        value: ""
+      - key: PUBLIC_CONSULTATION_PAYMENT_URL
+        scope: BUILD_TIME
+        value: ""
+      - key: PUBLIC_SITE_URL
+        scope: BUILD_TIME
+        value: ""

@@ -1,0 +1,79 @@
+# resultsmatrix.com
+
+Static marketing site for **Results Matrix Limited (RML)** — Caribbean development
+solutions firm (Strategy & Advisory, Research & Data Analytics, MEL).
+
+Built with [Astro](https://astro.build) + [Tailwind CSS](https://tailwindcss.com),
+hosted on DigitalOcean App Platform as a static site. Blog content is managed via
+Sveltia CMS at `/admin` (git-backed, editorial workflow). Forms and analytics run
+on HubSpot (free tier). See `BRIEF.md` for the full build specification.
+
+## Development
+
+```sh
+npm install
+npm run dev       # dev server at localhost:4321
+npm run build     # production build → dist/
+npm run preview   # serve the production build locally
+```
+
+Requires Node 22+.
+
+## Branches & deployment
+
+| Branch | Deploys to | Spec |
+|---|---|---|
+| `main` | Production app | `.do/app.yaml` |
+| `staging` | Staging app (draft posts visible) | `.do/app-staging.yaml` |
+
+Both apps auto-deploy on push via DigitalOcean App Platform. Create them with
+`doctl apps create --spec <file>` or by pasting the spec in the DO dashboard.
+
+## Environment variables
+
+All variables are **build-time** and injected by DigitalOcean App Platform
+(set values in the DO dashboard — never commit them). For local work, copy
+`.env.example` to `.env`. See `.env.example` for descriptions.
+
+| Variable | Purpose |
+|---|---|
+| `PUBLIC_HUBSPOT_PORTAL_ID` | HubSpot account ID (tracking script + Forms API) |
+| `PUBLIC_HUBSPOT_FORM_GUID_CONTACT` | Form GUID — contact form |
+| `PUBLIC_HUBSPOT_FORM_GUID_RESOURCE` | Form GUID — gated resource downloads |
+| `PUBLIC_HUBSPOT_FORM_GUID_CONSULT` | Form GUID — consultation requests |
+| `PUBLIC_CONSULTATION_PAYMENT_URL` | External payment link (unset/`#` → "coming soon") |
+| `PUBLIC_SITE_URL` | Canonical site URL (differs prod vs staging) |
+
+## Runbook
+
+> Sections below are completed in later build phases (BRIEF.md §8).
+
+### CMS: GitHub OAuth app setup
+
+_TODO (Phase 5): exact steps to create the GitHub OAuth App, deploy the OAuth
+proxy as a DigitalOcean Function, and the callback URLs for production and
+staging. Writer/reviewer role setup (repo collaborators; reviewer has merge
+rights)._
+
+### HubSpot: form GUID setup
+
+_TODO (Phase 6): how to create each HubSpot form, find its GUID, map contact
+properties (including the industry dropdown and `resource_slug`), and where to
+set the env vars._
+
+### Adding a resource PDF
+
+_TODO (Phase 6): drop the PDF in `public/downloads/` with a slug+hash filename,
+add the resource card entry, redeploy._
+
+### Changing the consultation payment link
+
+_TODO (Phase 7): update `PUBLIC_CONSULTATION_PAYMENT_URL` in the DO app settings
+and redeploy — no code change required._
+
+### DNS cutover checklist (from old WordPress droplet)
+
+_TODO (Phase 8): pre-flight acceptance checks, adding the custom domain to the
+production app, DNS record changes, TLS, post-cutover verification, and
+decommissioning the WordPress droplet. The old site stays live until the new
+site passes acceptance on staging._
