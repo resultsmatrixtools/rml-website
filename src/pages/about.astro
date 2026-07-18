@@ -1,27 +1,52 @@
 ---
-// About — BRIEF.md Appendix A copy, used as written. Bracketed fields are
-// rendered as visibly marked placeholders (.todo-client) and MUST be
-// resolved by the client before launch — do not launch with them visible.
+// About — BRIEF.md Appendix A copy, amended 2026-07-18: practice-area count
+// corrected to four (Appendix C amendment) and a facts strip added using
+// client-cleared figures only (countries + consultants' experience, supplied
+// 2026-07-18). Bracketed fields are rendered as visibly marked placeholders
+// (.todo-client) and MUST be resolved by the client before launch.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import CtaBand from '../components/CtaBand.astro';
+
+// Client-cleared figures (2026-07-18). Do not add to this list without
+// clearance — an empty slot beats an invented number.
+const facts = [
+  { value: '20+', label: 'Years of consultant experience in results-based management' },
+  { value: '20+', label: 'Years of consultant experience in ICT' },
+  { value: '15+', label: 'Years of consultant experience in project management' },
+  { value: '3', label: 'Countries — Barbados, Trinidad & Tobago, Jamaica' },
+];
 ---
 
 <BaseLayout
   title="About — Results Matrix Limited"
-  description="Results Matrix Limited is a Caribbean-based development solutions firm with three integrated practice areas: Strategy & Advisory, Research and Data Analytics, and MEL."
+  description="Results Matrix Limited is a Caribbean-based development solutions firm with four integrated practice areas: Strategy & Advisory, Research and Data Analytics, MEL, and ICT & Systems Development."
 >
   <PageHero
     title="About Results Matrix"
     lede="A Caribbean-based development solutions firm — part of the regional development ecosystem, not visitors to it."
   />
 
+  <!-- Facts strip — hairline-ruled cells, client-cleared figures only. -->
+  <section aria-label="Experience at a glance" class="mx-auto max-w-6xl px-4 pt-10 sm:px-6 lg:pt-14">
+    <div class="grid gap-px overflow-hidden rounded border border-slate-200 bg-slate-200 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        facts.map((fact) => (
+          <div class="bg-white p-6">
+            <p class="text-3xl font-bold tracking-tight text-brand-800">{fact.value}</p>
+            <p class="mt-2 text-sm leading-snug text-slate-600">{fact.label}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
   <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
     <div class="prose-serif">
       <p>
         <strong>Results Matrix Limited (RML)</strong> is a Caribbean-based development solutions
-        firm providing comprehensive consulting services across three integrated practice
-        areas: <strong>Strategy &amp; Advisory</strong>, <strong>Research and Data Analytics</strong>, and <strong>Monitoring, Evaluation, and Learning (MEL)</strong>.
+        firm providing comprehensive consulting services across four integrated practice
+        areas: <strong>Strategy &amp; Advisory</strong>, <strong>Research and Data Analytics</strong>, <strong>Monitoring, Evaluation, and Learning (MEL)</strong>, and <strong>ICT Consulting, Project Management &amp; Systems Development</strong>.
       </p>
       <p>
         We serve governments, regional organizations, international development organizations,
@@ -51,11 +76,12 @@ import CtaBand from '../components/CtaBand.astro';
         dynamics — because we live and work in this context daily.
       </p>
       <p>
-        <strong>Integrated Practice Areas.</strong> Strategy, research, and MEL are not separate
-        silos at RML — they are one connected capability. The evidence our research generates
-        feeds directly into the strategies we help design, and the M&amp;E systems we build ensure
-        those strategies are tracked, learned from, and adapted. Clients get coherence that
-        fragmented, single-specialty engagements cannot deliver.
+        <strong>Integrated Practice Areas.</strong> Strategy, research, MEL, and systems
+        development are not separate silos at RML — they are one connected capability. The
+        evidence our research generates feeds directly into the strategies we help design, the
+        M&amp;E systems we build ensure those strategies are tracked, learned from, and adapted,
+        and the information systems we develop generate the data those practices rely on.
+        Clients get coherence that fragmented, single-specialty engagements cannot deliver.
       </p>
       <p>
         <strong>Senior-Led, Technology-Enabled Delivery.</strong> Every engagement is led by
