@@ -1,0 +1,24 @@
+---
+// Client-cleared facts as a hairline-ruled strip — the proof pattern made
+// real. Figures cleared by the client 2026-07-18. Do not extend this list
+// without clearance: an empty slot beats an invented number (BRIEF hard
+// rule). Shared by the home page and About.
+
+const facts = [
+  { value: '20+', label: 'Years of consultant experience in results-based management' },
+  { value: '20+', label: 'Years of consultant experience in ICT' },
+  { value: '15+', label: 'Years of consultant experience in project management' },
+  { value: '3', label: 'Countries — Barbados, Trinidad & Tobago, Jamaica' },
+];
+---
+
+<div class="grid gap-px overflow-hidden rounded border border-slate-200 bg-slate-200 sm:grid-cols-2 lg:grid-cols-4">
+  {
+    facts.map((fact) => (
+      <div class="bg-white p-6">
+        <p class="text-3xl font-bold tracking-tight text-brand-800">{fact.value}</p>
+        <p class="mt-2 text-sm leading-snug text-slate-600">{fact.label}</p>
+      </div>
+    ))
+  }
+</div>

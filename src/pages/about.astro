@@ -7,15 +7,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import CtaBand from '../components/CtaBand.astro';
-
-// Client-cleared figures (2026-07-18). Do not add to this list without
-// clearance — an empty slot beats an invented number.
-const facts = [
-  { value: '20+', label: 'Years of consultant experience in results-based management' },
-  { value: '20+', label: 'Years of consultant experience in ICT' },
-  { value: '15+', label: 'Years of consultant experience in project management' },
-  { value: '3', label: 'Countries — Barbados, Trinidad & Tobago, Jamaica' },
-];
+import FactsStrip from '../components/FactsStrip.astro';
 ---
 
 <BaseLayout
@@ -29,16 +21,7 @@ const facts = [
 
   <!-- Facts strip — hairline-ruled cells, client-cleared figures only. -->
   <section aria-label="Experience at a glance" class="mx-auto max-w-6xl px-4 pt-10 sm:px-6 lg:pt-14">
-    <div class="grid gap-px overflow-hidden rounded border border-slate-200 bg-slate-200 sm:grid-cols-2 lg:grid-cols-4">
-      {
-        facts.map((fact) => (
-          <div class="bg-white p-6">
-            <p class="text-3xl font-bold tracking-tight text-brand-800">{fact.value}</p>
-            <p class="mt-2 text-sm leading-snug text-slate-600">{fact.label}</p>
-          </div>
-        ))
-      }
-    </div>
+    <FactsStrip />
   </section>
 
   <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">

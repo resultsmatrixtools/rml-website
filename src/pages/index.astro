@@ -7,6 +7,46 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CtaBand from '../components/CtaBand.astro';
 import MatrixMotif from '../components/MatrixMotif.astro';
+import FactsStrip from '../components/FactsStrip.astro';
+
+// How we work — a true sequence, so the numbered/glyph treatment is earned.
+// The mini-matrix glyph fills one cell per step along the logo's own ramp;
+// the final cell is Growth Green because completion is where growth shows.
+const steps = [
+  {
+    title: 'Discover',
+    body: 'Every engagement starts with a conversation — a free discovery session to understand your objectives, context, and constraints before any proposal is written.',
+  },
+  {
+    title: 'Design',
+    body: 'We shape the methodology, frameworks, and workplan around the decision you need to make — methodological rigor balanced with practical feasibility.',
+  },
+  {
+    title: 'Deliver',
+    body: 'Senior consultants lead every engagement — the people you meet in the proposal are the people who do the work, supported by modern tooling.',
+  },
+  {
+    title: 'Learn',
+    body: 'Deliverables arrive decision-ready, and the monitoring and learning systems behind them keep generating evidence after handover.',
+  },
+];
+
+// Glyph geometry: 2×2 mini-matrix, filled bottom-left → bottom-right →
+// top-left → top-right (the logo's lime corner lands last).
+const glyphCells = [
+  { x: 3, y: 21, fill: '#063a71' },
+  { x: 21, y: 21, fill: '#0057a8' },
+  { x: 3, y: 3, fill: '#1d7a75' },
+  { x: 21, y: 3, fill: '#78c275' },
+];
+
+const audiences = [
+  'Governments & ministries',
+  'Regional organizations',
+  'International development organizations',
+  'NGOs & foundations',
+  'Social enterprises',
+];
 
 const areas = [
   {
@@ -68,6 +108,11 @@ const areas = [
     </div>
   </section>
 
+  <!-- Facts strip — client-cleared figures only -->
+  <section aria-label="Experience at a glance" class="mx-auto max-w-6xl px-4 pt-10 sm:px-6 lg:pt-14">
+    <FactsStrip />
+  </section>
+
   <!-- Practice areas -->
   <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-20" aria-labelledby="practice-areas">
     <h2 id="practice-areas" class="text-2xl font-bold text-brand-900 sm:text-3xl">
@@ -93,9 +138,12 @@ const areas = [
   </section>
 
   <!-- Positioning -->
-  <section class="bg-brand-50">
+  <section class="bg-brand-50" aria-labelledby="positioning">
     <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-20">
-      <div class="prose-serif">
+      <h2 id="positioning" class="text-2xl font-bold text-brand-900 sm:text-3xl">
+        Built for Small Island Developing States
+      </h2>
+      <div class="prose-serif mt-6">
         <p>
           At Results Matrix Limited, we deliver comprehensive consulting solutions that bridge the
           gap between strategic vision and measurable results. Our services span four
@@ -105,21 +153,78 @@ const areas = [
           Island Developing States (SIDS) especially in the Caribbean while maintaining
           international best practice standards.
         </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How we work — a real four-step sequence (ol), hairline-ruled -->
+  <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-20" aria-labelledby="how-we-work">
+    <h2 id="how-we-work" class="text-2xl font-bold text-brand-900 sm:text-3xl">How we work</h2>
+    <ol class="mt-10 grid gap-px overflow-hidden rounded border border-slate-200 bg-slate-200 sm:grid-cols-2 xl:grid-cols-4">
+      {
+        steps.map((step, i) => (
+          <li class="bg-white p-6 sm:p-8">
+            <svg viewBox="0 0 40 40" class="h-9 w-9" aria-hidden="true" focusable="false">
+              {glyphCells.map((cell, c) => (
+                <rect
+                  x={cell.x}
+                  y={cell.y}
+                  width="16"
+                  height="16"
+                  rx="3"
+                  fill={c <= i ? cell.fill : '#eff6fc'}
+                />
+              ))}
+            </svg>
+            <h3 class="mt-4 text-lg font-bold text-brand-900">
+              <span class="sr-only">Step {i + 1}: </span>
+              {step.title}
+            </h3>
+            <p class="mt-3 text-base text-slate-700">{step.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <!-- Who we work with — kept positioning copy as the lede; partner names
+       below are the wording already cleared for About. -->
+  <section class="bg-brand-50" aria-labelledby="who-we-work-with">
+    <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-20">
+      <h2 id="who-we-work-with" class="text-2xl font-bold text-brand-900 sm:text-3xl">
+        Who we work with
+      </h2>
+      <div class="prose-serif mt-6">
         <p>
           We work alongside governments, regional organizations, International Development
           Organizations, NGOs, and social enterprises to strengthen systems, build capacity, and
           drive evidence-based decision-making across the Caribbean and beyond.
         </p>
       </div>
+      <ul class="mt-8 flex flex-wrap gap-2">
+        {
+          audiences.map((audience) => (
+            <li class="rounded border border-slate-300 bg-white px-3.5 py-1.5 text-sm font-medium text-slate-700">
+              {audience}
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-8 max-w-prose text-base text-slate-600">
+        Our consultants have delivered engagements for and alongside partners including UNFPA,
+        UNDP, Eve for Life, and RESEMBID.
+      </p>
+      <!-- PROOF SLOT: testimonials / engagement summaries / partner logos —
+           add only with written client clearance (BRIEF hard rule). -->
     </div>
   </section>
 
   <CtaBand
     heading="Ready to put evidence to work?"
-    text="Book a paid advisory session for focused M&E help, or explore our downloadable resources."
-    primaryHref="/consultations"
-    primaryLabel="Advisory sessions"
-    secondaryHref="/resources"
-    secondaryLabel="Browse resources"
+    text="Start with a free discovery session, or book a paid advisory session for focused M&E help."
+    primaryHref="/contact"
+    primaryLabel="Book a discovery session"
+    secondaryHref="/consultations"
+    secondaryLabel="Advisory sessions"
   />
 </BaseLayout>

@@ -237,6 +237,18 @@ not chrome. Rules: individually flat-filled cells only (never a CSS
 gradient), never labeled with axes or numbers (an unlabeled motif can't
 become an invented chart), desktop-only decoration (`aria-hidden`), and it
 lives on Deep Boardroom grounds. Home-hero signature; reuse sparingly.
+Sanctioned derivative: the 2×2 process glyph (home "How we work") fills one
+cell per step along the same ramp — lime lands only on the final cell,
+because completion is where growth shows. Glyphs may encode true sequences
+or progress; never decoration.
+
+### Facts Strip (proof)
+`src/components/FactsStrip.astro` — the proof-slot pattern made real:
+client-cleared figures in a hairline gap-px grid (white cells on the
+Hairline ground, Boardroom Ink values at 1.875rem/700, muted-slate labels).
+Figures enter this component only with written clearance; an empty slot
+always beats an invented number. Shared verbatim by home and About so the
+site never states two versions of a fact.
 
 ### Consent Banner (signature)
 Fixed bottom overlay on white with the overlay-lift shadow: one sentence of
