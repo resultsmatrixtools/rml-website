@@ -12,10 +12,10 @@ interface Props {
   title: string;
   intro?: string;
   valueProp: string;
-  groups: Group[];
+  groups?: Group[];
 }
 
-const { title, intro, valueProp, groups } = Astro.props;
+const { title, intro, valueProp, groups = [] } = Astro.props;
 ---
 
 <article class="rounded border border-slate-200 bg-white p-6 sm:p-8">
@@ -27,7 +27,7 @@ const { title, intro, valueProp, groups } = Astro.props;
     <span class="font-sans text-sm font-semibold not-italic text-accent-700">Value proposition&nbsp;·&nbsp;</span>{valueProp}
   </p>
 
-  <div class="mt-5 space-y-2">
+  <div class:list={['space-y-2', groups.length > 0 && 'mt-5']}>
     {
       groups.map((group) => (
         <details class="group rounded border border-slate-200">

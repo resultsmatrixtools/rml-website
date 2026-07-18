@@ -1,0 +1,73 @@
+---
+// ICT Consulting, Project Management & Systems Development — new page,
+// copy from BRIEF.md Appendix C as written. Follows the same structure
+// as the three ported service pages (intro, sub-service blocks with
+// Value Propositions, closing CTA).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SubService from '../../components/SubService.astro';
+import CtaBand from '../../components/CtaBand.astro';
+
+const blocks = [
+  {
+    title: 'ICT Strategy & Advisory',
+    intro:
+      "We help organizations plan technology investments that match institutional capacity — not just what's technically possible, but what a team can realistically operate, maintain, and afford once the consultants leave. This includes systems assessments, digital transformation roadmaps, and vendor/technology selection support.",
+    valueProp:
+      'Recommendations grounded in Caribbean institutional realities — bandwidth constraints, staffing levels, procurement cycles — rather than best-practice templates designed for better-resourced environments.',
+  },
+  {
+    title: 'Systems Development',
+    intro:
+      'We design and build custom software: web applications, data platforms, and integrations between systems that were never meant to talk to each other. Recent and ongoing work spans multi-tenant government platforms, monitoring & evaluation software, and system-to-system integrations connecting enterprise and operational systems.',
+    valueProp:
+      'Senior-led development — the person who scopes the system is the person who builds it — with modern, maintainable architecture chosen for longevity, not novelty.',
+  },
+  {
+    title: 'Health Information Systems',
+    intro:
+      'A specialized strand of our systems work: supporting electronic health record implementation and interoperability between health information systems and laboratory/clinical platforms.',
+    valueProp:
+      'Direct experience with the coordination challenge health information systems present — aligning multiple institutions, vendors, and clinical workflows around a single integration, not just the technical build.',
+  },
+  {
+    title: 'Project Management',
+    intro:
+      'We manage ICT and development projects end-to-end: scoping, documentation (terms of reference, requirements, process documentation), stakeholder coordination across technical and non-technical parties, and delivery oversight through go-live.',
+    valueProp:
+      'Process documentation and project artifacts built to the standard of institutional review from day one — not retrofitted for a ministry or development-partner audit after the fact.',
+  },
+  {
+    title: 'Systems Integration',
+    intro:
+      'Where organizations run multiple systems — an ERP, a maintenance platform, a legacy database — that need to exchange data reliably, we document the workflow, design the integration approach, and manage the transition, including interim manual-process controls while a permanent integration is built.',
+    valueProp:
+      'We document the process, not just the data flow — approval controls, exception handling, and monitoring responsibilities are designed in from the start, not discovered after go-live.',
+  },
+];
+---
+
+<BaseLayout
+  title="ICT Consulting, Project Management & Systems Development — Results Matrix Limited"
+  description="ICT strategy, custom systems development, health information systems, project management, and systems integration for Caribbean institutions."
+>
+  <PageHero
+    title="ICT Consulting, Project Management & Systems Development"
+    lede="RML designs, builds, and manages information systems for organizations that cannot afford downtime, data loss, or a system nobody ends up using. This practice area sits alongside our Strategy & Advisory, Research & Data Analytics, and MEL work — and in most engagements, feeds directly into them: the systems we build are the ones that generate the data our M&E and research practices analyze."
+  />
+
+  <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
+    <div class="space-y-8">
+      {blocks.map((block) => <SubService {...block} />)}
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Have a systems challenge?"
+    text="Schedule a free discovery session to talk through your ICT strategy, build, or integration needs."
+    primaryHref="/contact"
+    primaryLabel="Get in touch"
+    secondaryHref="/services"
+    secondaryLabel="All services"
+  />
+</BaseLayout>

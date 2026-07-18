@@ -14,7 +14,7 @@ Primary: decision-makers in government ministries and international development 
 
 ## Product Purpose
 
-The marketing and lead-generation site for Results Matrix Limited (RML), a Caribbean-based development solutions firm with three practice areas: Strategy & Advisory, Research & Data Analytics, and Monitoring, Evaluation & Learning (MEL). The site replaces a broken WordPress build. It must position RML credibly with institutional clients and function as a lead-generation engine: visitors book a free discovery session (contact form), request paid advisory sessions, or exchange their details for gated resources — all captured in HubSpot. Success is qualified institutional leads entering the pipeline.
+The marketing and lead-generation site for Results Matrix Limited (RML), a Caribbean-based development solutions firm with four practice areas: Strategy & Advisory, Research & Data Analytics, Monitoring, Evaluation & Learning (MEL), and ICT Consulting, Project Management & Systems Development (added to the brief 2026-07-18; the systems practice generates the data the research and MEL practices analyze). The site replaces a broken WordPress build. It must position RML credibly with institutional clients and function as a lead-generation engine: visitors book a free discovery session (contact form), request paid advisory sessions, or exchange their details for gated resources — all captured in HubSpot. Success is qualified institutional leads entering the pipeline.
 
 ## Positioning
 
@@ -24,7 +24,7 @@ Strategy, research, and MEL as one connected, evidence-driven capability — the
 
 - Primary CTA: book a free discovery session (the /contact form). Secondary CTA: request a paid advisory session (/consultations).
 - The line a visitor remembers after 10 seconds: "Strategy, research, and MEL as one integrated, evidence-driven capability."
-- Belief ladder: (1) RML is a serious, credible firm → (2) its three practice areas work as one integrated, evidence-driven capability → (3) it deeply knows my Caribbean/SIDS institutional context → (4) starting is easy and low-risk — the discovery session is free.
+- Belief ladder: (1) RML is a serious, credible firm → (2) its practice areas work as one integrated, evidence-driven capability → (3) it deeply knows my Caribbean/SIDS institutional context → (4) starting is easy and low-risk — the discovery session is free.
 - Proof on hand: none usable yet. Client names (Appendix A of BRIEF.md) await written clearance; no testimonials or case content approved. The design must stand on copy and craft alone, with clearly marked slots where proof lands once cleared. Never invent client names, credentials, statistics, or project claims.
 
 ## Brand Personality
