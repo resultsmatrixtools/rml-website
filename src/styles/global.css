@@ -75,8 +75,8 @@
   --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
 
   /* Fluid display size (DESIGN.md §3) — `text-display` utility. */
-  --text-display: clamp(2.25rem, 1.2rem + 3.5vw, 3rem);
-  --text-display--line-height: 1.15;
+  --text-display: clamp(2.5rem, 1.3rem + 4vw, 3.75rem);
+  --text-display--line-height: 1.12;
   --text-display--letter-spacing: -0.025em;
   --text-display--font-weight: 700;
 }

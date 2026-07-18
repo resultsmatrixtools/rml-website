@@ -1,0 +1,94 @@
+---
+// "The Results Matrix" — the site's signature graphic (DESIGN.md §5).
+// An abstract measurement field derived from the brand logo: a 6×6 grid of
+// flat cells stepping through the logo's own ramp (deep boardroom → cobalt →
+// teal → lime at the upper-right corner), with the logo's white swoosh
+// abstracted into a rising trendline over measured points.
+//
+// Growth Green appears here under the Growth Restriction Rule's data-context
+// exemption: this is a diagram, not UI chrome. The graphic is deliberately
+// unlabeled — no axes, no numbers — so it reads as a motif and can never be
+// mistaken for a real (invented) chart.
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+// Logo-ramp palette, dark → lime. Indices are intensity steps.
+const RAMP = [
+  '#063a71', // brand-800
+  '#0b4180', // brand-800/700 midpoint
+  '#02458c', // brand-700
+  '#0057a8', // brand-600 — Boardroom Blue
+  '#1e6ba6', // logo gradient mid-blue
+  '#1d7a75', // accent-600 — Caribbean Teal
+  '#2b968f', // accent-500 — logo mid-band
+  '#43b2a8', // accent-400
+  '#78c275', // growth-500
+  '#a4d56a', // growth-400 — logo lime corner
+];
+
+// Intensity per cell (row-major, top row first): a diagonal rise toward the
+// upper-right with hand-placed jitter so it reads as observed measurement,
+// not a smooth gradient.
+const CELLS = [
+  [5, 5, 7, 7, 8, 9],
+  [4, 5, 5, 6, 7, 7],
+  [3, 4, 4, 5, 6, 7],
+  [2, 3, 4, 5, 6, 6],
+  [1, 2, 3, 3, 5, 5],
+  [0, 1, 1, 3, 4, 5],
+];
+
+// Cell geometry: 64px cells on a 74px pitch (10px gutters), rx proportional
+// to the logo grid's 14/96.
+const SIZE = 64;
+const PITCH = 74;
+
+// Trendline vertices at column centers — rise, a measured dip, strong rise.
+const POINTS = [
+  [32, 366],
+  [106, 328],
+  [180, 262],
+  [254, 286],
+  [328, 178],
+  [402, 92],
+];
+const polyline = POINTS.map(([x, y]) => `${x},${y}`).join(' ');
+---
+
+<svg
+  viewBox="0 0 434 434"
+  class={className}
+  aria-hidden="true"
+  focusable="false"
+>
+  {
+    CELLS.map((row, r) =>
+      row.map((step, c) => (
+        <rect x={c * PITCH} y={r * PITCH} width={SIZE} height={SIZE} rx="9" fill={RAMP[step]} />
+      ))
+    )
+  }
+  <polyline
+    points={polyline}
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="7"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M 397.3 114.3 L 402 92 L 380.6 100"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="7"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <g fill="#ffffff">
+    {POINTS.slice(0, -1).map(([x, y]) => <circle cx={x} cy={y} r="6" />)}
+  </g>
+</svg>

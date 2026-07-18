@@ -6,6 +6,7 @@
 // /consultations and /resources.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CtaBand from '../components/CtaBand.astro';
+import MatrixMotif from '../components/MatrixMotif.astro';
 
 const areas = [
   {
@@ -35,27 +36,34 @@ const areas = [
   title="Results Matrix Limited — Caribbean Development Solutions"
   description="Strategy & Advisory, Research & Data Analytics, and Monitoring, Evaluation & Learning services for governments and development organizations across the Caribbean."
 >
-  <!-- Hero -->
+  <!-- Hero — asymmetric: headline and CTAs left, the Results Matrix motif
+       right (desktop only). Primary CTA is the free discovery session, the
+       brief's stated conversion goal; services exploration is secondary. -->
   <section class="bg-brand-900 text-white">
-    <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-28">
-      <h1 class="max-w-3xl text-display">Our Expertise, Your Insights for Action</h1>
-      <p class="mt-6 max-w-2xl font-serif text-lg leading-[1.7] text-brand-100">
-        We help public and private sectors identify and deliver evidence-based results for
-        decision-making and strategic objectives.
-      </p>
-      <div class="mt-9 flex flex-col gap-3 sm:flex-row">
-        <a
-          href="/services"
-          class="rounded bg-white px-6 py-3 text-center text-sm font-semibold text-brand-900 transition-colors hover:bg-brand-100"
-        >
-          Explore Services
-        </a>
-        <a
-          href="/about"
-          class="rounded border border-brand-400 px-6 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-brand-800"
-        >
-          Who We Are
-        </a>
+    <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-24">
+      <div class="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,25rem)] lg:gap-20">
+        <div>
+          <h1 class="max-w-3xl text-display">Our Expertise, Your Insights for Action</h1>
+          <p class="mt-6 max-w-2xl font-serif text-lg leading-[1.7] text-brand-100">
+            We help public and private sectors identify and deliver evidence-based results for
+            decision-making and strategic objectives.
+          </p>
+          <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+            <a
+              href="/contact"
+              class="rounded bg-white px-6 py-3 text-center text-sm font-semibold text-brand-900 transition-colors hover:bg-brand-100"
+            >
+              Book a free discovery session
+            </a>
+            <a
+              href="/services"
+              class="rounded border border-brand-400 px-6 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-brand-800"
+            >
+              Explore our services
+            </a>
+          </div>
+        </div>
+        <MatrixMotif class="hidden w-full lg:block" />
       </div>
     </div>
   </section>

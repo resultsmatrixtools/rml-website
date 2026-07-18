@@ -15,9 +15,9 @@ colors:
 typography:
   display:
     fontFamily: "'Montserrat', 'Segoe UI', system-ui, Arial, sans-serif"
-    fontSize: "clamp(2.25rem, 1.2rem + 3.5vw, 3rem)"
+    fontSize: "clamp(2.5rem, 1.3rem + 4vw, 3.75rem)"
     fontWeight: 700
-    lineHeight: 1.15
+    lineHeight: 1.12
     letterSpacing: "-0.025em"
   headline:
     fontFamily: "'Montserrat', 'Segoe UI', system-ui, Arial, sans-serif"
@@ -147,10 +147,10 @@ variable woff2 files (~140KB total, latin subset, `font-display: swap`,
 preloaded in the base layout); no third-party font requests.
 
 ### Hierarchy
-- **Display** (700, clamp(2.25rem, 1.2rem + 3.5vw, 3rem), 1.15, -0.025em):
+- **Display** (700, clamp(2.5rem, 1.3rem + 4vw, 3.75rem), 1.12, -0.025em):
   Hero headlines on Deep Boardroom panels — the `text-display` utility,
-  fluid between viewports. White text; light-on-dark needs the taller
-  line-height.
+  fluid between viewports. White text; sized to command the panel without
+  crowding it.
 - **Headline** (700, 1.5rem, 1.3): Section heads on white, set in Deep
   Boardroom blue or Ink Slate. Montserrat.
 - **Body** (400, 1rem, 1.625): Montserrat, Ink Slate on white, max 65–75ch.
@@ -225,6 +225,18 @@ original, wordmark set in Montserrat Bold, OFL) lives in `src/assets/logo/`:
 mark alone — header, favicons, small sizes). Transparent 2× PNGs sit
 alongside for non-SVG contexts. The header pairs the mark with a styled text
 wordmark; the footer uses the reverse lockup.
+
+### Matrix Motif (signature)
+`src/components/MatrixMotif.astro` — "The Results Matrix": an abstract 6×6
+measurement field derived from the logo grid. Flat cells step through the
+logo's own ramp (deep boardroom → cobalt → teal → lime at the upper-right
+corner) with hand-placed jitter so it reads as observed data; the logo's
+white swoosh is abstracted into a rising trendline over measured points.
+Growth Green appears under the data-context exemption — this is a diagram,
+not chrome. Rules: individually flat-filled cells only (never a CSS
+gradient), never labeled with axes or numbers (an unlabeled motif can't
+become an invented chart), desktop-only decoration (`aria-hidden`), and it
+lives on Deep Boardroom grounds. Home-hero signature; reuse sparingly.
 
 ### Consent Banner (signature)
 Fixed bottom overlay on white with the overlay-lift shadow: one sentence of
