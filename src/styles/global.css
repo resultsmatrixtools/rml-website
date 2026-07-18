@@ -88,6 +88,17 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* Light-only system by design (The Evidence Chamber): keep native form
+       controls and scrollbars from flipping dark independently. */
+    color-scheme: light;
+  }
+
+  /* Snappier taps: no 300ms double-tap zoom delay; the .press compression
+     replaces the default tap highlight as touch feedback. */
+  a,
+  button {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
