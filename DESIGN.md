@@ -197,6 +197,15 @@ the standard 150ms ease.
   Blue/teal. Hamburger swaps to a close glyph; Escape closes and returns
   focus.
 
+### Logo
+Vector recreation of the brand logo (traced from the client's raster
+original, wordmark set in Montserrat Bold, OFL) lives in `src/assets/logo/`:
+`rml-logo.svg` (full lockup, light backgrounds), `rml-logo-reverse.svg`
+(white/ice wordmark for Deep Boardroom grounds), `rml-mark.svg` (grid+arrow
+mark alone — header, favicons, small sizes). Transparent 2× PNGs sit
+alongside for non-SVG contexts. The header pairs the mark with a styled text
+wordmark; the footer uses the reverse lockup.
+
 ### Consent Banner (signature)
 Fixed bottom overlay on white with the overlay-lift shadow: one sentence of
 plain-language copy, a privacy link, Decline (outline) and Accept (primary)

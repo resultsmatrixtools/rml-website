@@ -1,6 +1,7 @@
 ---
 // Site footer. Acceptance-critical: renders on every page via BaseLayout.
 // Holds the firm's contact details (moved out of the About page — BRIEF.md §2).
+import logoReverse from '../assets/logo/rml-logo-reverse.svg';
 
 const year = new Date().getFullYear();
 
@@ -24,10 +25,8 @@ const siteLinks = [
   <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:py-16">
     <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
       <div class="sm:col-span-2 lg:col-span-1">
-        <p class="text-lg font-bold tracking-tight text-white">
-          Results Matrix <span class="font-medium text-accent-300">Limited</span>
-        </p>
-        <p class="mt-3 text-sm leading-relaxed text-brand-200">
+        <img src={logoReverse.src} alt="Results Matrix Limited" width="215" height="80" class="h-20 w-auto" />
+        <p class="mt-4 text-sm leading-relaxed text-brand-200">
           Caribbean-based development solutions firm delivering strategy,
           research, and monitoring, evaluation &amp; learning services across
           the region and beyond.
