@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-07-17T21:40:00Z",
+  "generatedAt": "2026-07-18T07:30:00Z",
   "title": "Design System: Results Matrix Limited",
   "extensions": {
     "colorMeta": {
@@ -32,7 +32,8 @@
     "typographyMeta": {
       "display": { "displayName": "Display", "purpose": "Hero headlines on Deep Boardroom panels only." },
       "headline": { "displayName": "Headline", "purpose": "Section heads on white." },
-      "body": { "displayName": "Body", "purpose": "Ink Slate prose, 65-75ch max." },
+      "body": { "displayName": "Body", "purpose": "Montserrat interface/body copy, Ink Slate, 65-75ch max." },
+      "prose": { "displayName": "Prose", "purpose": "Source Serif 4 long-form reading (articles, service copy, policy) - never interface chrome." },
       "label": { "displayName": "Label", "purpose": "Uppercase wayfinding inside dense structures (footer) only — never eyebrows." }
     },
     "shadows": [
@@ -54,7 +55,7 @@
       "refersTo": "button-primary",
       "description": "The one CTA per surface — Boardroom Ink fill, color-shift hover, teal focus ring.",
       "html": "<button class=\"ds-btn-primary\">Contact us</button>",
-      "css": ".ds-btn-primary { background: #063a71; color: #ffffff; padding: 8px 16px; border: none; border-radius: 0.25rem; font-weight: 600; font-size: 0.875rem; font-family: 'Segoe UI', system-ui, sans-serif; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-primary:hover { background: #02458c; } .ds-btn-primary:focus-visible { outline: 2px solid #1d7a75; outline-offset: 2px; }"
+      "css": ".ds-btn-primary { background: #063a71; color: #ffffff; padding: 8px 16px; border: none; border-radius: 0.25rem; font-weight: 600; font-size: 0.875rem; font-family: 'Montserrat', 'Segoe UI', system-ui, sans-serif; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-primary:hover { background: #02458c; } .ds-btn-primary:focus-visible { outline: 2px solid #1d7a75; outline-offset: 2px; }"
     },
     {
       "name": "Outline Button",
@@ -62,7 +63,7 @@
       "refersTo": "button-outline",
       "description": "Secondary action beside a primary (e.g. Decline next to Accept).",
       "html": "<button class=\"ds-btn-outline\">Decline</button>",
-      "css": ".ds-btn-outline { background: #ffffff; color: #334155; padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 0.25rem; font-weight: 500; font-size: 0.875rem; font-family: 'Segoe UI', system-ui, sans-serif; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-outline:hover { background: #f8fafc; } .ds-btn-outline:focus-visible { outline: 2px solid #1d7a75; outline-offset: 2px; }"
+      "css": ".ds-btn-outline { background: #ffffff; color: #334155; padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 0.25rem; font-weight: 500; font-size: 0.875rem; font-family: 'Montserrat', 'Segoe UI', system-ui, sans-serif; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-outline:hover { background: #f8fafc; } .ds-btn-outline:focus-visible { outline: 2px solid #1d7a75; outline-offset: 2px; }"
     },
     {
       "name": "Nav Link",
@@ -70,7 +71,7 @@
       "refersTo": "navigation",
       "description": "Desktop header link; active page holds Caribbean Teal.",
       "html": "<nav class=\"ds-nav\"><a href=\"#\" class=\"ds-nav-link\">Services</a><a href=\"#\" class=\"ds-nav-link ds-nav-link-active\">About</a><a href=\"#\" class=\"ds-nav-link\">Blog</a></nav>",
-      "css": ".ds-nav { display: flex; gap: 4px; } .ds-nav-link { color: #475569; font-weight: 500; font-size: 0.875rem; font-family: 'Segoe UI', system-ui, sans-serif; text-decoration: none; padding: 8px 12px; border-radius: 0.25rem; transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-nav-link:hover { color: #0a2f5a; } .ds-nav-link-active { color: #196360; } .ds-nav-link:focus-visible { outline: 2px solid #1d7a75; outline-offset: 2px; }"
+      "css": ".ds-nav { display: flex; gap: 4px; } .ds-nav-link { color: #475569; font-weight: 500; font-size: 0.875rem; font-family: 'Montserrat', 'Segoe UI', system-ui, sans-serif; text-decoration: none; padding: 8px 12px; border-radius: 0.25rem; transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-nav-link:hover { color: #0a2f5a; } .ds-nav-link-active { color: #196360; } .ds-nav-link:focus-visible { outline: 2px solid #1d7a75; outline-offset: 2px; }"
     },
     {
       "name": "Hairline Card",
@@ -78,7 +79,7 @@
       "refersTo": "card",
       "description": "Flat container — hairline border, no shadow (The Overlay-Only Rule).",
       "html": "<div class=\"ds-card\"><h3 class=\"ds-card-title\">Baseline Studies</h3><p class=\"ds-card-body\">Establish the evidence base your programme will be measured against.</p></div>",
-      "css": ".ds-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 0.25rem; padding: 24px; max-width: 320px; font-family: 'Segoe UI', system-ui, sans-serif; } .ds-card-title { color: #0a2f5a; font-size: 1.125rem; font-weight: 700; margin: 0 0 8px; } .ds-card-body { color: #334155; font-size: 0.9375rem; line-height: 1.625; margin: 0; }"
+      "css": ".ds-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 0.25rem; padding: 24px; max-width: 320px; font-family: 'Montserrat', 'Segoe UI', system-ui, sans-serif; } .ds-card-title { color: #0a2f5a; font-size: 1.125rem; font-weight: 700; margin: 0 0 8px; } .ds-card-body { color: #334155; font-size: 0.9375rem; line-height: 1.625; margin: 0; }"
     },
     {
       "name": "Consent Banner",
@@ -86,7 +87,7 @@
       "refersTo": "consent-banner",
       "description": "Signature floating overlay — the template for any surface that leaves the page flow.",
       "html": "<div class=\"ds-consent\"><p class=\"ds-consent-text\">We use a single analytics cookie (HubSpot). It runs only if you accept.</p><div class=\"ds-consent-actions\"><button class=\"ds-consent-decline\">Decline</button><button class=\"ds-consent-accept\">Accept</button></div></div>",
-      "css": ".ds-consent { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: #ffffff; border-top: 1px solid #e2e8f0; box-shadow: 0 -4px 16px rgba(13, 27, 43, 0.08); padding: 16px; font-family: 'Segoe UI', system-ui, sans-serif; max-width: 560px; } .ds-consent-text { color: #334155; font-size: 0.875rem; line-height: 1.6; margin: 0; } .ds-consent-actions { display: flex; gap: 12px; flex-shrink: 0; } .ds-consent-accept { background: #063a71; color: #ffffff; padding: 8px 16px; border: none; border-radius: 0.25rem; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-consent-accept:hover { background: #02458c; } .ds-consent-decline { background: #ffffff; color: #334155; padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 0.25rem; font-weight: 500; font-size: 0.875rem; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-consent-decline:hover { background: #f8fafc; }"
+      "css": ".ds-consent { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: #ffffff; border-top: 1px solid #e2e8f0; box-shadow: 0 -4px 16px rgba(13, 27, 43, 0.08); padding: 16px; font-family: 'Montserrat', 'Segoe UI', system-ui, sans-serif; max-width: 560px; } .ds-consent-text { color: #334155; font-size: 0.875rem; line-height: 1.6; margin: 0; } .ds-consent-actions { display: flex; gap: 12px; flex-shrink: 0; } .ds-consent-accept { background: #063a71; color: #ffffff; padding: 8px 16px; border: none; border-radius: 0.25rem; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-consent-accept:hover { background: #02458c; } .ds-consent-decline { background: #ffffff; color: #334155; padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 0.25rem; font-weight: 500; font-size: 0.875rem; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-consent-decline:hover { background: #f8fafc; }"
     }
   ],
   "narrative": {

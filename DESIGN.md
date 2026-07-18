@@ -14,23 +14,28 @@ colors:
   mist-blue: "#eff6fc"
 typography:
   display:
-    fontFamily: "'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif"
-    fontSize: "clamp(2.25rem, 5vw, 3rem)"
+    fontFamily: "'Montserrat', 'Segoe UI', system-ui, Arial, sans-serif"
+    fontSize: "clamp(2.25rem, 1.2rem + 3.5vw, 3rem)"
     fontWeight: 700
     lineHeight: 1.15
     letterSpacing: "-0.025em"
   headline:
-    fontFamily: "'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif"
+    fontFamily: "'Montserrat', 'Segoe UI', system-ui, Arial, sans-serif"
     fontSize: "1.5rem"
     fontWeight: 700
     lineHeight: 1.3
   body:
-    fontFamily: "'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif"
+    fontFamily: "'Montserrat', 'Segoe UI', system-ui, Arial, sans-serif"
     fontSize: "1rem"
     fontWeight: 400
     lineHeight: 1.625
+  prose:
+    fontFamily: "'Source Serif 4', Georgia, 'Times New Roman', serif"
+    fontSize: "1.125rem"
+    fontWeight: 400
+    lineHeight: 1.7
   label:
-    fontFamily: "'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif"
+    fontFamily: "'Montserrat', 'Segoe UI', system-ui, Arial, sans-serif"
     fontSize: "0.875rem"
     fontWeight: 600
     letterSpacing: "0.05em"
@@ -127,28 +132,43 @@ on the same element.
 
 ## 3. Typography
 
-**Display Font:** Segoe UI (system-ui, Helvetica Neue, Arial fallbacks)
-**Body Font:** Same family — single-stack system typography.
+**Display & UI Font:** Montserrat (variable, self-hosted; Segoe UI /
+system-ui fallback) — the brand logo's own wordmark face.
+**Prose Font:** Source Serif 4 (variable, self-hosted, roman + italic;
+Georgia fallback) — transitional serif for long-form reading.
 
-**Character:** A deliberate interim choice: fast, native, and neutral while
-the brand's licensed typeface decision is pending. Hierarchy is carried
-entirely by weight and scale contrast (700 vs 400), which must stay legible
-when a distinctive family replaces the stack.
+**Character:** The typography of a well-set briefing document. Montserrat's
+geometry carries the firm's precision through headings, navigation, and
+interface chrome, and ties every page to the logo lockup. Source Serif 4
+gives service copy, About, blog posts, and the privacy policy the
+report-grade reading voice institutional clients recognize — geometric sans
+against transitional serif, contrast on a real axis. Both load as single
+variable woff2 files (~140KB total, latin subset, `font-display: swap`,
+preloaded in the base layout); no third-party font requests.
 
 ### Hierarchy
-- **Display** (700, clamp(2.25rem, 5vw, 3rem), 1.15, -0.025em): Hero
-  headlines on Deep Boardroom panels. White text; add breathing room —
-  light-on-dark needs the taller line-height.
+- **Display** (700, clamp(2.25rem, 1.2rem + 3.5vw, 3rem), 1.15, -0.025em):
+  Hero headlines on Deep Boardroom panels — the `text-display` utility,
+  fluid between viewports. White text; light-on-dark needs the taller
+  line-height.
 - **Headline** (700, 1.5rem, 1.3): Section heads on white, set in Deep
-  Boardroom blue or Ink Slate.
-- **Body** (400, 1rem, 1.625): Ink Slate on white, max 65–75ch.
+  Boardroom blue or Ink Slate. Montserrat.
+- **Body** (400, 1rem, 1.625): Montserrat, Ink Slate on white, max 65–75ch.
+  The site-wide default (set on `body`); interface copy, teasers, forms.
+- **Prose** (400, 1.125rem, 1.7): Source Serif 4 via `font-serif` — article
+  and long-form page copy only. Italic available for emphasis and titles.
 - **Label** (600, 0.875rem, 0.05em tracking, uppercase): Tiny wayfinding
-  only — footer column heads. Nowhere else.
+  only — footer column heads. Nowhere else. Montserrat.
 
 ### Named Rules
 **The Quiet Caps Rule.** Uppercase tracked labels exist only as wayfinding
 inside dense structures (the footer). Never as eyebrows above section
 headings — sections open with the heading itself.
+
+**The Report Rule.** Source Serif 4 is for reading, not chrome: multi-
+paragraph prose (service pages, About, blog posts, policy) sets in serif;
+headings, navigation, buttons, forms, cards, and captions stay Montserrat.
+If it's interface, it isn't serif.
 
 ## 4. Elevation
 
