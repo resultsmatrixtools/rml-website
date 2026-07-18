@@ -57,6 +57,12 @@ const POINTS = [
   [402, 92],
 ];
 const polyline = POINTS.map(([x, y]) => `${x},${y}`).join(' ');
+
+// Load sequence timing (The Entrance-Only Rule): dots land as the 800ms
+// linear draw passes their share of the path length (measured fractions of
+// the ~504-unit polyline), after the DRAW_DELAY.
+const DRAW_DELAY = 600;
+const DOT_DELAYS = [600, 730, 890, 1010, 1220];
 ---
 
 <svg
@@ -68,12 +74,23 @@ const polyline = POINTS.map(([x, y]) => `${x},${y}`).join(' ');
   {
     CELLS.map((row, r) =>
       row.map((step, c) => (
-        <rect x={c * PITCH} y={r * PITCH} width={SIZE} height={SIZE} rx="9" fill={RAMP[step]} />
+        <rect
+          x={c * PITCH}
+          y={r * PITCH}
+          width={SIZE}
+          height={SIZE}
+          rx="9"
+          fill={RAMP[step]}
+          class="cell"
+          style={`--s: ${c + (5 - r)}`}
+        />
       ))
     )
   }
   <polyline
+    class="trend"
     points={polyline}
+    pathLength="1"
     fill="none"
     stroke="#ffffff"
     stroke-width="7"
@@ -81,6 +98,7 @@ const polyline = POINTS.map(([x, y]) => `${x},${y}`).join(' ');
     stroke-linejoin="round"
   />
   <path
+    class="arrow"
     d="M 397.3 114.3 L 402 92 L 380.6 100"
     fill="none"
     stroke="#ffffff"
@@ -89,6 +107,84 @@ const polyline = POINTS.map(([x, y]) => `${x},${y}`).join(' ');
     stroke-linejoin="round"
   />
   <g fill="#ffffff">
-    {POINTS.slice(0, -1).map(([x, y]) => <circle cx={x} cy={y} r="6" />)}
+    {
+      POINTS.slice(0, -1).map(([x, y], i) => (
+        <circle class="dot" cx={x} cy={y} r="6" style={`--d: ${DOT_DELAYS[i]}ms`} />
+      ))
+    }
   </g>
 </svg>
+
+<style define:vars={{ drawDelay: `${DRAW_DELAY}ms` }}>
+  /* The matrix plots itself once, on load: cells cascade up the diagonal
+     (35ms per step), the trendline draws linearly (constant motion = pen),
+     dots land as the line passes, the arrowhead confirms last. */
+  .cell {
+    transform-box: fill-box;
+    transform-origin: center;
+    opacity: 0;
+    transform: scale(0.85);
+    animation: cell-in 400ms var(--ease-out-strong) forwards;
+    animation-delay: calc(var(--s) * 35ms + 120ms);
+  }
+
+  .trend {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: trend-draw 800ms linear forwards;
+    animation-delay: var(--drawDelay);
+  }
+
+  .dot {
+    transform-box: fill-box;
+    transform-origin: center;
+    opacity: 0;
+    transform: scale(0.5);
+    animation: dot-in 250ms var(--ease-out-strong) forwards;
+    animation-delay: var(--d);
+  }
+
+  .arrow {
+    opacity: 0;
+    animation: arrow-in 200ms var(--ease-out-strong) forwards;
+    animation-delay: 1330ms;
+  }
+
+  @keyframes cell-in {
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes trend-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes dot-in {
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes arrow-in {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cell,
+    .trend,
+    .dot,
+    .arrow {
+      animation: none;
+      opacity: 1;
+      transform: none;
+      stroke-dashoffset: 0;
+    }
+  }
+</style>

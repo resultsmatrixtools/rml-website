@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-07-18T08:55:00Z",
+  "generatedAt": "2026-07-18T09:20:00Z",
   "title": "Design System: Results Matrix Limited",
   "extensions": {
     "colorMeta": {
@@ -40,8 +40,11 @@
       { "name": "overlay-lift", "value": "0 -4px 16px rgba(13, 27, 43, 0.08)", "purpose": "Floating overlays only (consent banner, dialogs). In-flow elements never cast shadows." }
     ],
     "motion": [
-      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "All state transitions." },
-      { "name": "duration-standard", "value": "150ms", "purpose": "Color-shift feedback on hover/focus; the only motion at rest." }
+      { "name": "ease-out-strong", "value": "cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Every entrance and the press compression (The Entrance-Only Rule)." },
+      { "name": "duration-hover", "value": "150ms", "purpose": "Color-shift hover/focus feedback and the .press scale(0.98) compression." },
+      { "name": "duration-reveal", "value": "400ms", "purpose": "Scroll reveals on hairline grids; stagger <=60ms per cell; opacity-only under reduced motion." },
+      { "name": "duration-overlay", "value": "300ms", "purpose": "Overlay arrival (consent banner rises from its edge via @starting-style)." },
+      { "name": "hero-sequence", "value": "500ms text / 800ms linear draw", "purpose": "Home hero load: 90ms text stagger; motif cells cascade 35ms/step, trendline draws linearly, dots land in sync." }
     ],
     "breakpoints": [
       { "name": "sm", "value": "640px" },

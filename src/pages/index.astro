@@ -83,21 +83,24 @@ const areas = [
     <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-24">
       <div class="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,25rem)] lg:gap-20">
         <div>
-          <h1 class="max-w-3xl text-display">Our Expertise, Your Insights for Action</h1>
-          <p class="mt-6 max-w-2xl font-serif text-lg leading-[1.7] text-brand-100">
+          <h1 class="hero-item max-w-3xl text-display">Our Expertise, Your Insights for Action</h1>
+          <p
+            class="hero-item mt-6 max-w-2xl font-serif text-lg leading-[1.7] text-brand-100"
+            style="--hero-delay: 90ms"
+          >
             We help public and private sectors identify and deliver evidence-based results for
             decision-making and strategic objectives.
           </p>
-          <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+          <div class="hero-item mt-9 flex flex-col gap-3 sm:flex-row" style="--hero-delay: 180ms">
             <a
               href="/contact"
-              class="rounded bg-white px-6 py-3 text-center text-sm font-semibold text-brand-900 transition-colors hover:bg-brand-100"
+              class="press rounded bg-white px-6 py-3 text-center text-sm font-semibold text-brand-900 hover:bg-brand-100"
             >
               Book a free discovery session
             </a>
             <a
               href="/services"
-              class="rounded border border-brand-400 px-6 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-brand-800"
+              class="press rounded border border-brand-400 px-6 py-3 text-center text-sm font-semibold text-white hover:bg-brand-800"
             >
               Explore our services
             </a>
@@ -115,13 +118,17 @@ const areas = [
 
   <!-- Practice areas -->
   <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-20" aria-labelledby="practice-areas">
-    <h2 id="practice-areas" class="text-2xl font-bold text-brand-900 sm:text-3xl">
+    <h2 id="practice-areas" class="text-2xl font-bold text-brand-900 sm:text-3xl" data-reveal>
       Four practice areas, one connected capability
     </h2>
     <div class="mt-10 grid gap-px overflow-hidden rounded border border-slate-200 bg-slate-200 sm:grid-cols-2 xl:grid-cols-4">
       {
-        areas.map((area) => (
-          <article class="flex flex-col bg-white p-6 sm:p-8">
+        areas.map((area, i) => (
+          <article
+            class="flex flex-col bg-white p-6 sm:p-8"
+            data-reveal="fade"
+            style={`--reveal-delay: ${i * 60}ms`}
+          >
             <h3 class="text-lg font-bold text-brand-900">
               <a href={area.href} class="transition-colors hover:text-brand-700">
                 {area.title}
@@ -159,11 +166,13 @@ const areas = [
 
   <!-- How we work — a real four-step sequence (ol), hairline-ruled -->
   <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-20" aria-labelledby="how-we-work">
-    <h2 id="how-we-work" class="text-2xl font-bold text-brand-900 sm:text-3xl">How we work</h2>
+    <h2 id="how-we-work" class="text-2xl font-bold text-brand-900 sm:text-3xl" data-reveal>
+      How we work
+    </h2>
     <ol class="mt-10 grid gap-px overflow-hidden rounded border border-slate-200 bg-slate-200 sm:grid-cols-2 xl:grid-cols-4">
       {
         steps.map((step, i) => (
-          <li class="bg-white p-6 sm:p-8">
+          <li class="bg-white p-6 sm:p-8" data-reveal="fade" style={`--reveal-delay: ${i * 60}ms`}>
             <svg viewBox="0 0 40 40" class="h-9 w-9" aria-hidden="true" focusable="false">
               {glyphCells.map((cell, c) => (
                 <rect
@@ -228,3 +237,29 @@ const areas = [
     secondaryLabel="Advisory sessions"
   />
 </BaseLayout>
+
+<style>
+  /* Hero load sequence (The Entrance-Only Rule): headline, lede, CTAs rise
+     in a 90ms stagger. Pure CSS — no JS gate, so content always appears. */
+  .hero-item {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: hero-in 500ms var(--ease-out-strong) forwards;
+    animation-delay: var(--hero-delay, 0ms);
+  }
+
+  @keyframes hero-in {
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-item {
+      transform: none;
+      animation-duration: 200ms;
+      animation-timing-function: ease;
+    }
+  }
+</style>

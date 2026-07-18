@@ -14,8 +14,8 @@ const facts = [
 
 <div class="grid gap-px overflow-hidden rounded border border-slate-200 bg-slate-200 sm:grid-cols-2 lg:grid-cols-4">
   {
-    facts.map((fact) => (
-      <div class="bg-white p-6">
+    facts.map((fact, i) => (
+      <div class="bg-white p-6" data-reveal="fade" style={`--reveal-delay: ${i * 50}ms`}>
         <p class="text-3xl font-bold tracking-tight text-brand-800">{fact.value}</p>
         <p class="mt-2 text-sm leading-snug text-slate-600">{fact.label}</p>
       </div>

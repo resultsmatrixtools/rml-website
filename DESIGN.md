@@ -89,7 +89,7 @@ scrutiny of an institutional buyer.
 - Flat, hairline-separated surfaces; shadows reserved for true overlays
 - Deep cobalt panels (hero, footer) bracketing white working space
 - One accent at a time; color always means something
-- Refined, color-shift-only interaction feedback
+- Color-shift hover feedback; movement only at entrances (The Entrance-Only Rule)
 - WCAG 2.1 AA contrast as a floor, not a target
 
 ## 2. Colors
@@ -188,16 +188,33 @@ or a ground change instead.
 
 ## 5. Components
 
-Refined and restrained: minimal chrome, precise spacing, color-shift-only
-feedback. Nothing moves except color, and every state change runs through
-the standard 150ms ease.
+Refined and restrained: minimal chrome, precise spacing. Hover feedback is
+still color-shift-only at 150ms; movement exists, but only where something
+arrives.
+
+**The Entrance-Only Rule.** Motion happens exactly three ways: when a page
+arrives (the home hero's load sequence — text rises in a 90ms stagger while
+the Matrix motif plots itself: cells cascade up the diagonal at 35ms/step,
+the trendline draws over 800ms linear, dots land as it passes), when
+content arrives in view (hairline grids fade in once via scroll reveal,
+400ms, ≤60ms stagger — cells fade only, headings may rise 12px), and when
+an overlay arrives (the consent banner rises from its bottom edge, 300ms).
+Plus one interactive exception: pressable CTAs compress to scale(0.98) at
+150ms (the `.press` utility). Nothing moves on hover, nothing loops,
+nothing counts up, nothing parallaxes, and reveals never re-fire. The one
+easing is the strong ease-out `cubic-bezier(0.23, 1, 0.32, 1)`
+(`--ease-out-strong`); constant-motion drawing uses linear.
+`prefers-reduced-motion` reduces every entrance to a quick opacity fade
+and disables the press scale — gentler, never zero.
 
 ### Buttons
 - **Shape:** Barely-softened corners (0.25rem radius)
 - **Primary:** Boardroom Ink (#063a71) fill, white 600-weight text,
-  8px × 16px padding; hover shifts to #02458c. No transforms, no shadows.
+  8px × 16px padding; hover shifts to #02458c. No shadows; the only
+  transform is the 0.98 press compression (`.press`).
 - **Hover / Focus:** Color transition (150ms); focus renders the global
-  2px Caribbean Teal outline, offset 2px.
+  2px Caribbean Teal outline, offset 2px. Press compresses to scale(0.98)
+  at 150ms, disabled under reduced motion.
 - **Outline (secondary):** White fill, hairline slate border (#cbd5e1), Ink
   Slate text; hover washes the ground to slate-50.
 
@@ -264,8 +281,9 @@ side by side. The pattern template for any future floating surface.
   the working middle white and generous.
 - **Do** use hairline borders and ground changes for every in-flow
   separation.
-- **Do** keep interaction feedback to color shifts at 150ms with visible
-  teal focus outlines.
+- **Do** keep hover feedback to color shifts at 150ms with visible teal
+  focus outlines — movement belongs to entrances and the press only (The
+  Entrance-Only Rule).
 - **Do** leave clearly marked slots for proof (client names, testimonials)
   — and leave them empty until clearance.
 
@@ -281,5 +299,8 @@ side by side. The pattern template for any future floating surface.
   anywhere.
 - **Don't** add uppercase eyebrow labels above section headings (The Quiet
   Caps Rule).
+- **Don't** animate hover states, loop ambient motion, re-fire reveals, or
+  scroll-jack — and never ship an entrance without its reduced-motion
+  opacity fallback.
 - **Don't** invent client names, credentials, statistics, or project claims
   — an empty proof slot is always better than a fabricated one.

@@ -79,6 +79,10 @@
   --text-display--line-height: 1.12;
   --text-display--letter-spacing: -0.025em;
   --text-display--font-weight: 700;
+
+  /* Motion (DESIGN.md §5, The Entrance-Only Rule): one strong ease-out for
+     every entrance and the button press. */
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 @layer base {
@@ -99,6 +103,43 @@
   /* Visible focus for keyboard users, site-wide (WCAG 2.1 AA). */
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-accent-600;
+  }
+
+  /*
+   * Scroll reveals (The Entrance-Only Rule, DESIGN.md §5). Elements carry
+   * data-reveal; BaseLayout's IntersectionObserver adds .is-revealed once.
+   * The hidden state applies only under html.js (set by an inline script),
+   * so content is never gated on JS that might not run.
+   * data-reveal="fade" is the opacity-only variant for cells inside
+   * overflow-hidden hairline grids, where translate would clip.
+   */
+  html.js [data-reveal] {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  html.js [data-reveal='fade'] {
+    transform: none;
+  }
+
+  html.js [data-reveal].is-revealed {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 400ms var(--ease-out-strong),
+      transform 400ms var(--ease-out-strong);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html.js [data-reveal] {
+      transform: none;
+    }
+
+    html.js [data-reveal].is-revealed {
+      transition: opacity 200ms ease;
+      transition-delay: 0ms;
+    }
   }
 }
 
@@ -157,5 +198,27 @@
      Visible on staging by design (BRIEF.md Appendix A/B). */
   .todo-client {
     @apply rounded-sm bg-amber-100 px-1 py-0.5 text-amber-900;
+  }
+
+  /*
+   * Button press feedback (The Entrance-Only Rule's one interactive
+   * exception): a 0.98 compression confirming the press. Replaces
+   * transition-colors on the elements that carry it — color and transform
+   * share the declaration so neither cancels the other.
+   */
+  .press {
+    transition-property: color, background-color, border-color, transform;
+    transition-duration: 150ms;
+    transition-timing-function: ease, ease, ease, var(--ease-out-strong);
+  }
+
+  .press:active {
+    transform: scale(0.98);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .press:active {
+      transform: none;
+    }
   }
 }

@@ -39,6 +39,9 @@ const ogImageUrl = new URL(ogImage, Astro.site);
       type="font/woff2"
       crossorigin
     />
+    <!-- Marks JS availability before first paint so reveal styles (which
+         hide content) only ever apply when the observer will run. -->
+    <script is:inline>document.documentElement.classList.add('js');</script>
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta property="og:title" content={title} />
@@ -60,5 +63,23 @@ const ogImageUrl = new URL(ogImage, Astro.site);
     </main>
     <Footer />
     <ConsentBanner />
+    <script>
+      // Scroll reveals (The Entrance-Only Rule): reveal once, then let go.
+      const revealables = document.querySelectorAll('[data-reveal]');
+      if (revealables.length) {
+        const io = new IntersectionObserver(
+          (entries, observer) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-revealed');
+                observer.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -48px 0px', threshold: 0.1 }
+        );
+        revealables.forEach((el) => io.observe(el));
+      }
+    </script>
   </body>
 </html>

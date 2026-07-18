@@ -20,20 +20,54 @@
       <button
         type="button"
         id="consent-decline"
-        class="rounded border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+        class="press rounded border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
       >
         Decline
       </button>
       <button
         type="button"
         id="consent-accept"
-        class="rounded bg-brand-800 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-700"
+        class="press rounded bg-brand-800 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
       >
         Accept
       </button>
     </div>
   </div>
 </div>
+
+<style>
+  /* Overlay arrival (The Entrance-Only Rule): the banner rises from the
+     edge it lives on. @starting-style + allow-discrete animate the
+     display:none → visible flip; older browsers just show it instantly. */
+  #consent-banner {
+    transition:
+      transform 300ms var(--ease-out-strong),
+      opacity 300ms var(--ease-out-strong),
+      display 300ms allow-discrete;
+  }
+
+  @starting-style {
+    #consent-banner:not(.hidden) {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #consent-banner {
+      transition:
+        opacity 200ms ease,
+        display 200ms allow-discrete;
+    }
+
+    @starting-style {
+      #consent-banner:not(.hidden) {
+        transform: none;
+        opacity: 0;
+      }
+    }
+  }
+</style>
 
 <script>
   const CONSENT_KEY = 'rml-cookie-consent'; // 'accepted' | 'declined'
