@@ -1,0 +1,53 @@
+---
+// Per-tag listing (BRIEF.md §4). Tags come from visible posts, so a
+// tag used only by drafts exists on staging but not in production.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import { getVisiblePosts, collectTags, formatDate } from '../../../lib/blog';
+
+export async function getStaticPaths() {
+  const posts = await getVisiblePosts();
+  return collectTags(posts).map((tag) => ({
+    params: { tag },
+    props: { posts: posts.filter((post) => post.data.tags.includes(tag)) },
+  }));
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<BaseLayout
+  title={`Posts tagged "${tag}" — Results Matrix Limited`}
+  description={`Blog posts from Results Matrix Limited tagged "${tag}".`}
+>
+  <PageHero title={`Tagged: ${tag}`} lede={`${posts.length} ${posts.length === 1 ? 'post' : 'posts'} with this tag.`} />
+
+  <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
+    <ul class="divide-y divide-slate-200">
+      {
+        posts.map((post) => (
+          <li class="flex flex-col gap-1 py-5 first:pt-0">
+            <div class="flex items-center gap-2 text-sm text-slate-600">
+              <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+              {post.data.draft && (
+                <span class="rounded bg-amber-100 px-1.5 py-0.5 text-xs font-semibold text-amber-900">Draft</span>
+              )}
+            </div>
+            <h2 class="text-lg font-bold text-brand-900">
+              <a href={`/blog/${post.id}/`} class="transition-colors hover:text-brand-700">
+                {post.data.title}
+              </a>
+            </h2>
+            <p class="max-w-prose text-base text-slate-600">{post.data.description}</p>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="mt-10 border-t border-slate-200 pt-6">
+      <a href="/blog/" class="text-sm font-semibold text-accent-700 transition-colors hover:text-accent-800">
+        <span aria-hidden="true">←</span> All posts
+      </a>
+    </p>
+  </section>
+</BaseLayout>

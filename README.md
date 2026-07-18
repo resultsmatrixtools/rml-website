@@ -44,6 +44,21 @@ All variables are **build-time** and injected by DigitalOcean App Platform
 | `PUBLIC_CONSULTATION_PAYMENT_URL` | External payment link (unset/`#` → "coming soon") |
 | `PUBLIC_SITE_URL` | Canonical site URL (differs prod vs staging) |
 
+## Blog & drafts
+
+Posts are markdown files in `src/content/blog/` (schema in
+`src/content.config.ts`: title, description, pubDate, updatedDate?, author,
+tags[], heroImage? + heroImageAlt, draft). Blog images live in
+`src/assets/blog/`.
+
+**Draft behavior:** `draft: true` posts build on staging and locally but are
+excluded from production. The switch is `PUBLIC_SITE_URL` — a build where it
+equals `https://resultsmatrix.com` is production (drafts excluded); anything
+else (staging app URL, unset/local) shows drafts with a visible "Draft"
+badge. New posts default to `draft: true`. The RSS feed (`/rss.xml`) only
+ever contains published posts. The three `sample-*.md` posts are permanent
+drafts for staging demonstration — delete them once real content exists.
+
 ## Runbook
 
 > Sections below are completed in later build phases (BRIEF.md §8).

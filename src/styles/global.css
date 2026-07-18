@@ -129,6 +129,26 @@
     @apply mt-4 list-disc space-y-2 pl-6;
   }
 
+  .prose-serif ol {
+    @apply mt-4 list-decimal space-y-2 pl-6;
+  }
+
+  .prose-serif blockquote {
+    @apply mt-5 border-l border-slate-300 pl-5 italic text-slate-600;
+  }
+
+  .prose-serif code {
+    @apply rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[0.875em] not-italic;
+  }
+
+  .prose-serif pre {
+    @apply mt-5 overflow-x-auto rounded border border-slate-200 bg-slate-50 p-4;
+  }
+
+  .prose-serif pre code {
+    @apply bg-transparent p-0;
+  }
+
   .prose-serif a {
     @apply font-medium text-accent-700 underline underline-offset-2 hover:text-accent-800;
   }

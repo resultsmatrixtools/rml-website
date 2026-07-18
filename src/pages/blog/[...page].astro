@@ -1,0 +1,107 @@
+---
+// Blog listing with pagination (BRIEF.md §4). Drafts appear here on
+// staging only (see src/lib/blog.ts); draft cards carry an amber badge.
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import { getVisiblePosts, collectTags, formatDate } from '../../lib/blog';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getVisiblePosts();
+  return paginate(posts, { pageSize: 9 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+const tags = collectTags(await getVisiblePosts());
+---
+
+<BaseLayout
+  title={page.currentPage === 1
+    ? 'Blog — Results Matrix Limited'
+    : `Blog — page ${page.currentPage} — Results Matrix Limited`}
+  description="Insights on strategy, research, data, and monitoring, evaluation & learning from Results Matrix Limited's practice across the Caribbean."
+>
+  <PageHero
+    title="Blog"
+    lede="Insights from our practice — strategy, research, data, and MEL in Caribbean contexts."
+  />
+
+  <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
+    {
+      tags.length > 0 && (
+        <nav aria-label="Browse by tag" class="mb-10 flex flex-wrap items-center gap-2">
+          <span class="text-sm font-semibold text-slate-800">Browse by tag:</span>
+          {tags.map((tag) => (
+            <a
+              href={`/blog/tags/${tag}/`}
+              class="rounded border border-slate-300 px-2.5 py-1 text-sm text-slate-600 transition-colors hover:border-accent-600 hover:text-accent-700"
+            >
+              {tag}
+            </a>
+          ))}
+        </nav>
+      )
+    }
+
+    {
+      page.data.length === 0 ? (
+        <div class="rounded border border-slate-200 bg-brand-50 p-8">
+          <p class="text-base text-slate-700">
+            No posts yet — insights from our practice will appear here soon.
+          </p>
+        </div>
+      ) : (
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {page.data.map((post) => (
+            <article class="flex flex-col rounded border border-slate-200 bg-white p-6">
+              <div class="flex items-center gap-2 text-sm text-slate-600">
+                <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+                {post.data.draft && (
+                  <span class="rounded bg-amber-100 px-1.5 py-0.5 text-xs font-semibold text-amber-900">
+                    Draft
+                  </span>
+                )}
+              </div>
+              <h2 class="mt-2 text-lg font-bold text-brand-900">
+                <a href={`/blog/${post.id}/`} class="transition-colors hover:text-brand-700">
+                  {post.data.title}
+                </a>
+              </h2>
+              <p class="mt-2 flex-1 text-base text-slate-600">{post.data.description}</p>
+              <a
+                href={`/blog/${post.id}/`}
+                class="mt-4 text-sm font-semibold text-accent-700 transition-colors hover:text-accent-800"
+              >
+                Read post <span aria-hidden="true">→</span>
+              </a>
+            </article>
+          ))}
+        </div>
+      )
+    }
+
+    {
+      page.lastPage > 1 && (
+        <nav aria-label="Pagination" class="mt-12 flex items-center justify-between border-t border-slate-200 pt-6">
+          {page.url.prev ? (
+            <a href={page.url.prev} class="text-sm font-semibold text-accent-700 transition-colors hover:text-accent-800">
+              <span aria-hidden="true">←</span> Newer posts
+            </a>
+          ) : (
+            <span />
+          )}
+          <p class="text-sm text-slate-600">
+            Page {page.currentPage} of {page.lastPage}
+          </p>
+          {page.url.next ? (
+            <a href={page.url.next} class="text-sm font-semibold text-accent-700 transition-colors hover:text-accent-800">
+              Older posts <span aria-hidden="true">→</span>
+            </a>
+          ) : (
+            <span />
+          )}
+        </nav>
+      )
+    }
+  </section>
+</BaseLayout>
