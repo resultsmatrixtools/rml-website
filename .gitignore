@@ -22,3 +22,8 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 .gstack/
+
+# machine-local agent tooling
+.codex/
+.cursor/
+.impeccable/live/
