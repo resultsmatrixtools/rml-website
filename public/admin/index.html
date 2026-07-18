@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>RML Content Manager</title>
+    <!--
+      Decap CMS (BRIEF.md §4). Sveltia CMS was the first choice but does not
+      yet support the required editorial workflow (Draft → In Review → Ready);
+      the brief's fallback clause applies. Revisit Sveltia at its 1.0 release —
+      the config.yml format is compatible.
+      Pinned to the Decap 3.x line; the CDN script is acceptable here because
+      /admin is internal tooling, noindexed, and outside the public
+      performance budget.
+    -->
+  </head>
+  <body>
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  </body>
+</html>

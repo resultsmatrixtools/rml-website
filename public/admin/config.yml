@@ -1,0 +1,97 @@
+# Decap CMS configuration (BRIEF.md §4).
+# Editorial workflow: posts move Draft → In Review → Ready on the Workflow
+# board; publishing merges to main, which auto-deploys production.
+#
+# ONE-TIME SETUP (see README "CMS: GitHub OAuth app setup"): after deploying
+# the OAuth proxy function, replace the two REPLACE_ME values below with the
+# function URL's origin and path.
+
+backend:
+  name: github
+  repo: results-matrix/rml-website
+  branch: main
+  base_url: https://REPLACE_ME_FUNCTION_ORIGIN # e.g. https://faas-nyc1-abc123.doserverless.co
+  auth_endpoint: REPLACE_ME_FUNCTION_PATH # e.g. /api/v1/web/fn-<namespace>/auth/oauth
+  commit_messages:
+    create: 'content: create {{collection}} "{{slug}}"'
+    update: 'content: update {{collection}} "{{slug}}"'
+    delete: 'content: delete {{collection}} "{{slug}}"'
+    uploadMedia: 'content: upload "{{path}}"'
+    deleteMedia: 'content: delete "{{path}}"'
+
+publish_mode: editorial_workflow
+
+site_url: https://resultsmatrix.com
+display_url: https://resultsmatrix.com
+
+# Images are committed to src/assets/blog/ (BRIEF.md §4); the relative
+# public_folder makes frontmatter/body paths resolve from src/content/blog/,
+# which is what Astro's content-collection image pipeline expects.
+media_folder: src/assets/blog
+public_folder: ../../assets/blog
+
+collections:
+  - name: blog
+    label: Blog posts
+    label_singular: Blog post
+    folder: src/content/blog
+    create: true
+    extension: md
+    format: frontmatter
+    slug: '{{slug}}'
+    sortable_fields: [pubDate, title]
+    view_filters:
+      - label: Drafts
+        field: draft
+        pattern: true
+      - label: Published
+        field: draft
+        pattern: false
+    fields:
+      - { label: Title, name: title, widget: string }
+      - label: Description
+        name: description
+        widget: text
+        hint: One or two sentences. Shown on listing cards, search results, and social shares.
+      - label: Publish date
+        name: pubDate
+        widget: datetime
+        format: 'YYYY-MM-DD'
+        date_format: 'YYYY-MM-DD'
+        time_format: false
+        picker_utc: true
+      - label: Updated date
+        name: updatedDate
+        widget: datetime
+        format: 'YYYY-MM-DD'
+        date_format: 'YYYY-MM-DD'
+        time_format: false
+        picker_utc: true
+        required: false
+        hint: Only set this when meaningfully revising an already-published post.
+      - { label: Author, name: author, widget: string, default: 'Results Matrix Limited' }
+      - label: Tags
+        name: tags
+        widget: list
+        default: []
+        required: false
+        hint: 'Lowercase, short, reusable — e.g. mel, data, strategy.'
+      - label: Hero image
+        name: heroImage
+        widget: image
+        required: false
+        hint: Optional. If set, the alt text field below becomes required — the build fails without it.
+      - label: Hero image alt text
+        name: heroImageAlt
+        widget: string
+        required: false
+        hint: REQUIRED whenever a hero image is set. Describe the image for screen-reader users.
+      - label: Draft
+        name: draft
+        widget: boolean
+        default: true
+        hint: 'ON: post appears on staging only. OFF: post goes live on production when published.'
+      - label: Body
+        name: body
+        widget: markdown
+        hint: When inserting images, always fill in the image description (alt text).
