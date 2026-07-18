@@ -27,3 +27,6 @@ Thumbs.db
 .codex/
 .cursor/
 .impeccable/live/
+
+.agents/
+skills-lock.json
