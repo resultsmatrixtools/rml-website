@@ -1,36 +1,44 @@
 @import "tailwindcss";
 
 /*
- * RML design tokens (BRIEF.md §3).
- * Proposed deep blue / teal professional palette — no extractable brand
- * colours on the old site, so this is flagged for client approval.
- * "brand" = deep blue (primary ink, headers, footer)
- * "accent" = teal (links, CTAs, highlights)
+ * RML design tokens (BRIEF.md §3), derived from the brand logo
+ * (src/assets/RML-Logo.png): cobalt "Boardroom Blue" (#0057a8 anchor,
+ * sampled #004ea2–#005da7), "Caribbean Teal" (sampled ~#2b968f), and the
+ * grid's lime "Growth Green" (sampled #78c275/#a4d56a) as a restricted
+ * highlight. See DESIGN.md for usage rules.
+ * "brand" = Boardroom Blue ramp (primary, ink at the 900 end, footer)
+ * "accent" = Caribbean Teal ramp (links, secondary emphasis)
+ * "growth" = lime green (data/diagram highlights only — never UI chrome)
  */
 @theme {
-  --color-brand-50: #f2f6fa;
-  --color-brand-100: #e0e9f2;
-  --color-brand-200: #c2d3e4;
-  --color-brand-300: #93b1cc;
-  --color-brand-400: #5d88ad;
-  --color-brand-500: #3b6a93;
-  --color-brand-600: #2b547a;
-  --color-brand-700: #234463;
-  --color-brand-800: #1c3650;
-  --color-brand-900: #152a40;
-  --color-brand-950: #0d1b2b;
+  --color-brand-50: #eff6fc;
+  --color-brand-100: #dcebf8;
+  --color-brand-200: #bcd8f2;
+  --color-brand-300: #8abde8;
+  --color-brand-400: #4f9cd9;
+  --color-brand-500: #2379c4;
+  --color-brand-600: #0057a8;
+  --color-brand-700: #02458c;
+  --color-brand-800: #063a71;
+  --color-brand-900: #0a2f5a;
+  --color-brand-950: #071d3a;
 
   --color-accent-50: #effaf8;
-  --color-accent-100: #d6f1ed;
-  --color-accent-200: #ade2dc;
-  --color-accent-300: #7accc5;
-  --color-accent-400: #45b0a8;
-  --color-accent-500: #26948d;
-  --color-accent-600: #187772;
-  --color-accent-700: #155f5c;
-  --color-accent-800: #144c4a;
-  --color-accent-900: #123f3e;
-  --color-accent-950: #082625;
+  --color-accent-100: #d5f2ee;
+  --color-accent-200: #abe4dd;
+  --color-accent-300: #75cec5;
+  --color-accent-400: #43b2a8;
+  --color-accent-500: #2b968f;
+  --color-accent-600: #1d7a75;
+  --color-accent-700: #196360;
+  --color-accent-800: #164f4d;
+  --color-accent-900: #134140;
+  --color-accent-950: #0a2827;
+
+  --color-growth-300: #b9e08a;
+  --color-growth-400: #a4d56a;
+  --color-growth-500: #78c275;
+  --color-growth-600: #4d9a55;
 
   --font-sans: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial,
     sans-serif;

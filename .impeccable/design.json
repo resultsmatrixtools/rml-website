@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-17T21:40:00Z",
+  "title": "Design System: Results Matrix Limited",
+  "extensions": {
+    "colorMeta": {
+      "boardroom-blue": {
+        "role": "primary",
+        "displayName": "Boardroom Blue",
+        "canonical": "#0057a8",
+        "tonalRamp": ["#071d3a", "#0a2f5a", "#063a71", "#02458c", "#0057a8", "#2379c4", "#4f9cd9", "#8abde8", "#bcd8f2", "#eff6fc"]
+      },
+      "caribbean-teal": {
+        "role": "secondary",
+        "displayName": "Caribbean Teal",
+        "canonical": "#1d7a75",
+        "tonalRamp": ["#0a2827", "#134140", "#164f4d", "#196360", "#1d7a75", "#2b968f", "#43b2a8", "#75cec5", "#abe4dd", "#effaf8"]
+      },
+      "growth-green": {
+        "role": "tertiary",
+        "displayName": "Growth Green",
+        "canonical": "#78c275",
+        "tonalRamp": ["#4d9a55", "#78c275", "#a4d56a", "#b9e08a"]
+      },
+      "ink-slate": {
+        "role": "neutral",
+        "displayName": "Ink Slate",
+        "canonical": "#334155",
+        "tonalRamp": ["#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0", "#f1f5f9", "#f8fafc"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero headlines on Deep Boardroom panels only." },
+      "headline": { "displayName": "Headline", "purpose": "Section heads on white." },
+      "body": { "displayName": "Body", "purpose": "Ink Slate prose, 65-75ch max." },
+      "label": { "displayName": "Label", "purpose": "Uppercase wayfinding inside dense structures (footer) only — never eyebrows." }
+    },
+    "shadows": [
+      { "name": "overlay-lift", "value": "0 -4px 16px rgba(13, 27, 43, 0.08)", "purpose": "Floating overlays only (consent banner, dialogs). In-flow elements never cast shadows." }
+    ],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "All state transitions." },
+      { "name": "duration-standard", "value": "150ms", "purpose": "Color-shift feedback on hover/focus; the only motion at rest." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one CTA per surface — Boardroom Ink fill, color-shift hover, teal focus ring.",
+      "html": "<button class=\"ds-btn-primary\">Contact us</button>",
+      "css": ".ds-btn-primary { background: #063a71; color: #ffffff; padding: 8px 16px; border: none; border-radius: 0.25rem; font-weight: 600; font-size: 0.875rem; font-family: 'Segoe UI', system-ui, sans-serif; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-primary:hover { background: #02458c; } .ds-btn-primary:focus-visible { outline: 2px solid #1d7a75; outline-offset: 2px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary action beside a primary (e.g. Decline next to Accept).",
+      "html": "<button class=\"ds-btn-outline\">Decline</button>",
+      "css": ".ds-btn-outline { background: #ffffff; color: #334155; padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 0.25rem; font-weight: 500; font-size: 0.875rem; font-family: 'Segoe UI', system-ui, sans-serif; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-outline:hover { background: #f8fafc; } .ds-btn-outline:focus-visible { outline: 2px solid #1d7a75; outline-offset: 2px; }"
+    },
+    {
+      "name": "Nav Link",
+      "kind": "nav",
+      "refersTo": "navigation",
+      "description": "Desktop header link; active page holds Caribbean Teal.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#\" class=\"ds-nav-link\">Services</a><a href=\"#\" class=\"ds-nav-link ds-nav-link-active\">About</a><a href=\"#\" class=\"ds-nav-link\">Blog</a></nav>",
+      "css": ".ds-nav { display: flex; gap: 4px; } .ds-nav-link { color: #475569; font-weight: 500; font-size: 0.875rem; font-family: 'Segoe UI', system-ui, sans-serif; text-decoration: none; padding: 8px 12px; border-radius: 0.25rem; transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-nav-link:hover { color: #0a2f5a; } .ds-nav-link-active { color: #196360; } .ds-nav-link:focus-visible { outline: 2px solid #1d7a75; outline-offset: 2px; }"
+    },
+    {
+      "name": "Hairline Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Flat container — hairline border, no shadow (The Overlay-Only Rule).",
+      "html": "<div class=\"ds-card\"><h3 class=\"ds-card-title\">Baseline Studies</h3><p class=\"ds-card-body\">Establish the evidence base your programme will be measured against.</p></div>",
+      "css": ".ds-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 0.25rem; padding: 24px; max-width: 320px; font-family: 'Segoe UI', system-ui, sans-serif; } .ds-card-title { color: #0a2f5a; font-size: 1.125rem; font-weight: 700; margin: 0 0 8px; } .ds-card-body { color: #334155; font-size: 0.9375rem; line-height: 1.625; margin: 0; }"
+    },
+    {
+      "name": "Consent Banner",
+      "kind": "custom",
+      "refersTo": "consent-banner",
+      "description": "Signature floating overlay — the template for any surface that leaves the page flow.",
+      "html": "<div class=\"ds-consent\"><p class=\"ds-consent-text\">We use a single analytics cookie (HubSpot). It runs only if you accept.</p><div class=\"ds-consent-actions\"><button class=\"ds-consent-decline\">Decline</button><button class=\"ds-consent-accept\">Accept</button></div></div>",
+      "css": ".ds-consent { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: #ffffff; border-top: 1px solid #e2e8f0; box-shadow: 0 -4px 16px rgba(13, 27, 43, 0.08); padding: 16px; font-family: 'Segoe UI', system-ui, sans-serif; max-width: 560px; } .ds-consent-text { color: #334155; font-size: 0.875rem; line-height: 1.6; margin: 0; } .ds-consent-actions { display: flex; gap: 12px; flex-shrink: 0; } .ds-consent-accept { background: #063a71; color: #ffffff; padding: 8px 16px; border: none; border-radius: 0.25rem; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-consent-accept:hover { background: #02458c; } .ds-consent-decline { background: #ffffff; color: #334155; padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 0.25rem; font-weight: 500; font-size: 0.875rem; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-consent-decline:hover { background: #f8fafc; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Evidence Chamber",
+    "overview": "The interface is rigor made visible. Every surface behaves like a well-prepared evidence base: flat, precisely ruled, unhurried, with nothing decorative standing between the reader and the finding. The register is premium-firm restraint — confident whitespace, strong typographic hierarchy, quietly expensive — calibrated for procurement officers and permanent secretaries who equate polish with competence. Color is inherited from the RML logo, not invented: cobalt Boardroom Blue carries authority, Caribbean Teal appears as a measured secondary voice, and the logo's lime Growth Green is quarantined to data contexts where growth is literally what is being shown.",
+    "keyCharacteristics": [
+      "Flat, hairline-separated surfaces; shadows reserved for true overlays",
+      "Deep cobalt panels (hero, footer) bracketing white working space",
+      "One accent at a time; color always means something",
+      "Refined, color-shift-only interaction feedback",
+      "WCAG 2.1 AA contrast as a floor, not a target"
+    ],
+    "rules": [
+      { "name": "The Growth Restriction Rule", "body": "Growth Green never appears on buttons, links, navigation, headings, or backgrounds. It exists only inside data — charts, diagrams, the logo itself. If it's UI chrome, it isn't green.", "section": "colors" },
+      { "name": "The One Voice Rule", "body": "Blue is the brand's voice; teal is a supporting remark. Teal covers at most 10% of any screen and never competes with blue on the same element.", "section": "colors" },
+      { "name": "The Quiet Caps Rule", "body": "Uppercase tracked labels exist only as wayfinding inside dense structures (the footer). Never as eyebrows above section headings — sections open with the heading itself.", "section": "typography" },
+      { "name": "The Overlay-Only Rule", "body": "A shadow is an admission that the element has left the page flow. If it sits in the document, it separates with a hairline or a ground change instead.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do hold body text at Ink Slate (#334155) or darker on white — 4.5:1 is the floor everywhere, including placeholder text.",
+      "Do bracket pages with Deep Boardroom panels (hero, footer) and keep the working middle white and generous.",
+      "Do use hairline borders and ground changes for every in-flow separation.",
+      "Do keep interaction feedback to color shifts at 150ms with visible teal focus outlines.",
+      "Do leave clearly marked slots for proof (client names, testimonials) — and leave them empty until clearance."
+    ],
+    "donts": [
+      "Don't use gradient theatrics, animated counters, or growth-hacking urgency patterns — the site must never read \"startup-flashy\".",
+      "Don't recreate the Elementor failure it replaces: widget clutter, orphaned fragments, wall-of-bullets pages.",
+      "Don't use stock-photo handshakes or empty superlatives.",
+      "Don't put Growth Green on any interactive or structural element (The Growth Restriction Rule).",
+      "Don't use colored side-stripe borders, gradient text, or glassmorphism anywhere.",
+      "Don't add uppercase eyebrow labels above section headings (The Quiet Caps Rule).",
+      "Don't invent client names, credentials, statistics, or project claims — an empty proof slot is always better than a fabricated one."
+    ]
+  }
+}
