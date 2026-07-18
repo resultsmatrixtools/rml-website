@@ -1,0 +1,46 @@
+---
+// Consultations — scaffold only (BRIEF.md §2/§6: new page). The full offer
+// (pricing, two equal payment paths, HubSpot consultation-request form,
+// payment-link env var handling) is built in Phase 7. This scaffold states
+// the flow plainly and routes interest to /contact meanwhile.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+---
+
+<BaseLayout
+  title="Advisory Sessions — Results Matrix Limited"
+  description="Short, focused help-desk advisory sessions with Results Matrix Limited — M&E frameworks, indicators, evaluation design, and more."
+>
+  <PageHero
+    title="Advisory Sessions"
+    lede="Short, focused help-desk sessions with a senior consultant — bring a specific M&E question, leave with a workable answer."
+  />
+
+  <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
+    <div class="prose-serif">
+      <p>
+        <span class="todo-client"
+          >[Placeholder copy — final session description, pricing, and inclusions arrive in Phase
+          7 with client input.]</span
+        >
+      </p>
+      <h2>How it works</h2>
+      <p>
+        Pay for your session — online, or by bank transfer / invoice — and we send your scheduling
+        link once payment is confirmed. Book your slot, and meet your consultant. Institutional
+        clients paying by invoice are first-class here, not an afterthought.
+      </p>
+      <p class="font-sans text-sm font-semibold text-slate-400">
+        Payment paths, session request form, and pricing land in Phase 7.
+      </p>
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Have a question before booking?"
+    text="A free discovery session can help you decide whether an advisory session fits."
+    primaryHref="/contact"
+    primaryLabel="Get in touch"
+  />
+</BaseLayout>

@@ -1,0 +1,115 @@
+---
+// Copy ported verbatim from resultsmatrix.com/strategy-and-advisory/
+// (BRIEF.md §2 — preserve substance; restructured into expandable blocks).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SubService from '../../components/SubService.astro';
+import CtaBand from '../../components/CtaBand.astro';
+
+const blocks = [
+  {
+    title: 'Strategic Planning & Institutional Development',
+    valueProp:
+      'Our strategic planning goes beyond document creation—we build ownership, strengthen institutional capacity, and ensure your plans are implementable, monitorable, and adaptable to changing contexts.',
+    groups: [
+      {
+        label: 'Core services',
+        items: [
+          'National Strategic Planning: Development and revision of long-term national development plans, medium-term frameworks, and Vision documents aligned with SDGs and regional priorities',
+          'Organizational Strategic Plans: Comprehensive strategic frameworks for ministries, departments, agencies, and regional bodies including mission/vision development, strategic objective setting, and results frameworks',
+          'Sectoral Planning: Strategic plans for specific sectors (education, health, environment, justice, social protection, etc.) with cross-cutting integration',
+          'Theory of Change Development: Logic models and causal pathways that articulate how interventions lead to desired outcomes',
+          'Institutional Strengthening: Organizational assessments, restructuring recommendations, and change management support',
+          'Results-Based Management (RBM) Systems: Design and implementation of RBM frameworks linking planning, budgeting, monitoring, and reporting',
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Project & Programme Planning and Management',
+    intro:
+      'We provide end-to-end support for complex development initiatives, from design through implementation to closure. Our project management services ensure initiatives stay on track, adapt to challenges, and deliver intended results.',
+    valueProp:
+      'We combine technical rigor with contextual understanding, helping you navigate the complexities of Caribbean institutional environments while meeting international development partner requirements.',
+    groups: [
+      {
+        label: 'Core services',
+        items: [
+          'Project Design & Proposal Development: Logical frameworks, detailed implementation plans, budget development, and risk management strategies',
+          'Programme Management Support: Implementation oversight, coordination mechanisms, stakeholder management, and adaptive management',
+          'Project Cycle Management: Support across all phases—identification, formulation, financing, implementation, monitoring, and evaluation',
+          'Portfolio Reviews: Assessment of project portfolios for effectiveness, efficiency, coherence, and impact',
+          'Implementation Barrier Analysis: Systematic diagnosis of challenges affecting project delivery with actionable solutions',
+          'Project Governance Structures: Design of Project Steering Committees, Project Implementation Units, and coordination mechanisms',
+          'Procurement and Financial Management Support: Systems to ensure fiduciary compliance and efficiency',
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Readiness Assessments & Capacity Analysis',
+    intro:
+      "Before launching initiatives, it's critical to understand whether systems, structures, and capacities are in place for success. Our readiness assessments provide evidence-based insights into preparedness gaps and recommendations for addressing them.",
+    valueProp:
+      'Our assessments go beyond identifying problems—we provide practical, sequenced recommendations that build on existing strengths while addressing critical gaps.',
+    groups: [
+      {
+        label: 'Core services',
+        items: [
+          'Implementation Readiness Assessments: Pre-project evaluations of institutional capacity, systems, and enabling environment requirements',
+          'Capacity Needs Assessments: Systematic identification of technical, institutional, and human resource gaps',
+          'Institutional Capacity Analysis: Assessment of organizational structures, processes, and systems against project/programme requirements',
+          "M&E System Readiness: Evaluation of existing monitoring and data systems' ability to support new initiatives",
+          'Training Needs Assessments: Identification of knowledge and skills gaps with tailored training recommendations',
+          'Risk and Vulnerability Assessments: Analysis of potential barriers to implementation with mitigation strategies',
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Policy Development & Advisory Services',
+    intro:
+      'Evidence should inform policy, and policies should be implementable. We bridge the gap between research findings and policy action, providing strategic advice that translates data into decisions.',
+    valueProp:
+      'Our policy advisory services are grounded in Caribbean realities—we understand Westminster parliamentary systems, middle-income classification challenges, and the institutional dynamics that shape effective reform.',
+    groups: [
+      {
+        label: 'Core services',
+        items: [
+          'Policy Analysis & Review: Assessment of existing policies for effectiveness, coherence, and alignment with strategic objectives',
+          'Policy Development Support: Facilitation of policy formulation processes including stakeholder consultation and evidence synthesis',
+          'Reform Option Analysis: Development and evaluation of policy reform scenarios with implementation implications',
+          'Institutional Reform Advisory: Strategic guidance on organizational restructuring, process improvements, and system integration',
+          'Governance and Coordination Mechanisms: Design of inter-ministerial coordination structures and multi-stakeholder platforms',
+          'Strategic Positioning Analysis: Diagnostic assessments of organizational effectiveness and strategic engagement approaches',
+        ],
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Strategy & Advisory — Results Matrix Limited"
+  description="Strategic planning, project and programme management, readiness assessments, and policy advisory services for Caribbean governments and development organizations."
+>
+  <PageHero
+    title="Strategy & Advisory"
+    lede="We help organizations chart their course and build the systems needed to achieve lasting impact. Our strategic planning services combine rigorous analysis with participatory approaches to create actionable roadmaps aligned with national, regional, and international development frameworks."
+  />
+
+  <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
+    <div class="space-y-8">
+      {blocks.map((block) => <SubService {...block} />)}
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Let's talk about your strategy"
+    text="Schedule a free discovery session to explore how we can support your planning, management, or policy work."
+    primaryHref="/contact"
+    primaryLabel="Get in touch"
+    secondaryHref="/services"
+    secondaryLabel="All services"
+  />
+</BaseLayout>

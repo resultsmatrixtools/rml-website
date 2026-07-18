@@ -1,0 +1,198 @@
+---
+// Copy ported verbatim from resultsmatrix.com/services-monitoring-evaluation-and-learning/
+// (BRIEF.md §2 — preserve substance; restructured into expandable blocks).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SubService from '../../components/SubService.astro';
+import CtaBand from '../../components/CtaBand.astro';
+
+const blocks = [
+  {
+    // Intro paragraph serves as the page lede above (as on the source page).
+    title: 'M&E Framework Development & System Design',
+    valueProp:
+      "Our M&E frameworks aren't theoretical exercises—they're practical tools designed for Caribbean contexts, balancing international standards with local capacity and resources.",
+    groups: [
+      {
+        label: 'Core services',
+        items: [
+          'Results Frameworks: Comprehensive frameworks linking inputs, activities, outputs, outcomes, and impacts',
+          'Theory of Change & Logic Models: Articulation of causal pathways and assumptions underlying interventions',
+          'Performance Measurement Frameworks: SMART indicator development, baselines, targets, and data collection plans',
+          'M&E System Design: Comprehensive systems including governance, processes, tools, and capacity requirements',
+          'M&E Plans: Detailed roadmaps for monitoring and evaluation activities throughout project/programme lifecycle',
+          'Standard Operating Procedures: M&E protocols, templates, and guidelines for consistent implementation',
+          'Risk Management Frameworks: Systems for identifying, assessing, monitoring, and mitigating implementation risks',
+        ],
+      },
+      {
+        label: 'Sector experience',
+        items: [
+          'Education and skills development',
+          'Health and HIV/AIDS',
+          'Climate change and disaster risk management',
+          'Environment and natural resource management',
+          'Gender equality and social inclusion',
+          'Agriculture and food security',
+          'Water and sanitation',
+          'Justice and governance',
+          'Social protection',
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Programme & Project Evaluation',
+    intro:
+      'We conduct rigorous, independent evaluations that generate credible findings and actionable recommendations. Our evaluations meet international standards while remaining contextually relevant and stakeholder-responsive.',
+    valueProp:
+      "Our evaluations provide honest, constructive feedback that helps organizations learn and improve—we're critical friends, not critics.",
+    groups: [
+      {
+        label: 'Core services',
+        items: [
+          'Formative Evaluations: Mid-term assessments examining implementation progress, efficiency, and emerging lessons',
+          'Summative Evaluations: End-of-project/programme evaluations assessing overall effectiveness, impact, and sustainability',
+          'Impact Evaluations: Rigorous assessments of long-term effects and attribution using quasi-experimental or experimental designs',
+          'Outcome Evaluations: Assessment of intermediate results and progress toward longer-term impacts',
+          'Process Evaluations: Analysis of implementation approaches, systems, and operational effectiveness',
+          'Real-Time Evaluations: Rapid assessments during crises or fast-moving contexts (disasters, humanitarian response)',
+          'Meta-Evaluations: Synthesis of multiple evaluations to identify patterns and strategic insights',
+        ],
+      },
+      {
+        label: 'Evaluation approaches',
+        items: [
+          'OECD-DAC criteria (relevance, coherence, effectiveness, efficiency, impact, sustainability)',
+          'Gender-responsive evaluation',
+          'Human rights-based evaluation',
+          'Participatory and utilization-focused evaluation',
+          'Theory-based evaluation',
+          'Developmental evaluation for adaptive programming',
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Disaster Response & Recovery M&E',
+    intro:
+      'Disasters require specialized monitoring approaches that can track rapidly evolving needs and response effectiveness in real-time. We bring expertise in humanitarian M&E adapted to Caribbean SIDS contexts.',
+    valueProp:
+      'We understand Caribbean disaster contexts—small island vulnerabilities, limited institutional capacity, and the need for rapid yet rigorous M&E that supports accountability.',
+    groups: [
+      {
+        label: 'Core services',
+        items: [
+          'Post-Disaster Needs Assessment (PDNA) Support: Technical assistance for multi-sector damage, loss, and recovery needs assessment',
+          'Real-Time Response Monitoring: Rapid data collection and analysis systems for tracking relief delivery and coverage',
+          'Humanitarian Response Dashboards: Interactive platforms showing beneficiaries reached, funding flows, and geographic coverage',
+          'After-Action Reviews: Systematic evaluation of response effectiveness, coordination, and lessons learned',
+          'Recovery M&E Frameworks: Monitoring systems for tracking build-back-better progress across sectors',
+          'Disaster Risk Reduction M&E: Frameworks for tracking DRR investments, preparedness, and resilience building',
+          'Community Voice & Accountability: Systems capturing affected population perspectives and complaints/response mechanisms',
+        ],
+      },
+    ],
+  },
+  {
+    title: 'M&E Capacity Building & Training',
+    intro:
+      "Sustainable M&E requires local capacity. We don't just do M&E for you—we build your team's ability to design, implement, and use monitoring and evaluation systems effectively.",
+    valueProp:
+      'Our training is practical and contextualized—participants leave with skills they can immediately apply and tools they can actually use in their Caribbean contexts.',
+    groups: [
+      {
+        label: 'Core services',
+        items: [
+          'M&E Fundamentals Training: Introduction to monitoring and evaluation concepts, frameworks, and methodologies',
+          'Results-Based Management (RBM): RBM principles, logical frameworks, and Theory of Change development',
+          'Indicator Development Workshops: SMART indicators, baselines, targets, and data collection planning',
+          'Data Quality Assurance Training: Ensuring reliability, validity, and integrity of M&E data',
+          'Evaluation Methods Training: Quantitative and qualitative approaches, sampling, data analysis, and reporting',
+          'Specialized Training: Gender-responsive M&E, disability-inclusive M&E, climate M&E, etc.',
+          'Institutional M&E Systems: Building organizational M&E capacity beyond individual skills',
+        ],
+      },
+      {
+        label: 'Training delivery modalities',
+        items: [
+          'In-person workshops (2-5 days)',
+          'Virtual/online training with interactive sessions',
+          'Blended learning (online + in-person)',
+          'On-the-job coaching and mentoring',
+          'Learning-by-doing technical assistance',
+          'Community of practice facilitation',
+        ],
+      },
+      {
+        label: 'Institutional strengthening',
+        items: [
+          'M&E unit establishment and staffing',
+          'M&E system design and implementation support',
+          'Standard Operating Procedures (SOPs) development',
+          'M&E policy and strategy formulation',
+          'Quality assurance framework establishment',
+          'Organizational learning mechanisms',
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Real-Time Monitoring & Adaptive Management',
+    intro:
+      "In dynamic environments, waiting for annual evaluations isn't enough. We design real-time monitoring systems that provide continuous feedback loops enabling adaptive management and course correction.",
+    valueProp:
+      'We design monitoring systems that are simple enough to be sustainable but sophisticated enough to be useful—appropriate technology matched to Caribbean capacity.',
+    groups: [
+      {
+        label: 'Core services',
+        items: [
+          'Real-Time Monitoring Systems: Continuous data collection and analysis for immediate decision-making',
+          'Performance Dashboards: Live tracking of key performance indicators with alerts for targets at risk',
+          'Early Warning Systems: Monitoring indicators that signal emerging problems or opportunities',
+          'Adaptive Management Frameworks: Structures and processes for using monitoring data to adjust strategies and tactics',
+          'Feedback Loop Mechanisms: Systems ensuring monitoring insights reach decision-makers and drive action',
+          'Participatory Monitoring: Engagement of beneficiaries and stakeholders in ongoing monitoring processes',
+          'Mobile Data Collection: Technology-enabled field data collection for rapid reporting',
+        ],
+      },
+      {
+        label: 'Technical approaches',
+        items: [
+          'Mobile data collection tools (ODK, KoboToolbox, CommCare)',
+          'Cloud-based data platforms for real-time reporting',
+          'Automated data quality checks',
+          'Dashboard visualization (Power BI, Tableau)',
+          'SMS/WhatsApp reporting for low-connectivity contexts',
+          'GIS-based monitoring for geographic tracking',
+        ],
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Monitoring, Evaluation & Learning — Results Matrix Limited"
+  description="M&E framework design, programme evaluation, disaster response M&E, capacity building, and real-time monitoring systems for Caribbean SIDS contexts."
+>
+  <PageHero
+    title="Monitoring, Evaluation, and Learning (MEL)"
+    lede="Strong M&E starts with solid frameworks. We design comprehensive monitoring and evaluation systems that link strategic objectives to measurable indicators, ensuring you can track progress and demonstrate results."
+  />
+
+  <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
+    <div class="space-y-8">
+      {blocks.map((block) => <SubService {...block} />)}
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Strengthen your M&E systems"
+    text="Schedule a free discovery session to discuss frameworks, evaluations, training, or monitoring systems for your programme."
+    primaryHref="/contact"
+    primaryLabel="Get in touch"
+    secondaryHref="/consultations"
+    secondaryLabel="Book an advisory session"
+  />
+</BaseLayout>

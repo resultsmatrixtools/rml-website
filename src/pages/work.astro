@@ -1,0 +1,39 @@
+---
+// Work — scaffold only (BRIEF.md §2: new page, no approved case content
+// yet). Per the brief: if no approved case content exists at launch,
+// EXCLUDE this page from the nav rather than shipping a thin page — that
+// call is made at launch. Never invent client names or project claims.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+---
+
+<BaseLayout
+  title="Selected Work — Results Matrix Limited"
+  description="Selected engagements and case summaries from Results Matrix Limited's strategy, research, and MEL practice."
+>
+  <PageHero
+    title="Selected Work"
+    lede="Case summaries from engagements across strategy, research, and MEL."
+  />
+
+  <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
+    <div class="rounded border border-slate-200 bg-brand-50 p-8">
+      <p class="max-w-prose text-base text-slate-700">
+        <span class="todo-client"
+          >[Placeholder — case summaries await approved client content. Each entry needs: the
+          engagement context, what RML did, and the outcome — with the client's written clearance
+          to publish. If none are approved by launch, this page is removed from the navigation
+          rather than shipped thin.]</span
+        >
+      </p>
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Want to know if we've done work like yours?"
+    text="Ask us directly — we'll speak to relevant experience in a discovery session."
+    primaryHref="/contact"
+    primaryLabel="Get in touch"
+  />
+</BaseLayout>

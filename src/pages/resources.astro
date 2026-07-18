@@ -1,0 +1,67 @@
+---
+// Resources — scaffold only (BRIEF.md §2: new page, no existing copy).
+// Placeholder copy is clearly marked for client replacement. Gated-download
+// forms, HubSpot property mapping, and public/downloads/ PDFs land in
+// Phase 6.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+
+const placeholderResources = [
+  {
+    title: '[Resource title — e.g. M&E framework template]',
+    description: '[One-to-two sentence description of what the download contains and who it helps.]',
+    type: 'PDF',
+  },
+  {
+    title: '[Resource title — e.g. Theory of Change worksheet]',
+    description: '[One-to-two sentence description of what the download contains and who it helps.]',
+    type: 'PDF',
+  },
+  {
+    title: '[Resource title — e.g. Indicator development checklist]',
+    description: '[One-to-two sentence description of what the download contains and who it helps.]',
+    type: 'PDF',
+  },
+];
+---
+
+<BaseLayout
+  title="Resources — Results Matrix Limited"
+  description="Downloadable tools, templates, and guides from Results Matrix Limited for development practitioners in the Caribbean."
+>
+  <PageHero
+    title="Resources"
+    lede="Practical tools, templates, and guides from our practice — free to download in exchange for a few details."
+  />
+
+  <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
+    <p class="max-w-prose text-base text-slate-600">
+      <span class="todo-client">[Placeholder page — resource cards below are examples awaiting
+        client-supplied materials. The download form and delivery wiring arrive in Phase 6.]</span>
+    </p>
+    <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        placeholderResources.map((resource) => (
+          <article class="flex flex-col rounded border border-slate-200 bg-white p-6">
+            <p class="text-sm font-semibold text-accent-700">{resource.type}</p>
+            <h2 class="mt-2 text-lg font-bold text-brand-900">
+              <span class="todo-client">{resource.title}</span>
+            </h2>
+            <p class="mt-2 flex-1 text-base text-slate-600">
+              <span class="todo-client">{resource.description}</span>
+            </p>
+            <p class="mt-4 text-sm font-semibold text-slate-400">Download form arrives in Phase 6</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Need something tailored?"
+    text="If a template doesn't fit your context, a discovery session will."
+    primaryHref="/contact"
+    primaryLabel="Get in touch"
+  />
+</BaseLayout>

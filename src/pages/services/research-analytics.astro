@@ -1,0 +1,117 @@
+---
+// Copy ported verbatim from resultsmatrix.com/services-research-and-data-analytics/
+// (BRIEF.md §2 — preserve substance; restructured into expandable blocks).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SubService from '../../components/SubService.astro';
+import CtaBand from '../../components/CtaBand.astro';
+
+const blocks = [
+  {
+    title: 'Applied Development Research',
+    valueProp:
+      "Our research doesn't sit on shelves—we design studies that answer the questions decision-makers actually need answered, delivered in formats they can use.",
+    groups: [
+      {
+        label: 'Core services',
+        items: [
+          'Baseline Studies: Comprehensive situation analyses establishing pre-intervention conditions for comparison',
+          'Needs Assessments: Systematic identification of gaps, priorities, and resource requirements across populations and sectors',
+          'Sectoral Assessments: In-depth analysis of specific sectors (education, health, agriculture, tourism, etc.) including performance, constraints, and opportunities',
+          'Social Safety Net Reviews: Analysis of social protection programs including coverage, targeting, adequacy, and impacts',
+          'Public Expenditure Reviews: Assessment of government spending patterns, efficiency, and equity including gender-responsive budgeting',
+          'Operational Research: Problem-focused studies examining implementation challenges and identifying practical solutions',
+          'Market Analysis: Assessment of demand, supply, and market dynamics for development initiatives',
+        ],
+      },
+      {
+        label: 'Methodological strengths',
+        items: [
+          'Mixed-methods approaches (quantitative and qualitative)',
+          'Participatory research with communities and stakeholders',
+          'Secondary data analysis and synthesis',
+          'Comparative analysis across countries/programs',
+          'Gender-sensitive and disability-inclusive research designs',
+          'Cultural and contextual adaptation of research instruments',
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Data Analysis & Visualization',
+    intro:
+      "Data only becomes useful when it's analyzed and communicated effectively. We transform raw data into compelling insights through sophisticated analysis and clear visualization.",
+    valueProp:
+      'We make complex data accessible and actionable, creating visualizations that tell stories and drive decisions rather than overwhelming stakeholders with numbers.',
+    groups: [
+      {
+        label: 'Core services',
+        items: [
+          'Statistical Analysis: Descriptive statistics, inferential analysis, regression modeling, and trend analysis',
+          'Qualitative Data Analysis: Thematic coding, content analysis, and synthesis of interview/focus group data',
+          'Performance Analysis: Assessment of results against targets, benchmarking, and comparative analysis',
+          'Data Mining & Pattern Detection: Identification of trends, correlations, and insights from large datasets',
+          'Geospatial Analysis: Geographic information systems (GIS) analysis for spatial patterns and targeting',
+          'Data Visualization & Dashboards: Interactive dashboards, infographics, and data presentations for different audiences',
+          'Data Quality Assessments: Evaluation of data reliability, validity, completeness, and timeliness',
+        ],
+      },
+      {
+        label: 'Technical capabilities',
+        items: [
+          'Advanced analytics software (SPSS, R, Excel, Tableau)',
+          'Dashboard development (Power BI, Flourish, Tableau Public)',
+          'Database management and data warehousing',
+          'Data visualization best practices for non-technical audiences',
+          'Web-based data platforms and knowledge management systems',
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Knowledge Management & Information Systems',
+    intro:
+      'Institutional knowledge is an asset that needs systematic management. We design systems that capture, organize, and share information to improve organizational learning and performance.',
+    valueProp:
+      'We design systems that fit your capacity and context—practical, sustainable solutions that improve information flow without creating overwhelming maintenance burdens.',
+    groups: [
+      {
+        label: 'Core services',
+        items: [
+          'Knowledge Management Strategy: Frameworks for capturing, storing, sharing, and using organizational knowledge',
+          'M&E Information Systems Design: Database architecture, data flow mapping, and system specifications for monitoring platforms',
+          'Data Management Plans: Protocols for data collection, quality assurance, storage, security, and access',
+          'Reporting Systems: Automated reporting mechanisms, templates, and protocols for different stakeholder needs',
+          'Learning Systems: Mechanisms for capturing lessons learned, adaptive management, and continuous improvement',
+          'Digital Transformation Support: Guidance on technology adoption for improved data management and decision-making',
+        ],
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Research & Data Analytics — Results Matrix Limited"
+  description="Applied development research, data analysis and visualization, and knowledge management systems for evidence-based decision-making in the Caribbean."
+>
+  <PageHero
+    title="Research and Data Analytics"
+    lede="We conduct rigorous research that generates actionable insights for development decision-making. Our research designs balance methodological rigor with practical feasibility, ensuring findings are both credible and useful."
+  />
+
+  <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
+    <div class="space-y-8">
+      {blocks.map((block) => <SubService {...block} />)}
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Have a research question?"
+    text="Schedule a free discovery session to talk through your research, analysis, or data-systems needs."
+    primaryHref="/contact"
+    primaryLabel="Get in touch"
+    secondaryHref="/services"
+    secondaryLabel="All services"
+  />
+</BaseLayout>

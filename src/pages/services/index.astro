@@ -1,0 +1,78 @@
+---
+// Practice-areas overview. Teaser copy is the source site's card copy
+// (BRIEF.md §2); each area links through to its full page.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+
+const areas = [
+  {
+    href: '/services/strategy-advisory',
+    title: 'Strategy & Advisory',
+    body: 'We help organizations chart their course and build the systems needed to achieve lasting impact. Our strategic planning services combine rigorous analysis with participatory approaches to create actionable roadmaps aligned with national, regional, and international development frameworks.',
+    scope: 'Strategic planning · Project & programme management · Readiness assessments · Policy advisory',
+  },
+  {
+    href: '/services/research-analytics',
+    title: 'Research and Data Analytics',
+    body: 'We conduct rigorous research that generates actionable insights for development decision-making. Our research designs balance methodological rigor with practical feasibility, ensuring findings are both credible and useful.',
+    scope: 'Applied research · Data analysis & visualization · Knowledge management & information systems',
+  },
+  {
+    href: '/services/mel',
+    title: 'Monitoring, Evaluation, and Learning (MEL)',
+    body: 'Strong M&E starts with solid frameworks. We design comprehensive monitoring and evaluation systems that link strategic objectives to measurable indicators, ensuring you can track progress and demonstrate results.',
+    scope: 'M&E frameworks · Evaluations · Disaster response M&E · Capacity building · Real-time monitoring',
+  },
+];
+---
+
+<BaseLayout
+  title="Services — Results Matrix Limited"
+  description="Three integrated practice areas: Strategy & Advisory, Research and Data Analytics, and Monitoring, Evaluation, and Learning (MEL) — serving governments and development organizations across the Caribbean."
+>
+  <PageHero
+    title="Our Services"
+    lede="Three interconnected practice areas — strategy, research, and MEL — designed to meet the unique challenges of Small Island Developing States while maintaining international best practice standards."
+  />
+
+  <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
+    <div class="space-y-10">
+      {
+        areas.map((area, i) => (
+          <article
+            class:list={[
+              'flex flex-col gap-6 border-b border-slate-200 pb-10 last:border-b-0 last:pb-0 lg:flex-row lg:gap-12',
+              i % 2 === 1 && 'lg:flex-row-reverse',
+            ]}
+          >
+            <div class="lg:w-1/2">
+              <h2 class="text-2xl font-bold text-brand-900">
+                <a href={area.href} class="transition-colors hover:text-brand-700">
+                  {area.title}
+                </a>
+              </h2>
+              <p class="mt-4 max-w-prose font-serif text-lg leading-[1.7]">{area.body}</p>
+            </div>
+            <div class="lg:flex lg:w-1/2 lg:flex-col lg:justify-center">
+              <p class="text-base text-slate-600">{area.scope}</p>
+              <a
+                href={area.href}
+                class="mt-4 inline-block rounded bg-brand-800 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-700"
+              >
+                Explore {area.title.split('(')[0].trim()}
+              </a>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Not sure where to start?"
+    text="Tell us what you're working on — a free discovery session will point you to the right support."
+    primaryHref="/contact"
+    primaryLabel="Schedule a discovery session"
+  />
+</BaseLayout>

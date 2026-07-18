@@ -101,3 +101,41 @@
     @apply outline-2 outline-offset-2 outline-accent-600;
   }
 }
+
+@layer components {
+  /*
+   * Long-form reading blocks (The Report Rule, DESIGN.md §3):
+   * Source Serif 4 at 1.125rem/1.7 for multi-paragraph prose.
+   * Headings inside prose stay Montserrat.
+   */
+  .prose-serif {
+    @apply max-w-prose font-serif text-lg leading-[1.7] text-slate-700;
+    text-wrap: pretty;
+  }
+
+  .prose-serif p + p {
+    @apply mt-5;
+  }
+
+  .prose-serif h2 {
+    @apply mb-4 mt-12 font-sans text-2xl font-bold leading-snug text-brand-900 first:mt-0;
+  }
+
+  .prose-serif h3 {
+    @apply mb-3 mt-8 font-sans text-xl font-bold leading-snug text-brand-900;
+  }
+
+  .prose-serif ul {
+    @apply mt-4 list-disc space-y-2 pl-6;
+  }
+
+  .prose-serif a {
+    @apply font-medium text-accent-700 underline underline-offset-2 hover:text-accent-800;
+  }
+
+  /* Client-input placeholder — bracketed fields awaiting confirmation.
+     Visible on staging by design (BRIEF.md Appendix A/B). */
+  .todo-client {
+    @apply rounded-sm bg-amber-100 px-1 py-0.5 text-amber-900;
+  }
+}

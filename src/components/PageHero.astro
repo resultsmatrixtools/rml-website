@@ -1,0 +1,18 @@
+---
+// Interior page header: Deep Boardroom panel bracketing the page top
+// (DESIGN.md — "Deep cobalt panels bracketing white working space").
+
+interface Props {
+  title: string;
+  lede?: string;
+}
+
+const { title, lede } = Astro.props;
+---
+
+<section class="bg-brand-900 text-white">
+  <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
+    <h1 class="max-w-3xl text-display">{title}</h1>
+    {lede && <p class="mt-5 max-w-2xl font-serif text-lg leading-[1.7] text-brand-100">{lede}</p>}
+  </div>
+</section>

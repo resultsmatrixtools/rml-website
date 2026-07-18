@@ -1,6 +1,6 @@
 # Build Brief: resultsmatrix.com Rebuild
 
-**Client:** Results Matrix Limited (RML) — Caribbean development solutions firm: Strategy & Advisory, Research & Data Analytics, and Monitoring, Evaluation & Learning (MEL)
+**Client:** Results Matrix Limited (RML) — Caribbean development solutions firm across four practice areas: Strategy & Advisory, Research & Data Analytics, Monitoring, Evaluation & Learning (MEL), and ICT Consulting, Project Management & Systems Development
 **Replaces:** WordPress/Elementor site on DigitalOcean (broken header/footer, plugin rot)
 **Objective:** Modern, fast, zero-maintenance static site that positions RML credibly with government ministries, international development organizations (UNICEF, UNFPA, UNDP, EU/RESEMBID, CDB), and private-sector clients — and functions as a lead-generation engine.
 
@@ -34,6 +34,7 @@
 /services/strategy-advisory  → Strategy & Advisory
 /services/research-analytics → Research and Data Analytics
 /services/mel                → Monitoring, Evaluation, and Learning (MEL)
+/services/ict-systems        → ICT Consulting, Project Management & Systems Development
 /work            → Selected engagements / case summaries
 /about           → Firm profile, principal consultant
 /blog            → Listing (paginated), tags
@@ -56,12 +57,13 @@ Source pages on the live site (fetch these for the copy; the `?page_id=` URLs re
 | Strategy & Advisory (1495) | /strategy-and-advisory/ | `/services/strategy-advisory` | Port with restructuring |
 | Research & Data Analytics (1516) | /services-research-and-data-analytics/ | `/services/research-analytics` | Port with restructuring |
 | MEL (1363) | /services-monitoring-evaluation-and-learning/ | `/services/mel` | Port with restructuring |
+| — (new) | — | `/services/ict-systems` | New — use **Appendix C** |
 | About Us (1771) | /about-us/ | `/about` | Port + expand (client TODOs) |
 | Contact (84) | /contact-layout-2/ | `/contact` | Port form fields |
 | Privacy Policy (3) | /privacy-policy/ | `/privacy` | **Do not port — rewrite** |
 
-- **Home:** Keep hero headline ("Our Expertise, Your Insights for Action") and subhead, the three practice-area teaser cards, and the positioning paragraph (three practice areas, SIDS/Caribbean focus, client types). **Drop entirely:** the "Your Business is Our Business" heading, the broken "0 %" counter, and the orphaned "Client Focused / Data / Strategic / Global" widget fragments — these are Elementor debris, not content. Add a CTA band linking to `/consultations` and `/resources`.
-- **Three service pages:** The copy is strong and comprehensive — preserve substance verbatim where possible. The presentational problem is wall-of-bullets: render each sub-service block (e.g. "Baseline Studies", "Theory of Change Development") as an expandable card/accordion with the intro paragraph and Value Proposition always visible. Keep every "Value Proposition" line — they carry the differentiation. Keep OECD-DAC, SIDS, and Caribbean-context references intact. Each page ends with a contact CTA (replacing the repeated "Get in touch" links).
+- **Home:** Keep hero headline ("Our Expertise, Your Insights for Action") and subhead, and update the practice-area teaser section from three to **four** cards (add ICT Consulting, Project Management & Systems Development). Keep the positioning paragraph but broaden its practice-area list to four. **Drop entirely:** the "Your Business is Our Business" heading, the broken "0 %" counter, and the orphaned "Client Focused / Data / Strategic / Global" widget fragments — these are Elementor debris, not content. Add a CTA band linking to `/consultations` and `/resources`.
+- **Four service pages:** The three ported pages' copy is strong and comprehensive — preserve substance verbatim where possible. The presentational problem is wall-of-bullets: render each sub-service block (e.g. "Baseline Studies", "Theory of Change Development") as an expandable card/accordion with the intro paragraph and Value Proposition always visible. Keep every "Value Proposition" line — they carry the differentiation. Keep OECD-DAC, SIDS, and Caribbean-context references intact. The new fourth page (Appendix C) follows the same accordion pattern and Value Proposition convention for consistency. Each page ends with a contact CTA (replacing the repeated "Get in touch" links).
 - **About:** Use the final copy in **Appendix A** as written. Bracketed fields (client list clearance, principal profile) must be resolved by the client before launch — do not launch with placeholders visible. Move phone (876 298 6545) and email into the global footer.
 - **Contact:** Rebuild the form with the existing fields — name, email, organization, phone, industry dropdown (Healthcare, Government, Shipping and Logistics, Non-governmental Organizations, Education), subject, message — mapped to HubSpot contact properties (industry as a dropdown property). Keep the "schedule a free discovery session" framing.
 - **Privacy Policy:** Do not port the existing page (generator boilerplate that misstates actual practices). Publish the new policy in **Appendix B** at `/privacy`, inserting the launch date. Requires legal review before DNS cutover.
@@ -180,7 +182,7 @@ Our consultants have delivered engagements for and alongside government ministri
 
 ### Leadership
 
-[Principal name], [title], leads RML's consulting practice with [XX] years of experience spanning [strategic planning, health information systems, ICT project management, and monitoring & evaluation] across the Caribbean. [He/She] holds [credentials — e.g., PMP, academic qualifications] and has served as [notable roles — e.g., team lead / technical advisor on named programmes]. <!-- TODO: client to supply profile details; do not launch with placeholders visible -->
+Curline Beckford, Senior RBM Consultant, leads RML's consulting practice with 20+ years of experience spanning Strategic Planning and Monitoring & Evaluation across the Caribbean. She holds MSc in International Business and has served as a boarad member of the Caribbean Evaluators International since xxx. <!-- TODO: client to supply profile details; do not launch with placeholders visible -->
 
 *(Contact details — 876 298 6545, info@resultsmatrix.com — live in the global footer, not this page.)*
 
@@ -192,7 +194,7 @@ Our consultants have delivered engagements for and alongside government ministri
 
 ### Privacy Policy
 
-**Effective date: [launch date]**
+**Effective date: July 18, 2026**
 
 Results Matrix Limited ("RML", "we", "us") operates the website resultsmatrix.com (the "Site"). This policy explains what personal data we collect through the Site, why we collect it, how we protect it, and the rights you have over it.
 
@@ -262,3 +264,33 @@ We may update this policy from time to time. Material changes will be posted on 
 #### Contact
 
 Questions about this policy or your personal data: **info@resultsmatrix.com**.
+
+---
+
+## Appendix C — ICT Consulting, Project Management & Systems Development (new service page copy)
+
+> Implementation note: publish at `/services/ict-systems`, following the same structure and accordion pattern as the three existing service pages (intro paragraph, sub-service blocks with Value Proposition lines, closing CTA). Bracketed fields require client confirmation before launch — same treatment as Appendix A.
+
+### ICT Consulting, Project Management & Systems Development
+
+RML designs, builds, and manages information systems for organizations that cannot afford downtime, data loss, or a system nobody ends up using. This practice area sits alongside our Strategy & Advisory, Research & Data Analytics, and MEL work — and in most engagements, feeds directly into them: the systems we build are the ones that generate the data our M&E and research practices analyze.
+
+**Core Services**
+
+**ICT Strategy & Advisory.** We help organizations plan technology investments that match institutional capacity — not just what's technically possible, but what a team can realistically operate, maintain, and afford once the consultants leave. This includes systems assessments, digital transformation roadmaps, and vendor/technology selection support.
+*Value Proposition:* Recommendations grounded in Caribbean institutional realities — bandwidth constraints, staffing levels, procurement cycles — rather than best-practice templates designed for better-resourced environments.
+
+**Systems Development.** We design and build custom software: web applications, data platforms, and integrations between systems that were never meant to talk to each other. Recent and ongoing work spans multi-tenant government platforms, monitoring & evaluation software, and system-to-system integrations connecting enterprise and operational systems.
+*Value Proposition:* Senior-led development — the person who scopes the system is the person who builds it — with modern, maintainable architecture chosen for longevity, not novelty.
+
+**Health Information Systems.** A specialized strand of our systems work: supporting electronic health record implementation and interoperability between health information systems and laboratory/clinical platforms.
+*Value Proposition:* Direct experience with the coordination challenge health information systems present — aligning multiple institutions, vendors, and clinical workflows around a single integration, not just the technical build.
+
+**Project Management.** We manage ICT and development projects end-to-end: scoping, documentation (terms of reference, requirements, process documentation), stakeholder coordination across technical and non-technical parties, and delivery oversight through go-live.
+*Value Proposition:* Process documentation and project artifacts built to the standard of institutional review from day one — not retrofitted for a ministry or development-partner audit after the fact.
+
+**Systems Integration.** Where organizations run multiple systems — an ERP, a maintenance platform, a legacy database — that need to exchange data reliably, we document the workflow, design the integration approach, and manage the transition, including interim manual-process controls while a permanent integration is built.
+*Value Proposition:* We document the *process*, not just the data flow — approval controls, exception handling, and monitoring responsibilities are designed in from the start, not discovered after go-live.
+
+
+*(Contact details live in the global footer.)*
