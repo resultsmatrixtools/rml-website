@@ -1,10 +1,31 @@
 ---
-// Resources — Resource Knowledge Hub with sample templates, guides, and gated download forms (Phase 6 preparation).
+// Resources — Resource Knowledge Hub. Each card opens a short gated form that
+// posts to HubSpot (BRIEF.md §5) and reveals the download on success.
+//
+// `file`: path under public/downloads/, named `<slug>-<short hash>.pdf` so the
+// URL is not guessable from the card (the files are technically public). Set it
+// to null until the PDF itself is cleared and committed — a null file keeps the
+// lead capture but promises a consultant follow-up instead of an instant
+// download, so the page never links to a file that does not exist. See the
+// README runbook, "Adding a resource PDF".
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import CtaBand from '../components/CtaBand.astro';
 
-const featuredResources = [
+const inputClasses =
+  'mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-base text-slate-900 placeholder:text-slate-400 shadow-2xs transition-all duration-150 focus:border-accent-600 focus:outline-hidden focus:ring-2 focus:ring-accent-600/20';
+const labelClasses = 'block text-sm font-semibold text-brand-950';
+
+const featuredResources: {
+  title: string;
+  description: string;
+  type: string;
+  format: string;
+  pages: string;
+  slug: string;
+  badge: string;
+  file: string | null;
+}[] = [
   {
     title: 'Results-Based Monitoring & Evaluation Framework Template',
     description: 'A comprehensive 5-stage matrix template designed for Caribbean SIDS ministries and development programs to track indicators, baselines, targets, and data sources.',
@@ -13,6 +34,7 @@ const featuredResources = [
     pages: '12 Pages',
     slug: 'rml-me-framework-template',
     badge: 'Popular',
+    file: null,
   },
   {
     title: 'Theory of Change Worksheet for Development Interventions',
@@ -22,6 +44,7 @@ const featuredResources = [
     pages: '6 Pages',
     slug: 'rml-theory-of-change-worksheet',
     badge: 'Core Tool',
+    file: null,
   },
   {
     title: 'Indicator Development & Validation Checklist',
@@ -31,6 +54,7 @@ const featuredResources = [
     pages: '8 Pages',
     slug: 'rml-indicator-validation-checklist',
     badge: 'Guide',
+    file: null,
   },
   {
     title: 'Digital Health Information System Readiness Matrix',
@@ -40,6 +64,7 @@ const featuredResources = [
     pages: '15 Pages',
     slug: 'rml-his-readiness-matrix',
     badge: 'ICT & Systems',
+    file: null,
   },
 ];
 ---
@@ -57,7 +82,7 @@ const featuredResources = [
     <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between border-b border-slate-200 pb-6">
       <div>
         <h2 class="text-2xl font-bold tracking-tight text-brand-950">Featured Development Resources</h2>
-        <p class="mt-1 text-sm text-slate-600">Select any resource below to access the download preview form.</p>
+        <p class="mt-1 text-sm text-slate-600">Select any resource below to request access.</p>
       </div>
       <div class="flex items-center gap-2 text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full w-fit">
         <span class="h-2 w-2 rounded-full bg-accent-600 animate-pulse"></span>
@@ -89,12 +114,18 @@ const featuredResources = [
             </div>
 
             <div class="mt-6 border-t border-slate-100 pt-4 flex items-center justify-between">
-              <span class="text-xs font-medium text-slate-400">Instant Download</span>
+              <span class="text-xs font-medium text-slate-400">
+                {resource.file ? 'Instant download' : 'Sent by a consultant'}
+              </span>
               <button
                 type="button"
+                data-resource-open
+                data-slug={resource.slug}
+                data-title={resource.title}
+                data-file={resource.file ?? ''}
                 class="press inline-flex items-center gap-1.5 text-sm font-bold text-accent-700 hover:text-accent-800"
               >
-                <span>Request Download</span>
+                <span>{resource.file ? 'Request download' : 'Request resource'}</span>
                 <span aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-1">→</span>
               </button>
             </div>
@@ -125,10 +156,280 @@ const featuredResources = [
     </div>
   </section>
 
+  <!-- One dialog serves every card; the opening button supplies the resource. -->
+  <dialog
+    id="resource-dialog"
+    aria-labelledby="resource-dialog-title"
+    class="m-auto max-h-[calc(100dvh-3rem)] w-[calc(100%-2rem)] max-w-lg overflow-y-auto rounded-xl border border-slate-200 bg-white p-0 shadow-lg backdrop:bg-brand-950/50"
+  >
+    <div class="p-6 sm:p-8">
+      <div class="flex items-start justify-between gap-4 border-b border-slate-100 pb-5">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-wider text-accent-700">Resource access</p>
+          <h2 id="resource-dialog-title" class="mt-1.5 text-base font-bold leading-snug text-brand-950"></h2>
+        </div>
+        <button
+          type="button"
+          id="resource-dialog-close"
+          aria-label="Close"
+          class="press -mr-1 -mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800"
+        >
+          <span aria-hidden="true">✕</span>
+        </button>
+      </div>
+
+      <form id="resource-form" class="mt-6 grid gap-4">
+        <div>
+          <label for="resource-name" class={labelClasses}>Your name</label>
+          <!-- autofocus: <dialog> otherwise lands on the close button. -->
+          <input id="resource-name" name="name" type="text" required autofocus autocomplete="name" class={inputClasses} />
+        </div>
+        <div>
+          <label for="resource-organization" class={labelClasses}>Your organization</label>
+          <input
+            id="resource-organization"
+            name="organization"
+            type="text"
+            required
+            autocomplete="organization"
+            class={inputClasses}
+          />
+        </div>
+        <div>
+          <label for="resource-email" class={labelClasses}>Your email</label>
+          <input
+            id="resource-email"
+            name="email"
+            type="email"
+            required
+            autocomplete="email"
+            spellcheck="false"
+            class={inputClasses}
+          />
+        </div>
+
+        <input type="hidden" id="resource-slug" name="resource_slug" value="" />
+
+        <!-- Honeypot: hidden from humans, tempting to bots. -->
+        <div class="hidden" aria-hidden="true">
+          <label for="resource-website">Website</label>
+          <input id="resource-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <p
+          id="resource-error"
+          hidden
+          role="alert"
+          class="rounded-lg border border-red-200 bg-red-50 p-3.5 text-sm leading-relaxed text-red-900"
+        >
+          We could not send your request just now. Please try again, or email <a href="mailto:info@resultsmatrix.com" class="font-semibold underline underline-offset-2">info@resultsmatrix.com</a>.
+        </p>
+
+        <div class="pt-1">
+          <button
+            id="resource-submit"
+            type="submit"
+            class="press w-full rounded-lg bg-brand-800 px-6 py-3 text-sm font-semibold text-white shadow-xs hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Get the resource
+          </button>
+          <p class="mt-3 text-xs leading-relaxed text-slate-500">
+            We handle your details strictly in accordance with our <a href="/privacy" class="font-medium text-accent-700 underline underline-offset-2 hover:text-accent-800">privacy policy</a>.
+          </p>
+        </div>
+      </form>
+
+      <div id="resource-success" hidden tabindex="-1" role="status" class="mt-6 focus:outline-hidden">
+        <h3 class="text-base font-bold text-brand-950">Thank you — you’re all set.</h3>
+        <p id="resource-success-note" class="mt-2 text-sm leading-relaxed text-slate-700"></p>
+        <a
+          id="resource-download"
+          hidden
+          href="#"
+          download
+          class="press mt-5 inline-flex items-center gap-2 rounded-lg bg-brand-800 px-6 py-3 text-sm font-semibold text-white shadow-xs hover:bg-brand-700"
+        >
+          <span>Download now</span>
+          <span aria-hidden="true">↓</span>
+        </a>
+        <a
+          id="resource-success-contact"
+          hidden
+          href="/contact"
+          class="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-accent-700 hover:text-accent-800"
+        >
+          <span>Speak with a consultant</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+
+      <noscript>
+        <p class="mt-4 text-sm leading-relaxed text-slate-700">
+          This form needs JavaScript. Please email <a href="mailto:info@resultsmatrix.com" class="font-semibold text-accent-700 underline underline-offset-2">info@resultsmatrix.com</a> and name the resource you need.
+        </p>
+      </noscript>
+    </div>
+  </dialog>
+
   <CtaBand
     heading="Need something tailored?"
     text="If a template doesn't fit your context, a discovery session will."
     primaryHref="/contact"
     primaryLabel="Get in touch"
   />
+
+  <style>
+    /* Overlay arrival (The Entrance-Only Rule): the dialog rises into place
+       once; @starting-style + allow-discrete animate the display flip, and
+       browsers without them simply show it instantly. */
+    #resource-dialog,
+    #resource-dialog::backdrop {
+      transition:
+        opacity 220ms var(--ease-out-strong),
+        transform 220ms var(--ease-out-strong),
+        display 220ms allow-discrete,
+        overlay 220ms allow-discrete;
+    }
+
+    #resource-dialog:not([open]),
+    #resource-dialog:not([open])::backdrop {
+      opacity: 0;
+    }
+
+    #resource-dialog:not([open]) {
+      transform: translateY(8px);
+    }
+
+    @starting-style {
+      #resource-dialog[open] {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      #resource-dialog[open]::backdrop {
+        opacity: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #resource-dialog:not([open]) {
+        transform: none;
+      }
+
+      @starting-style {
+        #resource-dialog[open] {
+          transform: none;
+        }
+      }
+    }
+  </style>
+
+  <script>
+    import { splitName, submitForm } from '../lib/hubspot';
+
+    const dialog = document.getElementById('resource-dialog') as HTMLDialogElement;
+    const form = document.getElementById('resource-form') as HTMLFormElement;
+    const button = document.getElementById('resource-submit') as HTMLButtonElement;
+    const heading = document.getElementById('resource-dialog-title') as HTMLElement;
+    const slugField = document.getElementById('resource-slug') as HTMLInputElement;
+    const error = document.getElementById('resource-error') as HTMLElement;
+    const success = document.getElementById('resource-success') as HTMLElement;
+    const successNote = document.getElementById('resource-success-note') as HTMLElement;
+    const download = document.getElementById('resource-download') as HTMLAnchorElement;
+    const successContact = document.getElementById('resource-success-contact') as HTMLAnchorElement;
+
+    /** Set on open, read on success to decide download vs. follow-up. */
+    let currentFile = '';
+    let currentTitle = '';
+
+    for (const opener of document.querySelectorAll<HTMLButtonElement>('[data-resource-open]')) {
+      opener.addEventListener('click', () => {
+        currentFile = opener.dataset.file ?? '';
+        currentTitle = opener.dataset.title ?? 'this resource';
+
+        heading.textContent = currentTitle;
+        slugField.value = opener.dataset.slug ?? '';
+        button.textContent = currentFile ? 'Get the download link' : 'Request this resource';
+
+        // Reset from any previous submission in this page visit.
+        form.reset();
+        form.hidden = false;
+        success.hidden = true;
+        error.hidden = true;
+        button.disabled = false;
+
+        dialog.showModal();
+      });
+    }
+
+    document
+      .getElementById('resource-dialog-close')!
+      .addEventListener('click', () => dialog.close());
+
+    // Click outside the panel closes it, matching the Esc affordance <dialog>
+    // gives us for free.
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const data = new FormData(form);
+      const value = (field: string) => String(data.get(field) ?? '');
+
+      // Honeypot: show the same success state so a bot learns nothing.
+      if (value('website').trim()) {
+        reveal();
+        return;
+      }
+
+      error.hidden = true;
+      button.disabled = true;
+      const label = button.textContent;
+      button.textContent = 'Sending…';
+
+      const result = await submitForm(
+        'resource',
+        {
+          ...splitName(value('name')),
+          email: value('email'),
+          company: value('organization'),
+          resource_slug: value('resource_slug'),
+        },
+        `Resources — ${currentTitle}`,
+      );
+
+      if (result.ok) {
+        reveal();
+        return;
+      }
+
+      button.disabled = false;
+      button.textContent = label;
+      error.hidden = false;
+    });
+
+    /** Swaps the form for the download link, or for a follow-up promise when
+     *  the PDF is not published yet (see the `file` note in the frontmatter). */
+    function reveal() {
+      form.hidden = true;
+      success.hidden = false;
+
+      if (currentFile) {
+        successNote.textContent = `Your copy of “${currentTitle}” is ready.`;
+        download.href = currentFile;
+        download.hidden = false;
+        successContact.hidden = true;
+      } else {
+        successNote.textContent =
+          `“${currentTitle}” is not posted for direct download yet. A consultant will send it to ` +
+          `you within one business day.`;
+        download.hidden = true;
+        successContact.hidden = false;
+      }
+
+      success.focus();
+    }
+  </script>
 </BaseLayout>
