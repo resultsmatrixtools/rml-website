@@ -83,7 +83,7 @@ const areas = [
     <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-24">
       <div class="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,25rem)] lg:gap-20">
         <div>
-          <h1 class="hero-item max-w-3xl text-display">Our Expertise, Your Insights for Action</h1>
+          <h1 class="hero-item max-w-3xl text-display">Your Vision, Our Expertise</h1>
           <p
             class="hero-item mt-6 max-w-2xl font-serif text-lg leading-[1.7] text-brand-100"
             style="--hero-delay: 90ms"
@@ -118,26 +118,37 @@ const areas = [
 
   <!-- Practice areas -->
   <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-20" aria-labelledby="practice-areas">
-    <h2 id="practice-areas" class="text-2xl font-bold text-brand-900 sm:text-3xl" data-reveal>
-      Four practice areas, one connected capability
-    </h2>
-    <div class="mt-10 grid gap-px overflow-hidden rounded border border-slate-200 bg-slate-200 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <span class="text-xs font-bold uppercase tracking-wider text-accent-700" data-reveal>Integrated Capability</span>
+        <h2 id="practice-areas" class="mt-1 text-2xl font-bold tracking-tight text-brand-950 sm:text-3xl" data-reveal>
+          Four practice areas, one connected capability
+        </h2>
+      </div>
+      <a href="/services" class="text-sm font-semibold text-accent-700 hover:text-accent-800 flex items-center gap-1 group" data-reveal>
+        View all practice details <span class="transition-transform duration-150 group-hover:translate-x-1">→</span>
+      </a>
+    </div>
+    <div class="mt-8 grid gap-px overflow-hidden rounded-xl border border-slate-200 bg-slate-200 shadow-xs sm:grid-cols-2 xl:grid-cols-4">
       {
         areas.map((area, i) => (
           <article
-            class="flex flex-col bg-white p-6 sm:p-8"
+            class="group relative flex flex-col bg-white p-6 transition-all duration-200 hover:bg-brand-50/30 sm:p-8"
             data-reveal="fade"
             style={`--reveal-delay: ${i * 60}ms`}
           >
-            <h3 class="text-lg font-bold text-brand-900">
-              <a href={area.href} class="transition-colors hover:text-brand-700">
+            <div class="absolute left-0 top-0 h-1 w-0 bg-accent-600 transition-all duration-200 group-hover:w-full"></div>
+            <h3 class="text-lg font-bold tracking-tight text-brand-950 transition-colors group-hover:text-brand-700">
+              <a href={area.href} class="focus:outline-none">
+                <span class="absolute inset-0" aria-hidden="true"></span>
                 {area.title}
               </a>
             </h3>
-            <p class="mt-3 flex-1 text-base text-slate-700">{area.body}</p>
-            <a href={area.href} class="mt-5 text-sm font-semibold text-accent-700 transition-colors hover:text-accent-800">
-              Learn more <span aria-hidden="true">→</span>
-            </a>
+            <p class="mt-3 flex-1 text-sm leading-relaxed text-slate-600 sm:text-base">{area.body}</p>
+            <div class="mt-6 flex items-center gap-1 text-sm font-semibold text-accent-700 transition-colors group-hover:text-accent-800">
+              <span>Learn more</span>
+              <span aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-1">→</span>
+            </div>
           </article>
         ))
       }

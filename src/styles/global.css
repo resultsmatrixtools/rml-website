@@ -227,9 +227,23 @@
     transform: scale(0.98);
   }
 
+  /* Interactive card elevates & border transitions */
+  .card-elevated {
+    @apply transition-all duration-200 ease-out hover:border-slate-300 hover:shadow-sm hover:-translate-y-0.5;
+  }
+
+  /* Smooth accordion details indicator */
+  details summary::-webkit-details-marker {
+    display: none;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .press:active {
       transform: none;
     }
+    .card-elevated {
+      transform: none !important;
+    }
   }
 }
+

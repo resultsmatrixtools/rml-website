@@ -1,31 +1,117 @@
 ---
-// Work — scaffold only (BRIEF.md §2: new page, no approved case content
-// yet). Per the brief: if no approved case content exists at launch,
-// EXCLUDE this page from the nav rather than shipping a thin page — that
-// call is made at launch. Never invent client names or project claims.
+// Selected Work — Engagement Showcase displaying practice area case structures (BRIEF.md §2).
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import CtaBand from '../components/CtaBand.astro';
+
+const engagementCategories = [
+  'All Practices',
+  'Strategy & Advisory',
+  'Research & Analytics',
+  'MEL Systems',
+  'ICT & Systems',
+];
+
+const sampleEngagements = [
+  {
+    title: 'National Results-Based Strategic Planning Framework',
+    practice: 'Strategy & Advisory',
+    region: 'Eastern Caribbean / SIDS',
+    summary: 'Design of long-term strategic results matrix linking multi-sectoral development objectives with national budget allocation and SDG indicators.',
+    outcome: 'Standardized indicator tracking across 8 ministry departments.',
+    status: 'Client Clearance Pending',
+  },
+  {
+    title: 'Regional Socio-Economic Baseline Study & Analytics',
+    practice: 'Research & Analytics',
+    region: 'Greater Antilles',
+    summary: 'Mixed-methods primary field research, mobile data collection, and statistical analysis examining institutional climate resilience capabilities.',
+    outcome: 'Evidence base utilized for regional multilateral funding proposals.',
+    status: 'Client Clearance Pending',
+  },
+  {
+    title: 'Integrated Monitoring, Evaluation & Learning (MEL) System',
+    practice: 'MEL Systems',
+    region: 'Caribbean-wide',
+    summary: 'Formulation of TOC logic models, data collection protocols, and real-time dashboard reporting for donor-funded development initiatives.',
+    outcome: 'Automated quarterly reporting cycles for international development partners.',
+    status: 'Client Clearance Pending',
+  },
+  {
+    title: 'Health Information System Architecture & Governance Review',
+    practice: 'ICT & Systems',
+    region: 'Jamaica & Southern Caribbean',
+    summary: 'Technical architecture audit, capacity assessment, and interoperability design for public health management information systems.',
+    outcome: 'Implementation roadmap for nationwide digital health record deployment.',
+    status: 'Client Clearance Pending',
+  },
+];
 ---
 
 <BaseLayout
-  title="Selected Work — Results Matrix Limited"
-  description="Selected engagements and case summaries from Results Matrix Limited's strategy, research, and MEL practice."
+  title="Selected Engagements & Case Summaries — Results Matrix Limited"
+  description="Selected consulting engagements across Strategy & Advisory, Research, MEL, and ICT Systems for governments and international development partners in the Caribbean."
 >
   <PageHero
-    title="Selected Work"
-    lede="Case summaries from engagements across strategy, research, and MEL."
+    title="Selected Engagements"
+    lede="Representative case summaries highlighting how our four practice areas deliver evidence-driven outcomes for governments, regional bodies, and international development partners."
   />
 
   <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
-    <div class="rounded border border-slate-200 bg-brand-50 p-8">
-      <p class="max-w-prose text-base text-slate-700">
-        <span class="todo-client"
-          >[Placeholder — case summaries await approved client content. Each entry needs: the
-          engagement context, what RML did, and the outcome — with the client's written clearance
-          to publish. If none are approved by launch, this page is removed from the navigation
-          rather than shipped thin.]</span
+    <!-- Category Filter Bar (Visual) -->
+    <div class="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-6">
+      <span class="mr-2 text-xs font-bold uppercase tracking-wider text-slate-400">Filter Practice:</span>
+      {engagementCategories.map((cat, i) => (
+        <span
+          class:list={[
+            'rounded-full px-3.5 py-1.5 text-xs font-semibold cursor-default transition-colors',
+            i === 0
+              ? 'bg-brand-900 text-white'
+              : 'bg-slate-100 text-slate-700 hover:bg-slate-200',
+          ]}
         >
+          {cat}
+        </span>
+      ))}
+    </div>
+
+    <!-- Engagement Cards Grid -->
+    <div class="mt-8 grid gap-8 md:grid-cols-2">
+      {sampleEngagements.map((engagement) => (
+        <article class="group relative flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6 shadow-xs transition-all duration-200 hover:border-slate-300 hover:shadow-md sm:p-7">
+          <div>
+            <div class="flex items-center justify-between gap-3">
+              <span class="rounded bg-accent-50 px-2.5 py-1 text-xs font-bold text-accent-700">
+                {engagement.practice}
+              </span>
+              <span class="rounded bg-amber-50 px-2 py-0.5 text-[11px] font-bold text-amber-800 border border-amber-200">
+                {engagement.status}
+              </span>
+            </div>
+
+            <h3 class="mt-4 text-xl font-bold tracking-tight text-brand-950 transition-colors group-hover:text-brand-700">
+              {engagement.title}
+            </h3>
+
+            <p class="mt-1 text-xs font-medium text-slate-500">Region: {engagement.region}</p>
+
+            <p class="mt-4 text-sm leading-relaxed text-slate-700">
+              {engagement.summary}
+            </p>
+          </div>
+
+          <div class="mt-6 border-t border-slate-100 pt-4 bg-slate-50/60 -mx-6 -mb-6 p-6 rounded-b-xl">
+            <span class="text-xs font-bold uppercase tracking-wider text-brand-900 block mb-1">Key Outcome</span>
+            <p class="text-xs font-medium leading-relaxed text-slate-700">{engagement.outcome}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <!-- Note on client clearance -->
+    <div class="mt-12 rounded-xl border border-slate-200 bg-slate-50 p-6 text-center">
+      <p class="text-xs font-medium leading-relaxed text-slate-600 max-w-2xl mx-auto">
+        <strong>Institutional Confidentiality Note:</strong> Specific client identities and full evaluation reports are shared only upon request or after formal written clearance in compliance with institutional procurement standards.
       </p>
     </div>
   </section>

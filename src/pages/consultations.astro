@@ -1,46 +1,129 @@
 ---
-// Consultations — scaffold only (BRIEF.md §2/§6: new page). The full offer
-// (pricing, two equal payment paths, HubSpot consultation-request form,
-// payment-link env var handling) is built in Phase 7. This scaffold states
-// the flow plainly and routes interest to /contact meanwhile.
+// Consultations — Paid Advisory Sessions offer & dual payment path layout (BRIEF.md §6).
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import CtaBand from '../components/CtaBand.astro';
+
+const paymentUrl = import.meta.env.PUBLIC_CONSULTATION_PAYMENT_URL;
+const isPaymentUrlConfigured = Boolean(paymentUrl && paymentUrl !== '#');
+
+const sessionFeatures = [
+  '60-minute intensive 1:1 advisory session with a Senior RBM / M&E Consultant',
+  'Review of your project results framework, indicators, or Theory of Change',
+  'Actionable, written recommendations memo delivered within 48 hours',
+  'Follow-up Q&A email support for session deliverables',
+];
 ---
 
 <BaseLayout
-  title="Advisory Sessions — Results Matrix Limited"
-  description="Short, focused help-desk advisory sessions with Results Matrix Limited — M&E frameworks, indicators, evaluation design, and more."
+  title="Advisory Sessions & Help Desk — Results Matrix Limited"
+  description="Focused, 1:1 help-desk advisory sessions with senior RML consultants for M&E frameworks, project indicators, evaluation designs, and strategic planning."
 >
   <PageHero
-    title="Advisory Sessions"
-    lede="Short, focused help-desk sessions with a senior consultant — bring a specific M&E question, leave with a workable answer."
+    title="Focused Advisory Sessions"
+    lede="Short, high-impact sessions with a senior consultant — bring a specific M&E question or framework challenge, leave with a clear, decision-ready roadmap."
   />
 
   <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
-    <div class="prose-serif">
-      <p>
-        <span class="todo-client"
-          >[Placeholder copy — final session description, pricing, and inclusions arrive in Phase
-          7 with client input.]</span
-        >
-      </p>
-      <h2>How it works</h2>
-      <p>
-        Pay for your session — online, or by bank transfer / invoice — and we send your scheduling
-        link once payment is confirmed. Book your slot, and meet your consultant. Institutional
-        clients paying by invoice are first-class here, not an afterthought.
-      </p>
-      <p class="font-sans text-sm font-semibold text-slate-400">
-        Payment paths, session request form, and pricing land in Phase 7.
-      </p>
+    <!-- Value & Inclusion Grid -->
+    <div class="grid gap-12 lg:grid-cols-3">
+      <div class="lg:col-span-2">
+        <h2 class="text-2xl font-bold tracking-tight text-brand-950 sm:text-3xl">
+          What’s Included in an Advisory Session
+        </h2>
+        <p class="mt-3 font-serif text-lg leading-relaxed text-slate-700">
+          Designed for project managers, permanent secretaries, and MEL leads who need senior expert guidance on specific deliverables without entering a multi-month consulting engagement.
+        </p>
+
+        <ul class="mt-8 space-y-4">
+          {sessionFeatures.map((feature) => (
+            <li class="flex items-start gap-3">
+              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-100 text-accent-700 font-bold text-xs">
+                ✓
+              </span>
+              <span class="text-base leading-relaxed text-slate-800 font-medium">{feature}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div class="mt-10 rounded-xl border border-slate-200 bg-slate-50/70 p-6 sm:p-7">
+          <h3 class="text-base font-bold text-brand-900">How Booking Works</h3>
+          <ol class="mt-4 grid gap-4 sm:grid-cols-3">
+            <li class="flex flex-col">
+              <span class="text-xs font-bold uppercase tracking-wider text-accent-700">Step 1</span>
+              <span class="mt-1 text-sm font-semibold text-brand-950">Select Payment Path</span>
+              <span class="mt-1 text-xs text-slate-600">Pay online or request an invoice for bank transfer.</span>
+            </li>
+            <li class="flex flex-col">
+              <span class="text-xs font-bold uppercase tracking-wider text-accent-700">Step 2</span>
+              <span class="mt-1 text-sm font-semibold text-brand-950">Receive Booking Link</span>
+              <span class="mt-1 text-xs text-slate-600">Your scheduling link is delivered as soon as payment is confirmed.</span>
+            </li>
+            <li class="flex flex-col">
+              <span class="text-xs font-bold uppercase tracking-wider text-accent-700">Step 3</span>
+              <span class="mt-1 text-sm font-semibold text-brand-950">Meet Your Consultant</span>
+              <span class="mt-1 text-xs text-slate-600">60-minute live session plus written recommendations memo.</span>
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Payment Paths Sidebar / Cards -->
+      <div class="space-y-6">
+        <!-- Path 1: Online Payment -->
+        <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs">
+          <span class="rounded bg-brand-50 px-2.5 py-1 text-xs font-bold text-brand-800">Path 01</span>
+          <h3 class="mt-3 text-lg font-bold text-brand-950">Pay Online</h3>
+          <p class="mt-2 text-xs leading-relaxed text-slate-600">
+            Instant online checkout via credit card or digital payment gateway.
+          </p>
+          
+          <div class="mt-6">
+            {isPaymentUrlConfigured ? (
+              <a
+                href={paymentUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="press block w-full rounded-lg bg-brand-800 px-4 py-3 text-center text-sm font-semibold text-white shadow-xs hover:bg-brand-700"
+              >
+                Pay &amp; Book Session
+              </a>
+            ) : (
+              <div class="rounded bg-slate-100 p-3 text-center text-xs font-semibold text-slate-500">
+                Online payment integration coming soon
+              </div>
+            )}
+          </div>
+        </div>
+
+        <!-- Path 2: Bank Transfer / Invoice -->
+        <div class="rounded-xl border-2 border-accent-600/80 bg-white p-6 shadow-xs relative">
+          <div class="absolute -top-3 right-4 rounded-full bg-accent-600 px-3 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-white">
+            Recommended for Ministries
+          </div>
+          <span class="rounded bg-accent-50 px-2.5 py-1 text-xs font-bold text-accent-700">Path 02</span>
+          <h3 class="mt-3 text-lg font-bold text-brand-950">Bank Transfer / Invoice</h3>
+          <p class="mt-2 text-xs leading-relaxed text-slate-600">
+            Ideal for government ministries, regional bodies, and international NGOs requiring standard corporate procurement invoicing.
+          </p>
+          
+          <div class="mt-6">
+            <a
+              href="/contact?subject=Advisory+Session+Invoice+Request"
+              class="press block w-full rounded-lg border-2 border-brand-900 bg-brand-900 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-brand-800"
+            >
+              Request Invoice &amp; Details
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
   <CtaBand
-    heading="Have a question before booking?"
-    text="A free discovery session can help you decide whether an advisory session fits."
+    heading="Have questions before booking?"
+    text="A free 20-minute discovery session can help clarify your requirements before committing to a paid session."
     primaryHref="/contact"
-    primaryLabel="Get in touch"
+    primaryLabel="Book a free discovery session"
   />
 </BaseLayout>

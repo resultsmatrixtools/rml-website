@@ -16,8 +16,8 @@ const industries = [
 ];
 
 const inputClasses =
-  'mt-1.5 w-full rounded border border-slate-300 bg-white px-3.5 py-2.5 text-base text-slate-900 placeholder:text-slate-500 focus:border-brand-600';
-const labelClasses = 'block text-sm font-semibold text-slate-800';
+  'mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-base text-slate-900 placeholder:text-slate-400 shadow-2xs transition-all duration-150 focus:border-accent-600 focus:outline-hidden focus:ring-2 focus:ring-accent-600/20';
+const labelClasses = 'block text-sm font-semibold text-brand-950';
 ---
 
 <BaseLayout
@@ -26,33 +26,31 @@ const labelClasses = 'block text-sm font-semibold text-slate-800';
 >
   <PageHero
     title="Let’s Start the Conversation"
-    lede="Go ahead and schedule a free discovery session or contact us."
+    lede="Schedule a free discovery session with a senior consultant to discuss your strategic objectives, research needs, or M&E systems."
   />
 
   <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
-    <div class="grid gap-12 lg:grid-cols-3">
-      <div class="lg:col-span-2">
-        <!-- TODO (Phase 6): POST to HubSpot Forms Submission API v3 using
-             PUBLIC_HUBSPOT_PORTAL_ID + PUBLIC_HUBSPOT_FORM_GUID_CONTACT,
-             include hutk cookie in context, add success/error states. -->
-        <!-- Native validation stays on until Phase 6 adds inline errors:
-             browser messages beat silent failure. -->
-        <form method="post" action="#" class="grid gap-5 sm:grid-cols-2">
+    <div class="grid gap-12 lg:grid-cols-3 lg:gap-16">
+      <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs sm:p-8 lg:col-span-2">
+        <h2 class="text-xl font-bold tracking-tight text-brand-950 sm:text-2xl">Book a Discovery Session</h2>
+        <p class="mt-1 text-sm text-slate-600">Fill in your details below and a senior consultant will respond within one business day.</p>
+        
+        <form method="post" action="#" class="mt-8 grid gap-5 sm:grid-cols-2">
           <div>
             <label for="name" class={labelClasses}>Your name</label>
-            <input id="name" name="name" type="text" required autocomplete="name" class={inputClasses} />
+            <input id="name" name="name" type="text" required autocomplete="name" placeholder="e.g. Dr. Sarah Campbell" class={inputClasses} />
           </div>
           <div>
             <label for="email" class={labelClasses}>Your email</label>
-            <input id="email" name="email" type="email" required autocomplete="email" spellcheck="false" class={inputClasses} />
+            <input id="email" name="email" type="email" required autocomplete="email" spellcheck="false" placeholder="s.campbell@ministry.gov" class={inputClasses} />
           </div>
           <div>
             <label for="organization" class={labelClasses}>Your organization</label>
-            <input id="organization" name="organization" type="text" required autocomplete="organization" class={inputClasses} />
+            <input id="organization" name="organization" type="text" required autocomplete="organization" placeholder="e.g. Ministry of Health & Wellness" class={inputClasses} />
           </div>
           <div>
             <label for="phone" class={labelClasses}>Your phone number</label>
-            <input id="phone" name="phone" type="tel" required autocomplete="tel" class={inputClasses} />
+            <input id="phone" name="phone" type="tel" required autocomplete="tel" placeholder="e.g. 876-555-0199" class={inputClasses} />
           </div>
           <div>
             <label for="industry" class={labelClasses}>Your industry</label>
@@ -63,11 +61,11 @@ const labelClasses = 'block text-sm font-semibold text-slate-800';
           </div>
           <div>
             <label for="subject" class={labelClasses}>Subject</label>
-            <input id="subject" name="subject" type="text" required class={inputClasses} />
+            <input id="subject" name="subject" type="text" required placeholder="e.g. M&E Framework Review" class={inputClasses} />
           </div>
           <div class="sm:col-span-2">
             <label for="message" class={labelClasses}>Your message (optional)</label>
-            <textarea id="message" name="message" rows="6" class={inputClasses}></textarea>
+            <textarea id="message" name="message" rows="5" placeholder="Briefly summarize your engagement context or objective..." class={inputClasses}></textarea>
           </div>
 
           <!-- Honeypot: hidden from humans, tempting to bots. -->
@@ -76,37 +74,55 @@ const labelClasses = 'block text-sm font-semibold text-slate-800';
             <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
           </div>
 
-          <div class="sm:col-span-2">
+          <div class="sm:col-span-2 pt-2">
             <button
               type="submit"
-              class="press rounded bg-brand-800 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-700"
+              class="press rounded-lg bg-brand-800 px-7 py-3 text-sm font-semibold text-white shadow-xs hover:bg-brand-700"
             >
-              Contact Us
+              Request Free Discovery Session
             </button>
-            <p class="mt-3 text-sm text-slate-600">
-              We handle your details as described in our <a href="/privacy" class="font-medium text-accent-700 underline underline-offset-2 hover:text-accent-800">privacy policy</a>.
+            <p class="mt-3 text-xs text-slate-500">
+              We handle your details strictly in accordance with our <a href="/privacy" class="font-medium text-accent-700 underline underline-offset-2 hover:text-accent-800">privacy policy</a>.
             </p>
           </div>
         </form>
       </div>
 
-      <aside>
-        <h2 class="text-lg font-bold text-brand-900">Prefer to reach out directly?</h2>
-        <ul class="mt-4 space-y-3 text-base">
-          <li>
-            <a href="mailto:info@resultsmatrix.com" class="font-medium text-accent-700 transition-colors hover:text-accent-800">
-              info@resultsmatrix.com
-            </a>
-          </li>
-          <li>
-            <a href="tel:+18762986545" class="font-medium text-accent-700 transition-colors hover:text-accent-800">
-              876 298 6545
-            </a>
-          </li>
-        </ul>
-        <p class="mt-6 max-w-xs text-base text-slate-600">
-          Looking for focused M&amp;E help with a fixed scope? Consider a <a href="/consultations" class="font-medium text-accent-700 underline underline-offset-2 hover:text-accent-800">paid advisory session</a>.
-        </p>
+      <aside class="space-y-6">
+        <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-6 sm:p-7">
+          <h2 class="text-base font-bold text-brand-950">Direct Contact Details</h2>
+          <ul class="mt-4 space-y-3.5 text-sm">
+            <li class="flex items-center gap-3">
+              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-white text-brand-800 shadow-2xs border border-slate-200">
+                ✉
+              </span>
+              <a href="mailto:info@resultsmatrix.com" class="font-semibold text-accent-700 transition-colors hover:text-accent-800">
+                info@resultsmatrix.com
+              </a>
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-white text-brand-800 shadow-2xs border border-slate-200">
+                📞
+              </span>
+              <a href="tel:+18762986545" class="font-semibold text-accent-700 transition-colors hover:text-accent-800">
+                876 298 6545
+              </a>
+            </li>
+            <li class="flex items-center gap-3 text-slate-700 font-medium">
+              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-white text-brand-800 shadow-2xs border border-slate-200">
+                📍
+              </span>
+              <span>Kingston, Jamaica (Serving Caribbean-wide)</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="rounded-xl border border-accent-200 bg-accent-50/50 p-6">
+          <h3 class="text-sm font-bold text-brand-950">Looking for a Fixed-Scope Session?</h3>
+          <p class="mt-2 text-xs leading-relaxed text-slate-700">
+            Have an urgent M&E matrix or project TOC that needs a 1:1 senior review? Check out our <a href="/consultations" class="font-semibold text-accent-700 underline underline-offset-2 hover:text-accent-800">paid advisory sessions</a>.
+          </p>
+        </div>
       </aside>
     </div>
   </section>

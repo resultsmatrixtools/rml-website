@@ -65,55 +65,58 @@ const DRAW_DELAY = 600;
 const DOT_DELAYS = [600, 730, 890, 1010, 1220];
 ---
 
-<svg
-  viewBox="0 0 434 434"
-  class={className}
-  aria-hidden="true"
-  focusable="false"
->
-  {
-    CELLS.map((row, r) =>
-      row.map((step, c) => (
-        <rect
-          x={c * PITCH}
-          y={r * PITCH}
-          width={SIZE}
-          height={SIZE}
-          rx="9"
-          fill={RAMP[step]}
-          class="cell"
-          style={`--s: ${c + (5 - r)}`}
-        />
-      ))
-    )
-  }
-  <polyline
-    class="trend"
-    points={polyline}
-    pathLength="1"
-    fill="none"
-    stroke="#ffffff"
-    stroke-width="7"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-  <path
-    class="arrow"
-    d="M 397.3 114.3 L 402 92 L 380.6 100"
-    fill="none"
-    stroke="#ffffff"
-    stroke-width="7"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-  <g fill="#ffffff">
+<div class:list={['relative', className]}>
+  <div class="absolute -inset-6 rounded-full bg-radial from-accent-500/20 via-brand-500/10 to-transparent opacity-70 blur-3xl pointer-events-none" aria-hidden="true"></div>
+  <svg
+    viewBox="0 0 434 434"
+    class="relative z-10 w-full"
+    aria-hidden="true"
+    focusable="false"
+  >
     {
-      POINTS.slice(0, -1).map(([x, y], i) => (
-        <circle class="dot" cx={x} cy={y} r="6" style={`--d: ${DOT_DELAYS[i]}ms`} />
-      ))
+      CELLS.map((row, r) =>
+        row.map((step, c) => (
+          <rect
+            x={c * PITCH}
+            y={r * PITCH}
+            width={SIZE}
+            height={SIZE}
+            rx="9"
+            fill={RAMP[step]}
+            class="cell"
+            style={`--s: ${c + (5 - r)}`}
+          />
+        ))
+      )
     }
-  </g>
-</svg>
+    <polyline
+      class="trend"
+      points={polyline}
+      pathLength="1"
+      fill="none"
+      stroke="#ffffff"
+      stroke-width="7"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      class="arrow"
+      d="M 397.3 114.3 L 402 92 L 380.6 100"
+      fill="none"
+      stroke="#ffffff"
+      stroke-width="7"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <g fill="#ffffff">
+      {
+        POINTS.slice(0, -1).map(([x, y], i) => (
+          <circle class="dot" cx={x} cy={y} r="6" style={`--d: ${DOT_DELAYS[i]}ms`} />
+        ))
+      }
+    </g>
+  </svg>
+</div>
 
 <style define:vars={{ drawDelay: `${DRAW_DELAY}ms` }}>
   /* The matrix plots itself once, on load: cells cascade up the diagonal

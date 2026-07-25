@@ -12,12 +12,17 @@ const facts = [
 ];
 ---
 
-<div class="grid gap-px overflow-hidden rounded border border-slate-200 bg-slate-200 sm:grid-cols-2 lg:grid-cols-4">
+<div class="grid gap-px overflow-hidden rounded-lg border border-slate-200 bg-slate-200 sm:grid-cols-2 lg:grid-cols-4 shadow-xs">
   {
     facts.map((fact, i) => (
-      <div class="bg-white p-6" data-reveal="fade" style={`--reveal-delay: ${i * 50}ms`}>
-        <p class="text-3xl font-bold tracking-tight text-brand-800">{fact.value}</p>
-        <p class="mt-2 text-sm leading-snug text-slate-600">{fact.label}</p>
+      <div
+        class="group relative bg-white p-6 transition-colors duration-200 hover:bg-brand-50/40"
+        data-reveal="fade"
+        style={`--reveal-delay: ${i * 50}ms`}
+      >
+        <div class="absolute left-0 top-0 h-1 w-full bg-brand-800 transition-all duration-200 group-hover:bg-accent-600"></div>
+        <p class="text-3xl font-extrabold tracking-tight text-brand-900 sm:text-4xl">{fact.value}</p>
+        <p class="mt-2 text-xs font-semibold leading-relaxed text-slate-600 sm:text-sm">{fact.label}</p>
       </div>
     ))
   }
