@@ -148,10 +148,29 @@ Data Management → Properties → Create property*, object type Contact):
 | `subject` | Single-line text | Contact form |
 | `resource_slug` | Single-line text | Resource download form |
 
-`industry` is a HubSpot default dropdown property — edit its options so they
-include the five values the contact form offers exactly as written: Healthcare,
-Government, Shipping and Logistics, Non-governmental Organizations, Education.
-A value the property does not know is rejected and the whole submission fails.
+`industry` is a HubSpot default dropdown property. A dropdown is validated
+against its **internal option values**, not its labels, and a value the
+property does not know is rejected — taking the whole submission with it, not
+just that one field. The `industries` array at the top of
+`src/pages/contact.astro` therefore carries an explicit `label` (what the
+visitor sees) and `value` (what HubSpot stores) per option, and must stay in
+sync with the property:
+
+| Label shown on the form | Internal value sent |
+|---|---|
+| Government | `gov` |
+| Non-governmental Organizations | `ngo` |
+| Healthcare | `healthcare` |
+| Education | `education` |
+| Environment | `environment` |
+| Private Sector | `private-sector` |
+| Consulting | `consult` |
+
+Changing the options in HubSpot without changing this array (or vice versa) is
+a silent lead-loss bug: the form keeps working and every affected submission is
+rejected. Note this list supersedes the five industries named in BRIEF.md §2 —
+"Shipping and Logistics" was dropped and Environment, Private Sector, and
+Consulting added, per the client's HubSpot property (2026-07-25).
 
 **3. Create one form per flow** (*Marketing → Forms → Create form → Embedded
 form*). The form's own layout does not matter — only its fields, because the
