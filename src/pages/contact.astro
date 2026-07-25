@@ -7,12 +7,19 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 
+// Mirrors the HubSpot `industry` dropdown property: the visitor sees `label`,
+// the submission carries `value` — HubSpot validates against its internal
+// option values and rejects the whole submission on anything it does not know,
+// so these must stay in sync with the property (README runbook). Ordered for
+// this audience, government first, rather than in HubSpot's own order.
 const industries = [
-  'Healthcare',
-  'Government',
-  'Shipping and Logistics',
-  'Non-governmental Organizations',
-  'Education',
+  { label: 'Government', value: 'gov' },
+  { label: 'Non-governmental Organizations', value: 'ngo' },
+  { label: 'Healthcare', value: 'healthcare' },
+  { label: 'Education', value: 'education' },
+  { label: 'Environment', value: 'environment' },
+  { label: 'Private Sector', value: 'private-sector' },
+  { label: 'Consulting', value: 'consult' },
 ];
 
 const inputClasses =
@@ -71,7 +78,7 @@ const labelClasses = 'block text-sm font-semibold text-brand-950';
             <label for="industry" class={labelClasses}>Your industry</label>
             <select id="industry" name="industry" required class={inputClasses}>
               <option value="">— Please choose an option —</option>
-              {industries.map((industry) => <option value={industry}>{industry}</option>)}
+              {industries.map((industry) => <option value={industry.value}>{industry.label}</option>)}
             </select>
           </div>
           <div>
