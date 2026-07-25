@@ -1,9 +1,9 @@
 ---
 // Contact — form fields ported from the source site (BRIEF.md §2), heading
 // typo fixed ("Lets" → "Let's"). Fields map 1:1 to HubSpot contact
-// properties; the actual Forms API v3 submission (portal ID + form GUID via
-// env, hutk context, success/error states) is wired in Phase 6. The
-// honeypot field ships now.
+// properties and submit via the Forms API v3 helper in src/lib/hubspot.ts
+// (Phase 6). Native constraint validation handles per-field errors; the
+// script owns only submit-time success/failure state.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 
@@ -34,8 +34,23 @@ const labelClasses = 'block text-sm font-semibold text-brand-950';
       <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs sm:p-8 lg:col-span-2">
         <h2 class="text-xl font-bold tracking-tight text-brand-950 sm:text-2xl">Book a Discovery Session</h2>
         <p class="mt-1 text-sm text-slate-600">Fill in your details below and a senior consultant will respond within one business day.</p>
-        
-        <form method="post" action="#" class="mt-8 grid gap-5 sm:grid-cols-2">
+
+        <!-- Submitted state: replaces the form on success (BRIEF.md §5). -->
+        <div
+          id="contact-success"
+          hidden
+          tabindex="-1"
+          role="status"
+          class="mt-8 rounded-lg border border-accent-200 bg-accent-50/60 p-6 focus:outline-hidden"
+        >
+          <h3 class="text-base font-bold text-brand-950">Request received — thank you.</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-700">
+            A senior consultant will respond within one business day to arrange your discovery
+            session. If your enquiry is urgent, call <a href="tel:+18762986545" class="font-semibold text-accent-700 underline underline-offset-2 hover:text-accent-800">876 298 6545</a>.
+          </p>
+        </div>
+
+        <form id="contact-form" class="mt-8 grid gap-5 sm:grid-cols-2">
           <div>
             <label for="name" class={labelClasses}>Your name</label>
             <input id="name" name="name" type="text" required autocomplete="name" placeholder="e.g. Dr. Sarah Campbell" class={inputClasses} />
@@ -75,9 +90,19 @@ const labelClasses = 'block text-sm font-semibold text-brand-950';
           </div>
 
           <div class="sm:col-span-2 pt-2">
+            <!-- Submit-time failure only; per-field errors stay with the browser. -->
+            <p
+              id="contact-error"
+              hidden
+              role="alert"
+              class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm leading-relaxed text-red-900"
+            >
+              We could not send your message just now. Please try again, or email us directly at <a href="mailto:info@resultsmatrix.com" class="font-semibold underline underline-offset-2">info@resultsmatrix.com</a>.
+            </p>
             <button
+              id="contact-submit"
               type="submit"
-              class="press rounded-lg bg-brand-800 px-7 py-3 text-sm font-semibold text-white shadow-xs hover:bg-brand-700"
+              class="press rounded-lg bg-brand-800 px-7 py-3 text-sm font-semibold text-white shadow-xs hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               Request Free Discovery Session
             </button>
@@ -86,6 +111,12 @@ const labelClasses = 'block text-sm font-semibold text-brand-950';
             </p>
           </div>
         </form>
+
+        <noscript>
+          <p class="mt-6 rounded-lg border border-slate-300 bg-slate-50 p-4 text-sm leading-relaxed text-slate-700">
+            This form needs JavaScript to send your details securely. With it disabled, please email <a href="mailto:info@resultsmatrix.com" class="font-semibold text-accent-700 underline underline-offset-2">info@resultsmatrix.com</a> or call <a href="tel:+18762986545" class="font-semibold text-accent-700 underline underline-offset-2">876 298 6545</a>.
+          </p>
+        </noscript>
       </div>
 
       <aside class="space-y-6">
@@ -126,4 +157,68 @@ const labelClasses = 'block text-sm font-semibold text-brand-950';
       </aside>
     </div>
   </section>
+
+  <script>
+    import { splitName, submitForm } from '../lib/hubspot';
+
+    const form = document.getElementById('contact-form') as HTMLFormElement;
+    const button = document.getElementById('contact-submit') as HTMLButtonElement;
+    const success = document.getElementById('contact-success') as HTMLElement;
+    const error = document.getElementById('contact-error') as HTMLElement;
+
+    // /consultations links here with ?subject=... for the invoice path.
+    const requestedSubject = new URLSearchParams(window.location.search).get('subject');
+    if (requestedSubject) {
+      (form.elements.namedItem('subject') as HTMLInputElement).value = requestedSubject.slice(0, 200);
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const data = new FormData(form);
+      const value = (field: string) => String(data.get(field) ?? '');
+
+      // Honeypot: bots fill it, humans never see it. Take the identical
+      // success path rather than erroring, so a bot learns nothing.
+      if (value('website').trim()) {
+        reveal();
+        return;
+      }
+
+      error.hidden = true;
+      button.disabled = true;
+      const label = button.textContent;
+      button.textContent = 'Sending…';
+
+      const result = await submitForm(
+        'contact',
+        {
+          ...splitName(value('name')),
+          email: value('email'),
+          company: value('organization'),
+          phone: value('phone'),
+          industry: value('industry'),
+          subject: value('subject'),
+          message: value('message'),
+        },
+        'Contact — Book a Discovery Session',
+      );
+
+      if (result.ok) {
+        reveal();
+        return;
+      }
+
+      button.disabled = false;
+      button.textContent = label;
+      error.hidden = false;
+    });
+
+    /** Swaps the form for the confirmation and moves focus onto it. */
+    function reveal() {
+      form.hidden = true;
+      success.hidden = false;
+      success.focus();
+    }
+  </script>
 </BaseLayout>

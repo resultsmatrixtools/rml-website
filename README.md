@@ -130,14 +130,94 @@ commits to `main` — there is one editorial pipeline.
 
 ### HubSpot: form GUID setup
 
-_TODO (Phase 6): how to create each HubSpot form, find its GUID, map contact
-properties (including the industry dropdown and `resource_slug`), and where to
-set the env vars._
+Forms are custom-built and post straight to the HubSpot Forms Submission API
+v3 from the browser (`src/lib/hubspot.ts`) — no HubSpot form widget is embedded,
+so the site keeps its own markup and styling. The portal ID and form GUIDs are
+not secrets: they are what the public submission endpoint uses to identify the
+form, which is why they ship as `PUBLIC_` variables.
+
+**1. Portal ID.** In HubSpot, *Settings → Account Management → Account
+Information*, or read it from the number in any HubSpot URL. Set it as
+`PUBLIC_HUBSPOT_PORTAL_ID`.
+
+**2. Create the custom contact properties** the forms write to (*Settings →
+Data Management → Properties → Create property*, object type Contact):
+
+| Property (internal name) | Type | Used by |
+|---|---|---|
+| `subject` | Single-line text | Contact form |
+| `resource_slug` | Single-line text | Resource download form |
+
+`industry` is a HubSpot default dropdown property — edit its options so they
+include the five values the contact form offers exactly as written: Healthcare,
+Government, Shipping and Logistics, Non-governmental Organizations, Education.
+A value the property does not know is rejected and the whole submission fails.
+
+**3. Create one form per flow** (*Marketing → Forms → Create form → Embedded
+form*). The form's own layout does not matter — only its fields, because the
+site renders its own UI — but every property the site sends must exist as a
+field on the form, or HubSpot rejects the submission.
+
+| Form | Env var | Fields to add |
+|---|---|---|
+| Contact | `PUBLIC_HUBSPOT_FORM_GUID_CONTACT` | `firstname`, `lastname`, `email`, `company`, `phone`, `industry`, `subject`, `message` |
+| Resource download | `PUBLIC_HUBSPOT_FORM_GUID_RESOURCE` | `firstname`, `lastname`, `email`, `company`, `resource_slug` |
+| Consultation request | `PUBLIC_HUBSPOT_FORM_GUID_CONSULT` | wired in Phase 7 |
+
+The single visible "Your name" field is split on the first space into
+`firstname` / `lastname` (`splitName()` in `src/lib/hubspot.ts`) — one field is
+friendlier to fill, and HubSpot wants the two apart. "Your organization" maps
+to HubSpot's default `company` property.
+
+**4. Find each GUID.** Publish the form, then take the UUID from its editor
+URL (`.../forms/<portalId>/editor/<formGuid>/edit`) or from the *Embed code*
+dialog's `formId`. Set the three env vars in the DO app settings for **both**
+the production and staging apps, and in your local `.env`.
+
+**5. Verify.** Submit each form on staging and confirm the contact appears in
+HubSpot with every property populated. If a submission fails, the browser
+console carries HubSpot's own rejection message, which names the offending
+field — the usual cause is a missing custom property or an `industry` option
+that does not match.
+
+**Tracking association.** The tracker sets a `hubspotutk` cookie, and the site
+passes it back as `context.hutk`, which is what attaches a submission to that
+visitor's page-view history. The tracker only loads after the visitor accepts
+cookies (`src/components/ConsentBanner.astro`), so a visitor who declined still
+becomes a contact, just without the browsing timeline. This is intended.
+
+**If the variables are unset at build time**, the submission code is stripped
+as dead code and the forms show their error state (with the email fallback) on
+every attempt. There is no runtime warning beyond a console message, so treat a
+missing variable as a broken build — check the console on staging after any
+change to the app spec.
 
 ### Adding a resource PDF
 
-_TODO (Phase 6): drop the PDF in `public/downloads/` with a slug+hash filename,
-add the resource card entry, redeploy._
+Resource cards are the `featuredResources` array at the top of
+`src/pages/resources.astro`. Each card opens the gated form; on success the
+visitor gets the download immediately.
+
+1. Name the file `<slug>-<short hash>.pdf` — e.g.
+   `rml-theory-of-change-worksheet-7f3a91.pdf`. Files in `public/` are served
+   as-is and are technically public; the hash keeps the URL from being
+   guessable off the card. Generate one with
+   `openssl rand -hex 3`.
+2. Drop it in `public/downloads/`.
+3. Set that resource's `file` to `/downloads/<filename>` in the
+   `featuredResources` array.
+4. Commit and deploy — no other change is needed.
+
+A resource whose `file` is `null` still captures the lead, but the card reads
+"Sent by a consultant" and the confirmation promises a follow-up within one
+business day instead of revealing a download. That is the correct state for a
+toolkit that has not been cleared for publication yet — never point `file` at a
+file that is not committed, or the download 404s after the visitor has already
+handed over their details.
+
+There is no automated email delivery: the HubSpot free tier has no workflow
+automation, so the on-page reveal (or a consultant sending the file) is the
+whole delivery mechanism.
 
 ### Changing the consultation payment link
 
