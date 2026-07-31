@@ -1,6 +1,6 @@
 # DigitalOcean Functions project — GitHub OAuth proxy for Decap CMS.
 # Deploy:  doctl serverless deploy functions   (from the repo root)
-# Values for ${...} come from functions/.env (never committed — see
+# Values for environment variables come from functions/.env (never committed — see
 # functions/.env.example).
 packages:
   - name: auth
