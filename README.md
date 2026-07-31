@@ -181,7 +181,42 @@ field on the form, or HubSpot rejects the submission.
 |---|---|---|
 | Contact | `PUBLIC_HUBSPOT_FORM_GUID_CONTACT` | `firstname`, `lastname`, `email`, `company`, `phone`, `industry`, `subject`, `message` |
 | Resource download | `PUBLIC_HUBSPOT_FORM_GUID_RESOURCE` | `firstname`, `lastname`, `email`, `company`, `resource_slug` |
-| Consultation request | `PUBLIC_HUBSPOT_FORM_GUID_CONSULT` | wired in Phase 7 |
+| Consultation request | `PUBLIC_HUBSPOT_FORM_GUID_CONSULT` | `firstname`, `lastname`, `email`, `company`, `phone`, `session_focus`, `payment_method` |
+
+The consultation form needs two more custom Contact properties, both **single-line
+text**: `session_focus` and `payment_method`. Text rather than dropdown on
+purpose — a dropdown is validated against its internal option values and a
+mismatch rejects the whole submission, so free text removes a class of silent
+lead loss. `payment_method` is always sent as `Bank transfer/invoice`; the
+online-payment path leaves the site entirely, so it never reaches this form.
+
+**Two form settings that silently break API submissions.** Both cost real
+debugging time on the contact and resource forms, so check them on every form
+you create:
+
+1. **CAPTCHA must be off.** A form with bot protection enabled returns
+   `FORM_HAS_RECAPTCHA_ENABLED` and refuses every API submission. HubSpot's
+   CAPTCHA only works with their embedded widget, which this site does not use.
+   The honeypot field on each form is the spam defence.
+2. **Use the Contact property `company`, not the Company object's `name`.**
+   Searching "company name" in the form editor offers both. Picking the Company
+   one (object `0-2`) makes every submission fail with
+   `Error in 'fields.0-2/name'. Required field '0-2/name' is missing`, because
+   the site sends organization as a Contact property (object `0-1`).
+
+To debug a failing form without touching code, POST the payload straight at the
+API and read the JSON error, which names the offending field:
+
+```sh
+curl -s -X POST -H "Content-Type: application/json" \
+  -d @payload.json \
+  "https://api.hsforms.com/submissions/v3/integration/submit/<portalId>/<formGuid>"
+```
+
+A rejected submission records nothing in HubSpot — which is why failed attempts
+never appear under the form's Submissions tab. A **successful** one creates a
+real contact, and HubSpot does not reject a malformed email address, so use an
+obviously disposable address and delete the contact afterwards.
 
 The single visible "Your name" field is split on the first space into
 `firstname` / `lastname` (`splitName()` in `src/lib/hubspot.ts`) — one field is
@@ -240,8 +275,26 @@ whole delivery mechanism.
 
 ### Changing the consultation payment link
 
-_TODO (Phase 7): update `PUBLIC_CONSULTATION_PAYMENT_URL` in the DO app settings
-and redeploy — no code change required._
+`/consultations` offers two payment paths (BRIEF.md §6), deliberately of equal
+weight — institutional clients usually cannot pay by card at all:
+
+1. **Pay online** — a button to `PUBLIC_CONSULTATION_PAYMENT_URL`.
+2. **Bank transfer / invoice** — the on-page request form at `#request-invoice`,
+   posting to HubSpot. Always available.
+
+To set or change the online payment link, edit `PUBLIC_CONSULTATION_PAYMENT_URL`
+in `/var/www/resultsmatrix/.env` on the droplet and rebuild — no code change
+required. Leave it unset or `#` and path 1 renders as "Online payment
+integration coming soon" while path 2 keeps working.
+
+Two rules that are not negotiable, both from the brief:
+
+- **Banking details never appear on the site.** They go out with the invoice by
+  email, after a request comes through the form.
+- **The scheduling link is never rendered publicly.** It is sent to the payer
+  once payment is confirmed. There is a marked `TODO` in
+  `src/pages/consultations.astro` where a future payment-webhook function would
+  mint a one-time booking link; that integration is explicitly out of scope.
 
 ### DNS cutover checklist (from old WordPress droplet)
 

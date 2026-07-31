@@ -10,8 +10,8 @@ backend:
   name: github
   repo: results-matrix/rml-website
   branch: main
-  base_url: https://REPLACE_ME_FUNCTION_ORIGIN # e.g. https://faas-nyc1-abc123.doserverless.co
-  auth_endpoint: REPLACE_ME_FUNCTION_PATH # e.g. /api/v1/web/fn-<namespace>/auth/oauth
+  base_url: https://faas-nyc1-2ef2e6cc.doserverless.co
+  auth_endpoint: /api/v1/web/fn-00112a9e-3601-410f-afcc-4e65dbb69770/auth/oauth
   commit_messages:
     create: 'content: create {{collection}} "{{slug}}"'
     update: 'content: update {{collection}} "{{slug}}"'
