@@ -8,7 +8,7 @@
 
 backend:
   name: github
-  repo: results-matrix/rml-website
+  repo: resultsmatrixtools/rml-website
   branch: main
   base_url: https://faas-nyc1-2ef2e6cc.doserverless.co
   auth_endpoint: /api/v1/web/fn-00112a9e-3601-410f-afcc-4e65dbb69770/auth/oauth

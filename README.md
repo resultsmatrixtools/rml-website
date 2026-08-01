@@ -100,7 +100,7 @@ endpoint: put its origin in `base_url` and its path in `auth_endpoint` in
 
 **3. Roles — writer and reviewer** (repo settings, once):
 
-- Add both people as collaborators on `results-matrix/rml-website` with
+- Add both people as collaborators on `resultsmatrixtools/rml-website` with
   **Write** access (the CMS needs it to create content branches for both).
 - Protect the `main` branch: Settings → Branches → add a ruleset/protection
   rule on `main` requiring **1 approving review** before merging and
