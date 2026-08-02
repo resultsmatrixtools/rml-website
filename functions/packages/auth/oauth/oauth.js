@@ -83,9 +83,9 @@ function handshakePage(message, allowedDomains) {
 }
 
 async function main(args) {
-  const clientId = args.GITHUB_CLIENT_ID;
-  const clientSecret = args.GITHUB_CLIENT_SECRET;
-  const allowedDomains = (args.ALLOWED_DOMAINS || '')
+  const clientId = args.GITHUB_CLIENT_ID || process.env.GITHUB_CLIENT_ID;
+  const clientSecret = args.GITHUB_CLIENT_SECRET || process.env.GITHUB_CLIENT_SECRET;
+  const allowedDomains = (args.ALLOWED_DOMAINS || process.env.ALLOWED_DOMAINS || '')
     .split(',')
     .map((entry) => entry.trim())
     .filter(Boolean);

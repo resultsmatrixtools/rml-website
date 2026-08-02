@@ -8,6 +8,10 @@ packages:
       - name: oauth
         runtime: nodejs:18
         web: true
+        parameters:
+          GITHUB_CLIENT_ID: '${GITHUB_CLIENT_ID}'
+          GITHUB_CLIENT_SECRET: '${GITHUB_CLIENT_SECRET}'
+          ALLOWED_DOMAINS: '${ALLOWED_DOMAINS}'
         environment:
           GITHUB_CLIENT_ID: '${GITHUB_CLIENT_ID}'
           GITHUB_CLIENT_SECRET: '${GITHUB_CLIENT_SECRET}'
