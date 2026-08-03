@@ -8,6 +8,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import CtaBand from '../components/CtaBand.astro';
 import MatrixMotif from '../components/MatrixMotif.astro';
 import FactsStrip from '../components/FactsStrip.astro';
+import { organizationSchema, webSiteSchema } from '../lib/schema';
+
+// Shared by the meta description and the Organization node so search results
+// and structured data never drift apart.
+const homeDescription =
+  'Strategy and advisory, research and data analytics, and monitoring, evaluation and learning for governments and development organizations across the Caribbean.';
 
 // How we work — a true sequence, so the numbered/glyph treatment is earned.
 // The mini-matrix glyph fills one cell per step along the logo's own ramp;
@@ -50,22 +56,22 @@ const audiences = [
 
 const areas = [
   {
-    href: '/services/strategy-advisory',
+    href: '/services/strategy-advisory/',
     title: 'Strategy & Advisory',
     body: 'We help organizations chart their course and build the systems needed to achieve lasting impact. Our strategic planning services combine rigorous analysis with participatory approaches to create actionable roadmaps aligned with national, regional, and international development frameworks.',
   },
   {
-    href: '/services/research-analytics',
+    href: '/services/research-analytics/',
     title: 'Research and Data Analytics',
     body: 'We conduct rigorous research that generates actionable insights for development decision-making. Our research designs balance methodological rigor with practical feasibility, ensuring findings are both credible and useful.',
   },
   {
-    href: '/services/mel',
+    href: '/services/mel/',
     title: 'Monitoring, Evaluation, and Learning (MEL)',
     body: 'Strong M&E starts with solid frameworks. We design comprehensive monitoring and evaluation systems that link strategic objectives to measurable indicators, ensuring you can track progress and demonstrate results.',
   },
   {
-    href: '/services/ict-systems',
+    href: '/services/ict-systems/',
     title: 'ICT Consulting, Project Management & Systems Development',
     body: 'RML designs, builds, and manages information systems for organizations that cannot afford downtime, data loss, or a system nobody ends up using. The systems we build generate the data our M&E and research practices analyze.',
   },
@@ -74,7 +80,8 @@ const areas = [
 
 <BaseLayout
   title="Results Matrix Limited — Caribbean Development Solutions"
-  description="Strategy & Advisory, Research & Data Analytics, and Monitoring, Evaluation & Learning services for governments and development organizations across the Caribbean."
+  description={homeDescription}
+  schema={[organizationSchema(Astro.site, homeDescription), webSiteSchema(Astro.site)]}
 >
   <!-- Hero — asymmetric: headline and CTAs left, the Results Matrix motif
        right (desktop only). Primary CTA is the free discovery session, the
@@ -93,13 +100,13 @@ const areas = [
           </p>
           <div class="hero-item mt-9 flex flex-col gap-3 sm:flex-row" style="--hero-delay: 180ms">
             <a
-              href="/contact"
+              href="/contact/"
               class="press rounded bg-white px-6 py-3 text-center text-sm font-semibold text-brand-900 hover:bg-brand-100"
             >
               Book a free discovery session
             </a>
             <a
-              href="/services"
+              href="/services/"
               class="press rounded border border-brand-400 px-6 py-3 text-center text-sm font-semibold text-white hover:bg-brand-800"
             >
               Explore our services
@@ -125,7 +132,7 @@ const areas = [
           Four practice areas, one connected capability
         </h2>
       </div>
-      <a href="/services" class="text-sm font-semibold text-accent-700 hover:text-accent-800 flex items-center gap-1 group" data-reveal>
+      <a href="/services/" class="text-sm font-semibold text-accent-700 hover:text-accent-800 flex items-center gap-1 group" data-reveal>
         View all practice details <span class="transition-transform duration-150 group-hover:translate-x-1">→</span>
       </a>
     </div>
@@ -242,9 +249,9 @@ const areas = [
   <CtaBand
     heading="Ready to put evidence to work?"
     text="Start with a free discovery session, or book a paid advisory session for focused M&E help."
-    primaryHref="/contact"
+    primaryHref="/contact/"
     primaryLabel="Book a discovery session"
-    secondaryHref="/consultations"
+    secondaryHref="/consultations/"
     secondaryLabel="Advisory sessions"
   />
 </BaseLayout>

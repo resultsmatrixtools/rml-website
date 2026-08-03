@@ -5,6 +5,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
 import SubService from '../../components/SubService.astro';
 import CtaBand from '../../components/CtaBand.astro';
+import { serviceSchema, breadcrumbSchema } from '../../lib/schema';
 
 const blocks = [
   {
@@ -170,11 +171,25 @@ const blocks = [
     ],
   },
 ];
+
+// Shared by the meta description and the Service structured-data node,
+// so the search snippet and the knowledge graph never drift apart.
+const serviceName = "Monitoring, Evaluation, and Learning";
+const servicePath = "/services/mel/";
+const description =
+  "M&E framework design, programme evaluation, disaster response M&E, capacity building, and real-time monitoring systems for Caribbean SIDS contexts.";
 ---
 
 <BaseLayout
   title="Monitoring, Evaluation & Learning — Results Matrix Limited"
-  description="M&E framework design, programme evaluation, disaster response M&E, capacity building, and real-time monitoring systems for Caribbean SIDS contexts."
+  description={description}
+  schema={[
+    serviceSchema(Astro.site, { name: serviceName, description, path: servicePath }),
+    breadcrumbSchema(Astro.site, [
+      { name: 'Services', path: '/services/' },
+      { name: serviceName, path: servicePath },
+    ]),
+  ]}
 >
   <PageHero
     title="Monitoring, Evaluation, and Learning (MEL)"
@@ -190,9 +205,9 @@ const blocks = [
   <CtaBand
     heading="Strengthen your M&E systems"
     text="Schedule a free discovery session to discuss frameworks, evaluations, training, or monitoring systems for your programme."
-    primaryHref="/contact"
+    primaryHref="/contact/"
     primaryLabel="Get in touch"
-    secondaryHref="/consultations"
+    secondaryHref="/consultations/"
     secondaryLabel="Book an advisory session"
   />
 </BaseLayout>

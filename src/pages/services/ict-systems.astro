@@ -7,6 +7,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
 import SubService from '../../components/SubService.astro';
 import CtaBand from '../../components/CtaBand.astro';
+import { serviceSchema, breadcrumbSchema } from '../../lib/schema';
 
 const blocks = [
   {
@@ -45,11 +46,25 @@ const blocks = [
       'We document the process, not just the data flow — approval controls, exception handling, and monitoring responsibilities are designed in from the start, not discovered after go-live.',
   },
 ];
+
+// Shared by the meta description and the Service structured-data node,
+// so the search snippet and the knowledge graph never drift apart.
+const serviceName = "ICT & Systems Development";
+const servicePath = "/services/ict-systems/";
+const description =
+  "ICT strategy, custom systems development, health information systems, project management, and systems integration for Caribbean institutions.";
 ---
 
 <BaseLayout
-  title="ICT Consulting, Project Management & Systems Development — Results Matrix Limited"
-  description="ICT strategy, custom systems development, health information systems, project management, and systems integration for Caribbean institutions."
+  title="ICT & Systems Development — Results Matrix Limited"
+  description={description}
+  schema={[
+    serviceSchema(Astro.site, { name: serviceName, description, path: servicePath }),
+    breadcrumbSchema(Astro.site, [
+      { name: 'Services', path: '/services/' },
+      { name: serviceName, path: servicePath },
+    ]),
+  ]}
 >
   <PageHero
     title="ICT Consulting, Project Management & Systems Development"
@@ -65,9 +80,9 @@ const blocks = [
   <CtaBand
     heading="Have a systems challenge?"
     text="Schedule a free discovery session to talk through your ICT strategy, build, or integration needs."
-    primaryHref="/contact"
+    primaryHref="/contact/"
     primaryLabel="Get in touch"
-    secondaryHref="/services"
+    secondaryHref="/services/"
     secondaryLabel="All services"
   />
 </BaseLayout>

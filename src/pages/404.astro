@@ -1,0 +1,78 @@
+---
+// 404 (BRIEF.md §8). The old WordPress site's URL structure differs from
+// this one, so inbound links from search results and third-party citations
+// will land here after cutover — it routes to the equivalent destinations
+// rather than apologising and stopping.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+
+const destinations = [
+  {
+    href: '/services/',
+    label: 'Services',
+    text: 'Strategy & Advisory, Research & Data Analytics, MEL, and ICT & Systems Development.',
+  },
+  {
+    href: '/work/',
+    label: 'Work',
+    text: 'How engagements run, and the kinds of problems we are brought in to solve.',
+  },
+  {
+    href: '/blog/',
+    label: 'Insights',
+    text: 'Writing on evaluation practice, data, and development policy in the Caribbean.',
+  },
+  {
+    href: '/resources/',
+    label: 'Resources',
+    text: 'Frameworks, guides, and reference material available to download.',
+  },
+];
+---
+
+<BaseLayout
+  title="Page not found — Results Matrix Limited"
+  description="That page could not be found. Browse our practice areas, insights, and resources, or get in touch."
+  noindex
+>
+  <PageHero
+    title="That page isn't here"
+    lede="The address may have changed, or the link that brought you here may be out of date. These are the most likely places to find what you were after."
+  />
+
+  <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
+    <h2 class="sr-only">Suggested destinations</h2>
+    <ul class="grid gap-px border border-slate-200 bg-slate-200 sm:grid-cols-2">
+      {
+        destinations.map((item) => (
+          <li class="bg-white">
+            <a href={item.href} class="group block h-full px-6 py-7 transition-colors hover:bg-slate-50">
+              <span class="text-lg font-semibold text-brand-900 group-hover:text-accent-700">
+                {item.label}
+              </span>
+              <span class="mt-2 block text-sm leading-relaxed text-slate-600">{item.text}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="mt-8 text-sm text-slate-600">
+      Looking for something specific?{' '}
+      <a href="/contact/" class="font-semibold text-accent-700 underline underline-offset-2 hover:text-accent-800">
+        Tell us what you need
+      </a>{' '}
+      and we will point you to it.
+    </p>
+  </section>
+
+  <CtaBand
+    heading="Still the right firm for the job"
+    text="A free discovery session is the quickest way to find out whether we can help."
+    primaryHref="/consultations/"
+    primaryLabel="Book a discovery session"
+    secondaryHref="/contact/"
+    secondaryLabel="Contact us"
+  />
+</BaseLayout>

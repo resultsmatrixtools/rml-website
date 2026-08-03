@@ -50,7 +50,7 @@ const sampleEngagements = [
 
 <BaseLayout
   title="Selected Engagements & Case Summaries — Results Matrix Limited"
-  description="Selected consulting engagements across Strategy & Advisory, Research, MEL, and ICT Systems for governments and international development partners in the Caribbean."
+  description="Selected engagements across strategy, research, MEL, and ICT systems for governments and international development partners in the Caribbean."
 >
   <PageHero
     title="Selected Engagements"
@@ -58,6 +58,10 @@ const sampleEngagements = [
   />
 
   <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
+    <!-- The filter bar and card grid are one section; naming it keeps the
+         card headings at h3 without skipping a level from the page h1. -->
+    <h2 class="sr-only">Engagements</h2>
+
     <!-- Category Filter Bar (Visual) -->
     <div class="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-6">
       <span class="mr-2 text-xs font-bold uppercase tracking-wider text-slate-400">Filter Practice:</span>
@@ -119,7 +123,7 @@ const sampleEngagements = [
   <CtaBand
     heading="Want to know if we've done work like yours?"
     text="Ask us directly — we’ll speak to relevant experience in a discovery session."
-    primaryHref="/contact"
+    primaryHref="/contact/"
     primaryLabel="Get in touch"
   />
 </BaseLayout>

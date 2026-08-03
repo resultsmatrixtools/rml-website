@@ -1,10 +1,11 @@
 ---
 // Base layout: every page renders through this so the header and footer
-// appear on every page at every viewport (acceptance-critical, BRIEF.md §8).
-// Full SEO treatment (OG/Twitter cards, JSON-LD, canonical) lands in Phase 8.
+// appear on every page at every viewport (acceptance-critical, BRIEF.md §8),
+// and so every page carries the same canonical/social/structured-data head.
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ConsentBanner from '../components/ConsentBanner.astro';
+import { IS_PRODUCTION, SITE_NAME } from '../lib/site';
 import '../styles/global.css';
 
 interface Props {
@@ -12,11 +13,52 @@ interface Props {
   description: string;
   /** Absolute or root-relative path to the social-share image. */
   ogImage?: string;
+  /** Describes the share image for screen readers on social platforms. */
+  ogImageAlt?: string;
+  /** Intrinsic size of the share image; both must be set or neither is emitted. */
+  ogImageWidth?: number;
+  ogImageHeight?: number;
   ogType?: 'website' | 'article';
+  /** Article timestamps and byline, for og:article tags on blog posts. */
+  article?: {
+    publishedTime: Date;
+    modifiedTime?: Date;
+    author: string;
+    tags?: string[];
+  };
+  /** Keep this page out of search indexes regardless of environment. */
+  noindex?: boolean;
+  /** JSON-LD graph node(s) for this page, merged into the site-wide graph. */
+  schema?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const { title, description, ogImage = '/og-default.png', ogType = 'website' } = Astro.props;
+const {
+  title,
+  description,
+  ogImage = '/og-default.png',
+  ogImageAlt = 'Results Matrix Limited',
+  ogImageWidth = 1200,
+  ogImageHeight = 630,
+  ogType = 'website',
+  article,
+  noindex = false,
+  schema,
+} = Astro.props;
+
 const ogImageUrl = new URL(ogImage, Astro.site);
+
+// Canonical always points at the production-shaped, trailing-slash URL for
+// this page — never at the staging origin, and never carrying query strings
+// or the fragment the visitor happened to arrive with.
+const canonicalUrl = new URL(
+  Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`,
+  Astro.site
+);
+
+// Staging must never be indexed: its whole purpose is showing draft posts.
+const isIndexable = IS_PRODUCTION && !noindex;
+
+const jsonLd = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
 ---
 
 <!doctype html>
@@ -26,6 +68,10 @@ const ogImageUrl = new URL(ogImage, Astro.site);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link
       rel="preload"
       href="/fonts/montserrat-latin-wght.woff2"
@@ -45,11 +91,46 @@ const ogImageUrl = new URL(ogImage, Astro.site);
     <script is:inline>document.documentElement.classList.add('js');</script>
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta name="robots" content={isIndexable ? 'index, follow' : 'noindex, nofollow'} />
+
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content={String(ogImageWidth)} />
+    <meta property="og:image:height" content={String(ogImageHeight)} />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    {
+      article && (
+        <>
+          <meta property="article:published_time" content={article.publishedTime.toISOString()} />
+          {article.modifiedTime && (
+            <meta property="article:modified_time" content={article.modifiedTime.toISOString()} />
+          )}
+          <meta property="article:author" content={article.author} />
+          {article.tags?.map((tag) => <meta property="article:tag" content={tag} />)}
+        </>
+      )
+    }
+
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
+
+    <link rel="alternate" type="application/rss+xml" title="Results Matrix — Blog" href="/rss.xml" />
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+
+    {
+      jsonLd.map((node) => (
+        <script type="application/ld+json" is:inline set:html={JSON.stringify(node)} />
+      ))
+    }
   </head>
   <body class="flex min-h-screen flex-col">
     <a

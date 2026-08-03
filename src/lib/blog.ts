@@ -1,14 +1,12 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { IS_PRODUCTION } from './site';
 
 /**
  * Draft visibility (BRIEF.md §4): draft posts are excluded from the
- * production build but render on staging. Staging and production are
- * the same `astro build`; they differ by PUBLIC_SITE_URL, which the
- * DO app specs set per environment. Anything that isn't the production
- * domain (staging app URL, local dev) shows drafts.
+ * production build but render on staging and locally. The production
+ * test itself lives in `lib/site.ts`.
  */
-export const SHOW_DRAFTS =
-  (import.meta.env.PUBLIC_SITE_URL ?? '').replace(/\/+$/, '') !== 'https://resultsmatrix.com';
+export const SHOW_DRAFTS = !IS_PRODUCTION;
 
 export type BlogPost = CollectionEntry<'blog'>;
 

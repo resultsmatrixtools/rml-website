@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-31 -30 490 490" width="512" height="512" role="img" aria-label="Results Matrix Limited">
+  <defs>
+    <linearGradient id="rmlGrid" x1="438" y1="60" x2="0" y2="380" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a9d95e"/>
+      <stop offset="0.14" stop-color="#63b478"/>
+      <stop offset="0.30" stop-color="#2b9190"/>
+      <stop offset="0.48" stop-color="#1e6ba6"/>
+      <stop offset="0.68" stop-color="#114e94"/>
+      <stop offset="0.85" stop-color="#0c3f7e"/>
+      <stop offset="1" stop-color="#0a3670"/>
+    </linearGradient>
+    <path id="rmlSwoosh" d="M -10 366 C 30 352 110 306 170 268 C 215 236 253 214 277 190 L 245 130 L 414 87 L 352 230 L 307 217 C 288 244 230 296 162 324 C 110 344 40 360 -10 366 Z"/>
+    <path id="rmlBlade" d="M -13 400 C 45 394 125 378 198 352 C 232 340 252 332 264 326 C 235 352 165 376 95 390 C 55 397 12 400 -13 400 Z"/>
+  </defs>
+    <g fill="url(#rmlGrid)">
+      <rect x="0" y="0" width="96" height="96" rx="14"/>
+      <rect x="114" y="0" width="96" height="96" rx="14"/>
+      <rect x="228" y="0" width="96" height="96" rx="14"/>
+      <path d="M 342 16 Q 342 2 356 1 L 442 -6 Q 455 -7 454 4 L 450 78 Q 449 92 435 93 L 356 96 Q 342 96 342 82 Z"/>
+      <rect x="0" y="114" width="96" height="96" rx="14"/>
+      <rect x="114" y="114" width="96" height="96" rx="14"/>
+      <rect x="228" y="114" width="96" height="96" rx="14"/>
+      <rect x="342" y="114" width="96" height="96" rx="14"/>
+      <rect x="0" y="228" width="96" height="96" rx="14"/>
+      <rect x="114" y="228" width="96" height="96" rx="14"/>
+      <rect x="228" y="228" width="96" height="96" rx="14"/>
+      <rect x="342" y="228" width="96" height="96" rx="14"/>
+      <rect x="0" y="342" width="96" height="96" rx="14"/>
+      <rect x="114" y="342" width="96" height="96" rx="14"/>
+      <rect x="228" y="342" width="96" height="96" rx="14"/>
+      <rect x="342" y="342" width="96" height="96" rx="14"/>
+    </g>
+    <g>
+      <use href="#rmlSwoosh" fill="#ffffff" stroke="#ffffff" stroke-width="24" stroke-linejoin="round"/>
+      <use href="#rmlBlade" fill="#ffffff" stroke="#ffffff" stroke-width="24" stroke-linejoin="round"/>
+      <use href="#rmlSwoosh" fill="#0057a8"/>
+      <use href="#rmlBlade" fill="#0057a8"/>
+    </g>
+</svg>

@@ -5,6 +5,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
 import SubService from '../../components/SubService.astro';
 import CtaBand from '../../components/CtaBand.astro';
+import { serviceSchema, breadcrumbSchema } from '../../lib/schema';
 
 const blocks = [
   {
@@ -89,11 +90,25 @@ const blocks = [
     ],
   },
 ];
+
+// Shared by the meta description and the Service structured-data node,
+// so the search snippet and the knowledge graph never drift apart.
+const serviceName = "Research & Data Analytics";
+const servicePath = "/services/research-analytics/";
+const description =
+  "Applied development research, data analysis and visualization, and knowledge management systems for evidence-based decision-making in the Caribbean.";
 ---
 
 <BaseLayout
   title="Research & Data Analytics — Results Matrix Limited"
-  description="Applied development research, data analysis and visualization, and knowledge management systems for evidence-based decision-making in the Caribbean."
+  description={description}
+  schema={[
+    serviceSchema(Astro.site, { name: serviceName, description, path: servicePath }),
+    breadcrumbSchema(Astro.site, [
+      { name: 'Services', path: '/services/' },
+      { name: serviceName, path: servicePath },
+    ]),
+  ]}
 >
   <PageHero
     title="Research and Data Analytics"
@@ -109,9 +124,9 @@ const blocks = [
   <CtaBand
     heading="Have a research question?"
     text="Schedule a free discovery session to talk through your research, analysis, or data-systems needs."
-    primaryHref="/contact"
+    primaryHref="/contact/"
     primaryLabel="Get in touch"
-    secondaryHref="/services"
+    secondaryHref="/services/"
     secondaryLabel="All services"
   />
 </BaseLayout>
