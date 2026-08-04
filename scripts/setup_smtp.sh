@@ -42,6 +42,8 @@ account default : gmail
 EOF
 
 chmod 600 /etc/msmtprc
+touch /var/log/msmtp.log
+chmod 666 /var/log/msmtp.log
 
 echo "--> Testing SMTP configuration..."
 TEST_REPORT="/tmp/smtp_test.txt"
