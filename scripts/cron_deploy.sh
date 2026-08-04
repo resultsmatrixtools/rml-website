@@ -34,8 +34,9 @@ echo "Local commit:  $LOCAL_HASH"
 echo "Remote commit: $REMOTE_HASH"
 echo "----------------------------------------------------------------------"
 
-# Pull latest code
-git pull origin main
+# Reset working tree to match remote main cleanly
+echo "--> Syncing repository to origin/main..."
+git reset --hard origin/main
 
 # Install dependencies if package.json or package-lock.json changed
 echo "--> Checking dependencies..."
