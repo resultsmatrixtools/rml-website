@@ -6,8 +6,9 @@
 
 set -euo pipefail
 
-# Configuration — Set your destination email address below
-ALERT_EMAIL="${1:-info@resultsmatrix.com}"
+# Configuration — Destination email addresses for security scan reports
+DEFAULT_EMAILS="resultsmatrix@gmail.com, albert.beckford@gmail.com, resultsmatrixtools@gmail.com"
+ALERT_EMAIL="${1:-$DEFAULT_EMAILS}"
 REPORT_FILE="/tmp/daily_security_report_$(date +%F).txt"
 HOSTNAME=$(hostname -f 2>/dev/null || hostname)
 

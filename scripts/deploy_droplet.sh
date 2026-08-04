@@ -15,9 +15,9 @@ echo "=========================================="
 echo " Starting Self-Hosted Nginx Setup (Option B)"
 echo "=========================================="
 
-# 1. Install System Dependencies & Node 22 (LTS) if missing
-echo "--> Installing Nginx, Certbot & Node.js 22..."
-apt-get update && apt-get install -y curl git nginx certbot python3-certbot-nginx
+# 1. Install System Dependencies, Security Scanners & Node 22 (LTS) if missing
+echo "--> Installing Nginx, Certbot, ClamAV, rkhunter, mailutils & Node.js 22..."
+DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y curl git nginx certbot python3-certbot-nginx clamav rkhunter mailutils
 
 if ! command -v node &> /dev/null || [ $(node -v | cut -d'.' -f1 | tr -d 'v') -lt 20 ]; then
     echo "--> Installing Node.js 22 LTS..."
@@ -88,13 +88,16 @@ echo "--> Testing Nginx configuration..."
 nginx -t
 systemctl reload nginx
 
-# 5. Make deployment scripts executable & configure cron job (every 5 mins)
-chmod +x $SITE_DIR/scripts/cron_deploy.sh $SITE_DIR/scripts/deploy_droplet.sh
+# 5. Make deployment scripts executable & configure cron jobs
+chmod +x $SITE_DIR/scripts/*.sh
 
-CRON_JOB="*/5 * * * * flock -n /tmp/rml-deploy.lock $SITE_DIR/scripts/cron_deploy.sh >> /var/log/rml-deploy.log 2>&1"
-(crontab -l 2>/dev/null | grep -v "$SITE_DIR/scripts/cron_deploy.sh"; echo "$CRON_JOB") | crontab -
+CRON_DEPLOY="*/5 * * * * flock -n /tmp/rml-deploy.lock $SITE_DIR/scripts/cron_deploy.sh >> /var/log/rml-deploy.log 2>&1"
+CRON_SECURITY="0 2 * * * flock -n /tmp/rml-security.lock $SITE_DIR/scripts/daily_security_scan.sh >> /var/log/rml-security-scan.log 2>&1"
+
+(crontab -l 2>/dev/null | grep -v "$SITE_DIR/scripts/cron_deploy.sh" | grep -v "$SITE_DIR/scripts/daily_security_scan.sh"; echo "$CRON_DEPLOY"; echo "$CRON_SECURITY") | crontab -
 
 echo "--> Configured auto-deployment cron job (polls every 5 minutes)."
+echo "--> Configured daily security scan cron job (runs nightly at 2:00 AM)."
 
 echo "=========================================="
 echo " Nginx & Auto-Deploy Setup Complete!     "
