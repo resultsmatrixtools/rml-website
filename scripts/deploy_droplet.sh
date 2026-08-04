@@ -46,9 +46,10 @@ echo "--> Building production static output (dist/)..."
 npm ci
 npm run build
 
-# 4. Configure Nginx Virtual Host
-echo "--> Configuring Nginx virtual host..."
-cat << EOF > /etc/nginx/sites-available/resultsmatrix
+# 4. Configure Nginx Virtual Host (only if not already created/configured)
+if [ ! -f /etc/nginx/sites-available/resultsmatrix ]; then
+    echo "--> Configuring Nginx virtual host..."
+    cat << EOF > /etc/nginx/sites-available/resultsmatrix
 server {
     listen 80;
     listen [::]:80;
@@ -75,6 +76,9 @@ server {
     error_page 404 /404.html;
 }
 EOF
+else
+    echo "--> Nginx virtual host already exists, skipping overwrite..."
+fi
 
 # Enable site and remove default
 ln -sf /etc/nginx/sites-available/resultsmatrix /etc/nginx/sites-enabled/resultsmatrix
