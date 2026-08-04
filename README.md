@@ -27,8 +27,19 @@ Requires Node 22+.
 | `main` | Production app | `.do/app.yaml` |
 | `staging` | Staging app (draft posts visible) | `.do/app-staging.yaml` |
 
-Both apps auto-deploy on push via DigitalOcean App Platform. Create them with
+Both apps auto-deploy on push via DigitalOcean App Platform (or via self-hosted cron script on DigitalOcean Droplet: `scripts/cron_deploy.sh`). Create them with
 `doctl apps create --spec <file>` or by pasting the spec in the DO dashboard.
+
+### Droplet Self-Hosted Auto-Deploy (Cron)
+
+When hosting on a DigitalOcean Droplet with Nginx, `scripts/cron_deploy.sh` handles automated deployments. It polls `origin/main` every 5 minutes and rebuilds/reloads Nginx only when new commits are detected.
+
+To enable the cron job on your Droplet manually:
+
+```sh
+chmod +x /var/www/resultsmatrix/scripts/cron_deploy.sh
+(crontab -l 2>/dev/null; echo "*/5 * * * * flock -n /tmp/rml-deploy.lock /var/www/resultsmatrix/scripts/cron_deploy.sh >> /var/log/rml-deploy.log 2>&1") | crontab -
+```
 
 ## Environment variables
 

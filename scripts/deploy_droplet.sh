@@ -84,21 +84,16 @@ echo "--> Testing Nginx configuration..."
 nginx -t
 systemctl reload nginx
 
-# 5. Helper deployment script for future updates
-cat << EOF > $SITE_DIR/deploy.sh
-#!/usr/bin/env bash
-set -e
-cd $SITE_DIR
-git pull origin main
-npm ci
-npm run build
-systemctl reload nginx
-echo "✓ Deployment complete!"
-EOF
-chmod +x $SITE_DIR/deploy.sh
+# 5. Make deployment scripts executable & configure cron job (every 5 mins)
+chmod +x $SITE_DIR/scripts/cron_deploy.sh $SITE_DIR/scripts/deploy_droplet.sh
+
+CRON_JOB="*/5 * * * * flock -n /tmp/rml-deploy.lock $SITE_DIR/scripts/cron_deploy.sh >> /var/log/rml-deploy.log 2>&1"
+(crontab -l 2>/dev/null | grep -v "$SITE_DIR/scripts/cron_deploy.sh"; echo "$CRON_JOB") | crontab -
+
+echo "--> Configured auto-deployment cron job (polls every 5 minutes)."
 
 echo "=========================================="
-echo " Nginx Setup Complete!                    "
+echo " Nginx & Auto-Deploy Setup Complete!     "
 echo " Next step: Run Certbot for SSL certificate:"
 echo " certbot --nginx -d $DOMAIN -d $WWW_DOMAIN "
 echo "=========================================="
