@@ -36,7 +36,7 @@ static_sites:
         value: ""
       - key: PUBLIC_CRM_ENDPOINT
         scope: BUILD_TIME
-        value: ""
+        value: "https://fcsbqezsxrpfwwkxfkaw.supabase.co/functions/v1/lead-capture"
       - key: PUBLIC_TURNSTILE_SITE_KEY
         scope: BUILD_TIME
         value: "0x4AAAAAAFLZTgiorvtvAUO_"
