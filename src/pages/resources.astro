@@ -226,6 +226,7 @@ const featuredResources: {
         </p>
 
         <div class="pt-1">
+          <div id="resource-form-turnstile" class="mb-4"></div>
           <button
             id="resource-submit"
             type="submit"
@@ -326,9 +327,11 @@ const featuredResources: {
 
   <script>
     import { splitName, submitForm } from '../lib/hubspot';
+    import { mountTurnstile } from '../lib/turnstile';
 
     const dialog = document.getElementById('resource-dialog') as HTMLDialogElement;
     const form = document.getElementById('resource-form') as HTMLFormElement;
+    void mountTurnstile(document.getElementById('resource-form-turnstile') as HTMLElement);
     const button = document.getElementById('resource-submit') as HTMLButtonElement;
     const heading = document.getElementById('resource-dialog-title') as HTMLElement;
     const slugField = document.getElementById('resource-slug') as HTMLInputElement;

@@ -13,6 +13,8 @@
  * still creates the contact, just without the browsing timeline.
  */
 
+import { crmEnabled, submitLead, type CrmForm } from './crm';
+
 const PORTAL_ID: string = import.meta.env.PUBLIC_HUBSPOT_PORTAL_ID ?? '';
 
 /** One GUID per HubSpot form. Created in HubSpot; see README runbook. */
@@ -43,6 +45,36 @@ function readTrackingCookie(): string | undefined {
  * property on a returning contact.
  */
 export async function submitForm(
+  key: FormKey,
+  values: Record<string, string | undefined>,
+  pageName: string,
+): Promise<SubmitResult> {
+  // When the CRM endpoint is configured it is the system of record; HubSpot is
+  // then only a best-effort second post, and only while the dual-post flag is on.
+  if (crmEnabled) {
+    const crmForm: Record<FormKey, CrmForm> = {
+      contact: 'contact',
+      resource: 'resource',
+      consult: 'consultation',
+    };
+    const { firstname, lastname, company, ...rest } = values;
+    const fields: Record<string, string> = {};
+    const name = [firstname, lastname].filter(Boolean).join(' ');
+    if (name) fields.name = name;
+    if (company) fields.organisation = company;
+    for (const [k, v] of Object.entries(rest)) if (v?.trim()) fields[k] = v.trim();
+
+    const result = await submitLead(crmForm[key], fields);
+    if (result.ok && import.meta.env.PUBLIC_HUBSPOT_DUAL_POST === 'true') {
+      void submitHubspot(key, values, pageName);
+    }
+    return result;
+  }
+
+  return submitHubspot(key, values, pageName);
+}
+
+async function submitHubspot(
   key: FormKey,
   values: Record<string, string | undefined>,
   pageName: string,

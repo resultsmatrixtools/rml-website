@@ -239,6 +239,7 @@ const labelClasses = 'block text-sm font-semibold text-brand-950';
             >
               We could not send your request just now. Please try again, or email us directly at <a href="mailto:info@resultsmatrix.com" class="font-semibold underline underline-offset-2">info@resultsmatrix.com</a>.
             </p>
+            <div id="consult-form-turnstile" class="mb-4"></div>
             <button
               id="consult-submit"
               type="submit"
@@ -270,8 +271,10 @@ const labelClasses = 'block text-sm font-semibold text-brand-950';
 
   <script>
     import { splitName, submitForm } from '../lib/hubspot';
+    import { mountTurnstile } from '../lib/turnstile';
 
     const form = document.getElementById('consult-form') as HTMLFormElement;
+    void mountTurnstile(document.getElementById('consult-form-turnstile') as HTMLElement);
     const button = document.getElementById('consult-submit') as HTMLButtonElement;
     const success = document.getElementById('consult-success') as HTMLElement;
     const error = document.getElementById('consult-error') as HTMLElement;

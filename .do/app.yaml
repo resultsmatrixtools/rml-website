@@ -37,6 +37,15 @@ static_sites:
       - key: PUBLIC_HUBSPOT_FORM_GUID_CONSULT
         scope: BUILD_TIME
         value: ""
+      - key: PUBLIC_CRM_ENDPOINT
+        scope: BUILD_TIME
+        value: ""
+      - key: PUBLIC_TURNSTILE_SITE_KEY
+        scope: BUILD_TIME
+        value: "0x4AAAAAAFLZTgiorvtvAUO_"
+      - key: PUBLIC_HUBSPOT_DUAL_POST
+        scope: BUILD_TIME
+        value: ""
       - key: PUBLIC_CONSULTATION_PAYMENT_URL
         scope: BUILD_TIME
         value: ""
