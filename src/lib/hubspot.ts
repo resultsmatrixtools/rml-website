@@ -24,6 +24,18 @@ const FORM_GUIDS: Record<FormKey, string> = {
   consult: import.meta.env.PUBLIC_HUBSPOT_FORM_GUID_CONSULT ?? '',
 };
 
+/** HubSpot's internal industry option values, as the CRM endpoint's labels. */
+const CRM_INDUSTRY: Record<string, string> = {
+  gov: 'Government',
+  ngo: 'Non-governmental Organizations',
+  healthcare: 'Healthcare',
+  education: 'Education',
+  environment: 'Environment',
+  'private-sector': 'Private Sector',
+  consult: 'Consulting',
+
+};
+
 export type FormKey = 'contact' | 'resource' | 'consult';
 
 /** Contact object type in HubSpot's CRM object taxonomy. */
@@ -63,6 +75,7 @@ export async function submitForm(
     if (name) fields.name = name;
     if (company) fields.organisation = company;
     for (const [k, v] of Object.entries(rest)) if (v?.trim()) fields[k] = v.trim();
+    if (fields.industry) fields.industry = CRM_INDUSTRY[fields.industry] ?? '';
 
     const result = await submitLead(crmForm[key], fields);
     if (result.ok && import.meta.env.PUBLIC_HUBSPOT_DUAL_POST === 'true') {
