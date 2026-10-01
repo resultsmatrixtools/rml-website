@@ -44,6 +44,18 @@ npm ci --prefer-offline --no-audit
 
 # Build static production bundle
 echo "--> Building production static site (dist/)..."
+# Load the build-time PUBLIC_* variables (CRM endpoint, Turnstile site key,
+# HubSpot IDs) from the untracked .env on this server. Only PUBLIC_ lines are
+# exported, so any other secret in that file never reaches the build.
+if [ -f "$SITE_DIR/.env" ]; then
+    set -a
+    # shellcheck disable=SC1090
+    . <(grep -E '^PUBLIC_[A-Z0-9_]+=' "$SITE_DIR/.env")
+    set +a
+else
+    echo "WARNING: $SITE_DIR/.env not found; building without PUBLIC_* variables." >&2
+fi
+
 PUBLIC_SITE_URL="https://resultsmatrix.com" npm run build
 
 # Reload web server
