@@ -1,0 +1,28 @@
+---
+// Unticked marketing opt-in shown on every form. Consent is separate from the
+// enquiry: leaving it unticked never affects the request, and only a ticked box
+// subscribes anyone. The box has no `required` attribute and no default.
+
+interface Props {
+  id: string;
+  class?: string;
+}
+
+const { id, class: className = '' } = Astro.props;
+---
+
+<div class={className}>
+  <label for={id} class="flex items-start gap-3 text-sm leading-relaxed text-slate-700">
+    <input
+      id={id}
+      name="marketing_consent"
+      type="checkbox"
+      class="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 accent-accent-700"
+    />
+    <span>
+      Yes, send me occasional news, resources and event invitations from Results Matrix Limited.
+      You can unsubscribe at any time, and leaving this unticked will not affect your request.
+      See our <a href="/privacy/" class="font-medium text-accent-700 underline underline-offset-2 hover:text-accent-800">privacy policy</a>.
+    </span>
+  </label>
+</div>

@@ -5,6 +5,7 @@
 // (Phase 6). Native constraint validation handles per-field errors; the
 // script owns only submit-time success/failure state.
 import BaseLayout from '../layouts/BaseLayout.astro';
+import MarketingConsent from '../components/MarketingConsent.astro';
 import PageHero from '../components/PageHero.astro';
 
 // Mirrors the HubSpot `industry` dropdown property: the visitor sees `label`,
@@ -89,6 +90,8 @@ const labelClasses = 'block text-sm font-semibold text-brand-950';
             <label for="message" class={labelClasses}>Your message</label>
             <textarea id="message" name="message" rows="5" required placeholder="Briefly summarize your engagement context or objective..." class={inputClasses}></textarea>
           </div>
+
+          <MarketingConsent id="contact-consent" class="sm:col-span-2" />
 
           <!-- Honeypot: hidden from humans, tempting to bots. -->
           <div class="hidden" aria-hidden="true">
@@ -212,6 +215,7 @@ const labelClasses = 'block text-sm font-semibold text-brand-950';
           message: value('message'),
         },
         'Contact — Book a Discovery Session',
+        { marketingConsent: value('marketing_consent') === 'on' },
       );
 
       if (result.ok) {

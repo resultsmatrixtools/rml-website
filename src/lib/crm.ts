@@ -15,6 +15,7 @@ export const crmEnabled = CRM_ENDPOINT !== '';
 export async function submitLead(
   form: CrmForm,
   fields: Record<string, string>,
+  marketingConsent: boolean,
 ): Promise<CrmResult> {
   if (!CRM_ENDPOINT) return { ok: false, reason: 'unconfigured' };
 
@@ -25,7 +26,7 @@ export async function submitLead(
       body: JSON.stringify({
         form,
         fields,
-        marketing_consent: false,
+        marketing_consent: marketingConsent,
         page_url: window.location.href,
         referrer: document.referrer,
         website: '',

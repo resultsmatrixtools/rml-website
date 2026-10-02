@@ -1,6 +1,7 @@
 ---
 // Consultations — Paid Advisory Sessions offer & dual payment path layout (BRIEF.md §6).
 import BaseLayout from '../layouts/BaseLayout.astro';
+import MarketingConsent from '../components/MarketingConsent.astro';
 import PageHero from '../components/PageHero.astro';
 import CtaBand from '../components/CtaBand.astro';
 
@@ -224,6 +225,8 @@ const labelClasses = 'block text-sm font-semibold text-brand-950';
                with the invoice by email. -->
           <input type="hidden" name="payment_method" value={PAYMENT_METHOD} />
 
+          <MarketingConsent id="consult-consent" class="sm:col-span-2" />
+
           <!-- Honeypot: hidden from humans, tempting to bots. -->
           <div class="hidden" aria-hidden="true">
             <label for="consult-website">Website</label>
@@ -307,6 +310,7 @@ const labelClasses = 'block text-sm font-semibold text-brand-950';
           payment_method: value('payment_method'),
         },
         'Consultations — Request an invoice',
+        { marketingConsent: value('marketing_consent') === 'on' },
       );
 
       if (result.ok) {

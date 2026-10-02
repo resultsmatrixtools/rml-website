@@ -60,6 +60,7 @@ export async function submitForm(
   key: FormKey,
   values: Record<string, string | undefined>,
   pageName: string,
+  options: { marketingConsent?: boolean } = {},
 ): Promise<SubmitResult> {
   // When the CRM endpoint is configured it is the system of record; HubSpot is
   // then only a best-effort second post, and only while the dual-post flag is on.
@@ -79,8 +80,11 @@ export async function submitForm(
     // The offline consultation path is bank transfer / invoice only (BRIEF.md §6).
     if (fields.payment_method) fields.payment_method = 'bank_transfer';
 
-    const result = await submitLead(crmForm[key], fields);
-    if (result.ok && import.meta.env.PUBLIC_HUBSPOT_DUAL_POST === 'true') {
+    const marketingConsent = options.marketingConsent === true;
+    const result = await submitLead(crmForm[key], fields, marketingConsent);
+    // HubSpot is a marketing list too: copy a lead there only when they agreed to
+    // marketing, so a non-subscriber never reaches it.
+    if (result.ok && marketingConsent && import.meta.env.PUBLIC_HUBSPOT_DUAL_POST === 'true') {
       void submitHubspot(key, values, pageName);
     }
     return result;
