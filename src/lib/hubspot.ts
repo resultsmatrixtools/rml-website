@@ -76,6 +76,8 @@ export async function submitForm(
     if (company) fields.organisation = company;
     for (const [k, v] of Object.entries(rest)) if (v?.trim()) fields[k] = v.trim();
     if (fields.industry) fields.industry = CRM_INDUSTRY[fields.industry] ?? '';
+    // The offline consultation path is bank transfer / invoice only (BRIEF.md §6).
+    if (fields.payment_method) fields.payment_method = 'bank_transfer';
 
     const result = await submitLead(crmForm[key], fields);
     if (result.ok && import.meta.env.PUBLIC_HUBSPOT_DUAL_POST === 'true') {

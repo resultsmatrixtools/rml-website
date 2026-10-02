@@ -331,7 +331,6 @@ const featuredResources: {
 
     const dialog = document.getElementById('resource-dialog') as HTMLDialogElement;
     const form = document.getElementById('resource-form') as HTMLFormElement;
-    void mountTurnstile(document.getElementById('resource-form-turnstile') as HTMLElement);
     const button = document.getElementById('resource-submit') as HTMLButtonElement;
     const heading = document.getElementById('resource-dialog-title') as HTMLElement;
     const slugField = document.getElementById('resource-slug') as HTMLInputElement;
@@ -362,6 +361,9 @@ const featuredResources: {
         button.disabled = false;
 
         dialog.showModal();
+
+        // The widget must render while visible; a hidden dialog never solves it.
+        void mountTurnstile(document.getElementById('resource-form-turnstile') as HTMLElement);
       });
     }
 

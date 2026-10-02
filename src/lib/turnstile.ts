@@ -41,6 +41,10 @@ function loadScript(): Promise<void> {
 /** Renders the widget into `container`. A no-op when no site key is configured. */
 export async function mountTurnstile(container: HTMLElement): Promise<void> {
   if (!SITE_KEY) return;
+  if (widgetId !== undefined) {
+    resetTurnstile();
+    return;
+  }
   try {
     await loadScript();
   } catch (error) {
