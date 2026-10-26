@@ -20,6 +20,13 @@ const siteLinks = [
   { href: '/consultations/', label: 'Consultations' },
   { href: '/contact/', label: 'Contact' },
 ];
+
+const legalLinks = [
+  { href: '/privacy/', label: 'Privacy' },
+  { href: '/cookies/', label: 'Cookies' },
+  { href: '/terms/', label: 'Terms of use' },
+  { href: '/consultation-terms/', label: 'Consultation terms' },
+];
 ---
 
 <footer class="bg-brand-900 text-brand-100">
@@ -84,7 +91,15 @@ const siteLinks = [
 
     <div class="mt-12 flex flex-col gap-3 border-t border-brand-800 pt-6 text-sm text-brand-300 sm:flex-row sm:items-center sm:justify-between">
       <p>&copy; {year} Results Matrix Limited. All rights reserved.</p>
-      <a href="/privacy/" class="transition-colors hover:text-white">Privacy &amp; cookie policy</a>
+      <nav aria-label="Legal" class="flex flex-wrap gap-x-5 gap-y-2">
+        {
+          legalLinks.map((item) => (
+            <a href={item.href} class="transition-colors hover:text-white">
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
     </div>
   </div>
 </footer>

@@ -6,6 +6,7 @@
 // OIC (Office of the Information Commissioner) registration status.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
+import { LEGAL_EFFECTIVE_DATE, PAYMENT_PROVIDER } from '../lib/site';
 ---
 
 <BaseLayout
@@ -17,7 +18,7 @@ import PageHero from '../components/PageHero.astro';
   <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
     <div class="prose-serif">
       <p>
-        <strong>Effective date: July 18, 2026</strong>
+        <strong>Effective date: {LEGAL_EFFECTIVE_DATE}</strong>
         <!-- Legal review still required before DNS cutover (BRIEF.md Appendix B note) -->
       </p>
       <p>
@@ -42,7 +43,14 @@ import PageHero from '../components/PageHero.astro';
         HubSpot's tracking cookie to collect usage data: pages visited, time on page, referring
         site, approximate location (from IP address), browser and device type. If you decline
         cookies via our consent banner, this tracking does not run. The Site also uses strictly
-        necessary local storage to remember your consent choice.
+        necessary local storage to remember your consent choice. Our forms use Cloudflare
+        Turnstile to block automated spam, which may process your IP address and browser signals
+        when you use a form. See our <a href="/cookies/">cookie policy</a> for the full list.
+      </p>
+      <p>
+        <strong>Information from payments.</strong> If you book a paid session, we receive
+        confirmation of payment and the payer's name and contact details from our payment
+        provider, or the bank transfer details you send us. We do not receive card numbers.
       </p>
       <p>
         We do <strong>not</strong> use advertising cookies, behavioral remarketing, or analytics
@@ -73,18 +81,26 @@ import PageHero from '../components/PageHero.astro';
       <h2>Where your data goes</h2>
       <ul>
         <li>
-          <strong>HubSpot</strong> (our customer relationship management and forms provider)
-          stores form submissions and, with consent, tracking data on our behalf. HubSpot stores
-          data on servers located outside Jamaica (United States / European Union) under its own
-          security and data-processing commitments.
+          <strong>Our customer relationship management (CRM) system</strong> receives and stores
+          what you submit through our forms, so we can respond to you.
+        </li>
+        <li>
+          <strong>HubSpot</strong> (our marketing and tracking provider) stores, with consent,
+          tracking data on our behalf and, if you opted in to marketing, a copy of your contact
+          details. HubSpot stores data on servers located outside Jamaica (United States /
+          European Union) under its own security and data-processing commitments.
+        </li>
+        <li>
+          <strong>Cloudflare</strong> provides the Turnstile check that protects our forms from
+          bots.
         </li>
         <li>
           <strong>Our hosting provider</strong> (DigitalOcean) serves the Site and processes
           standard server logs.
         </li>
         <li>
-          <strong>Payment for consultations</strong> is handled by our payment provider on its own
-          platform; card details are entered there, never on this Site, and we never see or store
+          <strong>Payment for consultations</strong> is handled by our payment provider,
+          {PAYMENT_PROVIDER}, on its own platform; card details are entered there, never on this Site, and we never see or store
           them.
         </li>
       </ul>
@@ -162,6 +178,12 @@ import PageHero from '../components/PageHero.astro';
       <p>
         We may update this policy from time to time. Material changes will be posted on this page
         with a revised effective date.
+      </p>
+
+      <h2>Related policies</h2>
+      <p>
+        See also our <a href="/cookies/">cookie policy</a>, <a href="/terms/">terms of use</a> and
+        <a href="/consultation-terms/">advisory session terms</a>.
       </p>
 
       <h2>Contact</h2>
