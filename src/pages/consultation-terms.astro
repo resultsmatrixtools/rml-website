@@ -1,0 +1,144 @@
+---
+// Terms for paid advisory sessions (/consultations): booking, payment,
+// cancellation, refunds. Draft — REQUIRES LEGAL REVIEW before DNS cutover.
+//
+// TODO (client to confirm — proposed defaults, not decided policy):
+//   - 48-hour notice window for rescheduling / cancelling
+//   - 30-day refund processing time
+//   - 48-hour turnaround for the written memo (matches /consultations copy)
+//   - whether fees include or exclude GCT
+// The payment provider name comes from PAYMENT_PROVIDER in src/lib/site.ts.
+import LegalPage from '../components/LegalPage.astro';
+import { PAYMENT_PROVIDER } from '../lib/site';
+---
+
+<LegalPage
+  title="Consultation Terms"
+  heading="Advisory Session Terms"
+  description="Booking, payment, cancellation and refund terms for paid advisory sessions with Results Matrix Limited."
+>
+  <p>
+    These terms apply to the paid advisory sessions described on our
+    <a href="/consultations/">consultations page</a>. They are between you (or the organization you
+    book for) and Results Matrix Limited ("RML", "we", "us"). By requesting an invoice or paying
+    for a session, you agree to them. Larger or longer engagements are covered by their own written
+    agreement, which takes priority over these terms where the two differ.
+  </p>
+
+  <h2>What a session includes</h2>
+  <p>
+    A session is a 60-minute one-to-one advisory call with an RML senior consultant, followed by a
+    written recommendations memo and follow-up email support limited to questions about that
+    memo. The features listed on the consultations page at the time you book describe what you are
+    buying.
+  </p>
+
+  <h2>Booking</h2>
+  <p>
+    Booking is confirmed when we have received payment or, for organizations paying by invoice,
+    when we have received your payment or a purchase order we have accepted in writing. After
+    that we send you a private scheduling link so you can choose a time. Scheduling links are sent
+    to the payer and should not be shared.
+  </p>
+  <p>
+    Please send us any documents we should review at least two working days before the session.
+    We can only advise on what we have been given, so the quality of the advice depends on the
+    accuracy and completeness of your information.
+  </p>
+
+  <h2>Fees and payment</h2>
+  <p>
+    The fee is shown at the time you book or on your invoice, in the currency stated there. Taxes,
+    such as General Consumption Tax, are added where they apply and are shown on the invoice or at
+    checkout.
+  </p>
+  <ul>
+    <li>
+      <strong>Pay online.</strong> You are sent to the checkout of our payment provider,
+      {PAYMENT_PROVIDER}, which processes your payment on its own platform. Your card details are
+      entered there and never reach the Site or RML, and the provider's own terms and privacy
+      notice apply to that payment.
+    </li>
+    <li>
+      <strong>Bank transfer or invoice.</strong> Request an invoice through the form on the
+      consultations page. We issue an invoice with our bank details and a payment reference. Please
+      pay by the due date shown on it. Any bank charges on your side are yours to bear, so the
+      full invoiced amount reaches us.
+    </li>
+  </ul>
+
+  <h2>Rescheduling and cancellation by you</h2>
+  <p>
+    You can move your session to another time, once and free of charge, if you tell us at least 48
+    hours before it starts. If you cancel with at least 48 hours' notice you are entitled to a
+    refund under the refunds section below.
+  </p>
+  <p>
+    If you cancel or ask to reschedule with less than 48 hours' notice, or do not attend, the
+    session is treated as delivered and the fee is not refundable. We may, at our discretion,
+    offer you a new time as a courtesy. If you are more than 15 minutes late we may end the
+    session at its scheduled finish time.
+  </p>
+
+  <h2>Cancellation or rescheduling by us</h2>
+  <p>
+    If we need to cancel or move a session, we will tell you as soon as we can and offer you a new
+    time. If no new time works for you, we will refund the fee in full.
+  </p>
+
+  <h2>Refunds</h2>
+  <p>
+    Where a refund is due, we pay it in full to the account or card that made the payment, within
+    30 days of agreeing the refund. Once a session has been delivered, fees are not refundable. If
+    you are unhappy with a session, tell us within seven days at
+    <a href="mailto:info@resultsmatrix.com">info@resultsmatrix.com</a>
+    and we will work with you to put it right, which may include a follow-up call or a revised
+    memo.
+  </p>
+
+  <h2>Confidentiality</h2>
+  <p>
+    We treat what you share with us for a session as confidential, use it only to prepare for and
+    deliver the session, and do not disclose it except to people at RML who need it for that
+    purpose, or where the law requires. Please tell us in advance if the material you intend to
+    share is subject to restrictions, for example under a donor or government agreement.
+  </p>
+
+  <h2>Our advice and your decisions</h2>
+  <p>
+    Advisory sessions give you our professional opinion on the material you have provided. They are
+    not legal, accounting, or investment advice, and they do not guarantee any result, approval, or
+    funding outcome. Decisions made after a session are yours. To the fullest extent the law
+    allows, RML's total liability arising from a session is limited to the fee you paid for it,
+    and we are not liable for indirect or consequential loss. Nothing here limits liability that
+    cannot lawfully be limited.
+  </p>
+
+  <h2>Ownership of the memo</h2>
+  <p>
+    You own the written memo once the fee is paid, and may use and share it within your
+    organization and with your partners and funders. RML keeps ownership of its methods, templates,
+    and pre-existing materials, and of any general know-how used to prepare the memo.
+  </p>
+
+  <h2>Personal data</h2>
+  <p>
+    We handle the personal data you give us when booking as described in our
+    <a href="/privacy/">privacy policy</a>.
+  </p>
+
+  <h2>Changes and governing law</h2>
+  <p>
+    We may update these terms, but a change does not affect a session you have already paid for.
+    These terms are governed by the laws of Jamaica, and the courts of Jamaica have jurisdiction
+    over any dispute. Before either of us starts proceedings, we will first try in good faith to
+    resolve the matter by discussion.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    Bookings, invoices, and refunds: <strong
+      ><a href="mailto:info@resultsmatrix.com">info@resultsmatrix.com</a></strong
+    >.
+  </p>
+</LegalPage>

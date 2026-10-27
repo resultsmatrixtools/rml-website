@@ -1,0 +1,93 @@
+---
+// Unsubscribe confirmation. Every marketing email links to the CRM's
+// crm-unsubscribe function, which redirects here with the contact's token. One
+// click on the button posts the token back. A page load never unsubscribes by
+// itself, so a mail scanner that follows links cannot do it for a reader.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+---
+
+<BaseLayout
+  title="Unsubscribe — Results Matrix Limited"
+  description="Stop receiving marketing email from Results Matrix Limited."
+  noindex
+>
+  <PageHero title="Unsubscribe" />
+
+  <section class="mx-auto max-w-2xl px-4 py-14 sm:px-6 lg:py-16">
+    <div id="unsub-ask" hidden class="space-y-5">
+      <p class="text-base leading-relaxed text-slate-700">
+        Press the button to stop receiving news, resources and event invitations from Results
+        Matrix Limited. Messages about a request you made, such as an invoice, are not affected.
+      </p>
+      <button
+        id="unsub-go"
+        type="button"
+        class="press rounded-lg bg-brand-800 px-7 py-3 text-sm font-semibold text-white shadow-xs hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        Unsubscribe me
+      </button>
+      <p id="unsub-error" hidden role="alert" class="text-sm text-red-900">
+        We could not process that just now. Please try again, or email
+        <a href="mailto:info@resultsmatrix.com" class="font-semibold underline underline-offset-2">info@resultsmatrix.com</a>
+        and we will remove you.
+      </p>
+    </div>
+
+    <div id="unsub-done" hidden tabindex="-1" class="space-y-3">
+      <h2 class="text-xl font-semibold text-brand-950">You are unsubscribed</h2>
+      <p class="text-base leading-relaxed text-slate-700">
+        You will not receive marketing email from us again. You can read how we handle your data
+        in our <a href="/privacy/" class="font-medium text-accent-700 underline underline-offset-2 hover:text-accent-800">privacy policy</a>.
+      </p>
+    </div>
+
+    <div id="unsub-invalid" hidden class="space-y-3">
+      <p class="text-base leading-relaxed text-slate-700">
+        This unsubscribe link is not valid. If you want to stop receiving our email, write to
+        <a href="mailto:info@resultsmatrix.com" class="font-semibold text-accent-700 underline underline-offset-2">info@resultsmatrix.com</a>
+        and we will remove you.
+      </p>
+    </div>
+  </section>
+
+  <script>
+    const ask = document.getElementById('unsub-ask') as HTMLElement;
+    const done = document.getElementById('unsub-done') as HTMLElement;
+    const invalid = document.getElementById('unsub-invalid') as HTMLElement;
+    const button = document.getElementById('unsub-go') as HTMLButtonElement;
+    const error = document.getElementById('unsub-error') as HTMLElement;
+
+    const token = new URLSearchParams(window.location.search).get('token') ?? '';
+    // The CRM endpoint is .../functions/v1/lead-capture; the unsubscribe
+    // function lives beside it.
+    const crmEndpoint: string = import.meta.env.PUBLIC_CRM_ENDPOINT ?? '';
+    const endpoint = crmEndpoint.replace(/lead-capture\/?$/, 'crm-unsubscribe');
+
+    if (!token || !endpoint) {
+      invalid.hidden = false;
+    } else {
+      ask.hidden = false;
+      button.addEventListener('click', async () => {
+        error.hidden = true;
+        button.disabled = true;
+        try {
+          const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token }),
+            signal: AbortSignal.timeout(15_000),
+          });
+          if (!response.ok) throw new Error(`status ${response.status}`);
+          ask.hidden = true;
+          done.hidden = false;
+          done.focus();
+        } catch (err) {
+          console.error('[rml] unsubscribe failed:', err);
+          button.disabled = false;
+          error.hidden = false;
+        }
+      });
+    }
+  </script>
+</BaseLayout>
