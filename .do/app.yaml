@@ -46,7 +46,8 @@ static_sites:
       - key: PUBLIC_HUBSPOT_DUAL_POST
         scope: BUILD_TIME
         value: ""
-      - key: PUBLIC_CONSULTATION_PAYMENT_URL
+      # Off until DimePay is live in production (README runbook, "Online card payment").
+      - key: PUBLIC_ONLINE_PAYMENT
         scope: BUILD_TIME
         value: ""
       - key: PUBLIC_SITE_URL

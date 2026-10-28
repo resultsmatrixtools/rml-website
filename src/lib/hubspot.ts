@@ -43,7 +43,9 @@ const CONTACT_OBJECT_TYPE_ID = '0-1';
 
 const SUBMIT_TIMEOUT_MS = 15_000;
 
-export type SubmitResult = { ok: true } | { ok: false; reason: 'unconfigured' | 'invalid' | 'network' };
+export type SubmitResult =
+  | { ok: true; paymentUrl?: string }
+  | { ok: false; reason: 'unconfigured' | 'invalid' | 'network' };
 
 /** Reads the HubSpot tracking cookie, absent unless the visitor accepted cookies. */
 function readTrackingCookie(): string | undefined {
@@ -77,8 +79,9 @@ export async function submitForm(
     if (company) fields.organisation = company;
     for (const [k, v] of Object.entries(rest)) if (v?.trim()) fields[k] = v.trim();
     if (fields.industry) fields.industry = CRM_INDUSTRY[fields.industry] ?? '';
-    // The offline consultation path is bank transfer / invoice only (BRIEF.md §6).
-    if (fields.payment_method) fields.payment_method = 'bank_transfer';
+    // Bank transfer / invoice is the default (BRIEF.md §6); 'card' is the online
+    // path and is only offered when the CRM can start the checkout.
+    if (fields.payment_method) fields.payment_method = fields.payment_method === 'card' ? 'card' : 'bank_transfer';
 
     const marketingConsent = options.marketingConsent === true;
     const result = await submitLead(crmForm[key], fields, marketingConsent);

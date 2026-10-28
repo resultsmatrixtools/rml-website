@@ -53,7 +53,7 @@ All variables are **build-time** and injected by DigitalOcean App Platform
 | `PUBLIC_HUBSPOT_FORM_GUID_CONTACT` | Form GUID — contact form |
 | `PUBLIC_HUBSPOT_FORM_GUID_RESOURCE` | Form GUID — gated resource downloads |
 | `PUBLIC_HUBSPOT_FORM_GUID_CONSULT` | Form GUID — consultation requests |
-| `PUBLIC_CONSULTATION_PAYMENT_URL` | External payment link (unset/`#` → "coming soon") |
+| `PUBLIC_ONLINE_PAYMENT` | `true` shows the "Pay online by card" option (needs `PUBLIC_CRM_ENDPOINT`); otherwise "coming soon" |
 | `PUBLIC_SITE_URL` | Canonical site URL (differs prod vs staging) |
 
 ## Blog & drafts
@@ -335,19 +335,34 @@ There is no automated email delivery: the HubSpot free tier has no workflow
 automation, so the on-page reveal (or a consultant sending the file) is the
 whole delivery mechanism.
 
-### Changing the consultation payment link
+### Online card payment (DimePay)
 
 `/consultations` offers two payment paths (BRIEF.md §6), deliberately of equal
 weight — institutional clients usually cannot pay by card at all:
 
-1. **Pay online** — a button to `PUBLIC_CONSULTATION_PAYMENT_URL`.
-2. **Bank transfer / invoice** — the on-page request form at `#request-invoice`,
-   posting to HubSpot. Always available.
+1. **Pay online** — a choice on the booking form. The CRM's `lead-capture`
+   function saves the request and returns a DimePay checkout URL; the browser
+   is sent there. The `dimepay-webhook` function marks the consultation Paid
+   once DimePay confirms, and the owner sends the booking link from the CRM.
+   Only the site half lives in this repo; the functions, the ledger migration
+   and their secrets are in the PRISM repo (`supabase/functions/dimepay-webhook`).
+2. **Bank transfer / invoice** — the same form with "Invoice / bank transfer"
+   selected (the default). Always available.
 
-To set or change the online payment link, edit `PUBLIC_CONSULTATION_PAYMENT_URL`
-in `/var/www/resultsmatrix/.env` on the droplet and rebuild — no code change
-required. Leave it unset or `#` and path 1 renders as "Online payment
-integration coming soon" while path 2 keeps working.
+The card option is shown only when `PUBLIC_ONLINE_PAYMENT=true` **and**
+`PUBLIC_CRM_ENDPOINT` is set. Staging has it on (DimePay sandbox); production
+stays off until all of this is true in the Supabase project:
+
+- the `20261028*` DimePay migrations are applied;
+- the secrets `DIMEPAY_CLIENT_KEY`, `DIMEPAY_SIGNING_SECRET`,
+  `DIMEPAY_SITE_URL` (this site's origin) and, for live, `DIMEPAY_API_BASE` are
+  set, and `lead-capture` and `dimepay-webhook` are deployed;
+- `crm_settings.session_prices` has a price for each session focus, keyed by
+  the exact option text in `consultations.astro`. A focus with no price falls
+  back to the invoice route.
+
+`/consultations/thanks/` is where DimePay may send the payer afterwards. It does
+not claim the payment succeeded; only the webhook knows.
 
 Two rules that are not negotiable, both from the brief:
 
