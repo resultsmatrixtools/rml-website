@@ -1,0 +1,92 @@
+# DimePay sandbox spike — findings
+
+Phase 1 of the payment integration. Everything below was observed against the
+sandbox (`https://sandbox.api.dimepay.app/dapi/v1`) on 2026-10-28, not taken
+from the docs. Where the docs and the sandbox disagree, the sandbox wins.
+
+## Auth and signing
+
+- Every request carries a `client_key` header (`ck_…`).
+- The request body is `{ "lang": "en", "data": "<jwt>" }`. The JWT is HS256,
+  signed with the secret key (`sk_…`), which must stay server-side.
+- Secrets live in Supabase function secrets only. Never in a `PUBLIC_` variable
+  or in the `.do/*.yaml` specs.
+
+## Create a hosted payment page — `POST /payments/hosted-page`
+
+Required JWT fields (validated by the API, not all documented):
+
+| Field | Rule |
+|---|---|
+| `id` | Must be a UUID (this is our order id) |
+| `currency`, `subtotal`, `total` | `total` in whole currency units (5000 = JMD 5,000) |
+| `tax` | Required, a positive number (0 accepted) |
+| `fulfilled` | Required boolean |
+| `items` | Required, non-empty |
+| `email` | Required, valid address |
+| `ipAddress` | Required, valid IP |
+| `referenceTransactionId` | Required string, 1–100 characters |
+
+Optional: `billingPerson`, `redirectUrl`, `checkoutUrl`, `webhookUrl`. We send
+all of them anyway.
+
+Response: `body.response.order_url`, e.g.
+`https://pay.sandbox.dimepay.app/e-order/<token>`. The last path segment is the
+order token used for lookups.
+
+After paying, the payer sees DimePay's own confirmation message. It does not
+redirect to `redirectUrl`, so the return page cannot be relied on.
+
+## Order lookup — `GET /orders/{jwt}`
+
+The path segment is `jwt.sign(<token string>, secret)`: the token as a plain
+string payload. Signing `{ token }` as an object returns 500, as does the raw
+token. The response carries `order.status` (`PENDING`, then `COMPLETE`),
+`order.origin_id` (our UUID), `total` and `currency`.
+
+## Webhook
+
+- `POST`, `Content-Type: application/json`, body `{ "payload": "<jwt>" }`.
+  No signature header.
+- The JWT is HS256 and verifies with our secret key; a wrong key is rejected.
+  Verify it before reading anything.
+- Decoded: `{ code: 200, status: "SUCCESS", details: { transaction }, subscriptionStatus, iat }`.
+- `details.transaction`: `id` (transaction id, needed for refunds), `amount`,
+  `currency`, `status` (`COMPLETE`), `entity_display_id` (Dime order token),
+  `error_code`, `error_message`, and the order under `.order`.
+- Our UUID is `order.origin_id` and `order.metadata.order_id`.
+- `settled`, `captured` and `authorized` were all `false` on a COMPLETE
+  payment in the sandbox. Rely on `status`, not on those flags.
+- `order.status` inside the webhook is a stale `PENDING` snapshot. Re-fetch
+  the order for the real status.
+- Arrives about 5 seconds after payment. No retry seen on a 200 response.
+  The POS docs say non-2xx responses are retried (counts unspecified).
+- The payload contains the cardholder name, card BIN, last four digits and
+  ZIP. Log ids and status only, and never store the full payload.
+
+## Behaviours that shape the design
+
+- **An order can be paid twice.** A second payment on an already-COMPLETE order
+  succeeded and fired a second COMPLETE webhook with a new transaction id.
+  Idempotency must key on the transaction id; a second COMPLETE on a paid
+  order is a duplicate to alert on and refund.
+- **Failed payments send no webhook.** A declined Amex produced nothing.
+  Pending orders must expire on our side.
+- **The sandbox does not validate the Visa test card's CVV or expiry.** Bad
+  values were accepted. A decline cannot be simulated with that card.
+- **Refunds send no webhook**, with or without `webhookUrl`/`webhook_url` in
+  the refund JWT. Record refunds ourselves when we make the call.
+
+## Refund — `PUT /payments/refund`
+
+JWT `{ transaction_id, amount? }`. A partial refund works and returns
+`status: "PARTIAL_REFUND"`. Omitting `amount` requests the full original
+amount and fails with 400 if part has already been refunded.
+
+## Open items
+
+- Recurring billing and card tokenisation (Phase 1b).
+- A sandbox card or amount that produces a decline.
+- Webhook retry counts and intervals on non-2xx.
+- Whether refunds made in the DimePay dashboard are visible to us (they send
+  no webhook, so reconcile periodically).
