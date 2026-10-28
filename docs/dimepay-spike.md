@@ -83,9 +83,39 @@ JWT `{ transaction_id, amount? }`. A partial refund works and returns
 `status: "PARTIAL_REFUND"`. Omitting `amount` requests the full original
 amount and fails with 400 if part has already been refunded.
 
+## Recurring billing and saved cards (Phase 1b)
+
+Created with `is_subscription: true`, `subscription_instructions`
+(`recurring_frequency`, `billing_cycles`) and `tokenize: true` on the hosted page.
+
+- The hosted page accepts the fields. The first attempt to pay hit a DimePay
+  checkout crash (`INTERNAL_FUNCTION_INVOCATION_FAILED`); a retry on the same
+  order succeeded and charged once.
+- The first charge is taken at checkout. The first rebill is scheduled one
+  period later (`billing_start_date`).
+- **The webhook carries no subscription data.** `subscriptionStatus` is null and
+  the embedded order has `subscription_id: null`. It is identical in shape to a
+  one-off payment, so it only reports the first charge.
+- **The subscription and the card token only appear when the order is fetched
+  afterwards.** `GET /orders/{jwt}` then returns `subscription_id` and a
+  `subscription` object (`status: ACTIVE`, `billing_status: CURRENT`,
+  `next_billing_date`, `final_billing_date`, `cancel_at_period_end`,
+  `metadata.payment_token`). The saved card token is
+  `subscription.metadata.payment_token` (`card_…`).
+- `billing_cycles` sent as 2 came back as 1. It appears to count total charges
+  including the first (inference, not confirmed).
+- **Charging a saved token works.** `POST /payments/sale` with
+  `paymentParams: { source: "TOKEN", token: "card_…" }` returns the result
+  synchronously (`COMPLETE`) and sends no webhook. Amounts and required fields
+  are the same as the hosted page (UUID `id`, `ipAddress`,
+  `referenceTransactionId`, `items`, `tax`, `fulfilled`, `email`).
+- Not observable in one session: whether DimePay's scheduler charges the rebill
+  on its own and what webhook (if any) that fires, and how a subscription is
+  cancelled (no documented API).
+
 ## Open items
 
-- Recurring billing and card tokenisation (Phase 1b).
+- Rebill webhooks and a subscription cancel API (ask DimePay support).
 - A sandbox card or amount that produces a decline.
 - Webhook retry counts and intervals on non-2xx.
 - Whether refunds made in the DimePay dashboard are visible to us (they send
