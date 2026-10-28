@@ -93,15 +93,21 @@ Created with `is_subscription: true`, `subscription_instructions`
   order succeeded and charged once.
 - The first charge is taken at checkout. The first rebill is scheduled one
   period later (`billing_start_date`).
-- **The webhook carries no subscription data.** `subscriptionStatus` is null and
-  the embedded order has `subscription_id: null`. It is identical in shape to a
-  one-off payment, so it only reports the first charge.
-- **The subscription and the card token only appear when the order is fetched
-  afterwards.** `GET /orders/{jwt}` then returns `subscription_id` and a
-  `subscription` object (`status: ACTIVE`, `billing_status: CURRENT`,
-  `next_billing_date`, `final_billing_date`, `cancel_at_period_end`,
-  `metadata.payment_token`). The saved card token is
-  `subscription.metadata.payment_token` (`card_…`).
+- **The webhook does carry subscription data, in a different shape.** (An
+  earlier version of this note said it did not, and called the shape identical
+  to a one-off payment. Both were wrong: only a few fields had been checked.)
+  For a subscription's first payment:
+  - `details.message` is `"SUBSCRIPTION_CREATED"` (DimePay labels events with
+    this, so rebill and cancel events very likely exist under other labels).
+  - `details.subscription` holds `id`, `token`, `status`, `billing_status`,
+    `next_billing_date`, `cancel_at_period_end`, `billing_cycles` and more.
+  - `details.transaction` is a raw serialised database model: the real fields
+    are under `details.transaction.dataValues`, next to `_previousDataValues`,
+    `_changed`, `isNewRecord` and similar. `order` sits on the outer object.
+  - The top-level `subscriptionStatus` is still null.
+- **The saved card token is not in the webhook.** It appears only when the order
+  is fetched afterwards: `GET /orders/{jwt}` then returns `subscription_id` and a
+  `subscription` object with `metadata.payment_token` (`card_…`).
 - `billing_cycles` sent as 2 came back as 1. It appears to count total charges
   including the first (inference, not confirmed).
 - **Charging a saved token works.** `POST /payments/sale` with
@@ -112,6 +118,18 @@ Created with `is_subscription: true`, `subscription_instructions`
 - Not observable in one session: whether DimePay's scheduler charges the rebill
   on its own and what webhook (if any) that fires, and how a subscription is
   cancelled (no documented API).
+
+## Reliability notes
+
+- The sandbox order lookup (`GET /orders/{jwt}`) returned a plain-text
+  `A server error has occurred` (5xx, not JSON) once during testing and
+  succeeded on the next call. The checkout page also crashed once with
+  `INTERNAL_FUNCTION_INVOCATION_FAILED`. Our client retries a 5xx or network
+  failure on the lookup and treats a non-JSON body as a failure.
+- Webhook retry behaviour on a non-2xx response is undocumented for the hosted
+  page. The webhook therefore answers 503 (retry) only for failures a retry can
+  fix, and a reconciliation job is worth adding so a lost webhook cannot leave a
+  paid order showing as pending.
 
 ## Open items
 
