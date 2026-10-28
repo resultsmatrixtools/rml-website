@@ -43,9 +43,10 @@ static_sites:
       - key: PUBLIC_HUBSPOT_DUAL_POST
         scope: BUILD_TIME
         value: ""
-      - key: PUBLIC_CONSULTATION_PAYMENT_URL
+      # Staging exercises the DimePay sandbox.
+      - key: PUBLIC_ONLINE_PAYMENT
         scope: BUILD_TIME
-        value: ""
+        value: "true"
       - key: PUBLIC_SITE_URL
         scope: BUILD_TIME
         value: ""

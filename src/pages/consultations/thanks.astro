@@ -1,0 +1,43 @@
+---
+// Where the payment provider sends a payer after checkout. It deliberately does
+// not say the payment succeeded: this page is reachable by anyone, and only the
+// payment webhook (which marks the consultation Paid in the CRM) knows. The
+// receipt and the booking link arrive by email once that has happened.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+---
+
+<BaseLayout
+  title="Thank you — Results Matrix Limited"
+  description="What happens after you pay for an advisory session with Results Matrix Limited."
+  noindex
+>
+  <PageHero title="Thank you" lede="We are confirming your payment." />
+
+  <section class="mx-auto max-w-2xl px-4 py-14 sm:px-6 lg:py-16">
+    <div class="space-y-5 text-base leading-relaxed text-slate-700">
+      <p>
+        If you have just paid for an advisory session, your payment is being confirmed with our
+        payment provider. This usually takes under a minute.
+      </p>
+      <ol class="list-decimal space-y-2 pl-6">
+        <li>You will receive an email confirming that we have received your payment.</li>
+        <li>We will then email you a link to choose a time for your session.</li>
+        <li>After the session, we deliver your written recommendations within 48 hours.</li>
+      </ol>
+      <p>
+        If you have not heard from us within one business day, or you were charged and did not
+        complete the booking, please email
+        <a href="mailto:info@resultsmatrix.com" class="font-semibold text-accent-700 underline underline-offset-2">info@resultsmatrix.com</a>
+        and mention the email address you used.
+      </p>
+      <p>
+        Payment, rescheduling and refund details are in our
+        <a href="/consultation-terms/" class="font-medium text-accent-700 underline underline-offset-2 hover:text-accent-800">advisory session terms</a>.
+      </p>
+      <p>
+        <a href="/consultations/" class="font-medium text-accent-700 underline underline-offset-2 hover:text-accent-800">Back to advisory sessions</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
