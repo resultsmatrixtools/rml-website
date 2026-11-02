@@ -8,8 +8,19 @@ const CRM_ENDPOINT: string = import.meta.env.PUBLIC_CRM_ENDPOINT ?? '';
 const SUBMIT_TIMEOUT_MS = 15_000;
 
 export type CrmForm = 'contact' | 'resource' | 'consultation';
+
+/** What lead-capture returns for DimePay's embedded widget (checkout: 'widget'). */
+export interface WidgetCheckout {
+  orderId: string;
+  data: string;
+  clientId: string;
+  total: number;
+  currency: string;
+  test: boolean;
+}
+
 export type CrmResult =
-  | { ok: true; paymentUrl?: string }
+  | { ok: true; paymentUrl?: string; widget?: WidgetCheckout }
   | { ok: false; reason: 'unconfigured' | 'invalid' | 'network' };
 
 /**
@@ -29,12 +40,26 @@ export function safePaymentUrl(value: unknown): string | undefined {
   }
 }
 
+function parseWidget(value: unknown): WidgetCheckout | undefined {
+  if (!value || typeof value !== 'object') return undefined;
+  const w = value as Record<string, unknown>;
+  const text = (v: unknown) => (typeof v === 'string' && v !== '' ? v : undefined);
+  const orderId = text(w.orderId);
+  const data = text(w.data);
+  const clientId = text(w.clientId);
+  const currency = text(w.currency);
+  if (!orderId || !data || !clientId || !currency) return undefined;
+  if (typeof w.total !== 'number' || !Number.isFinite(w.total) || w.total <= 0) return undefined;
+  return { orderId, data, clientId, total: w.total, currency, test: w.test === true };
+}
+
 export const crmEnabled = CRM_ENDPOINT !== '';
 
 export async function submitLead(
   form: CrmForm,
   fields: Record<string, string>,
   marketingConsent: boolean,
+  checkout: 'hosted' | 'widget' = 'hosted',
 ): Promise<CrmResult> {
   if (!CRM_ENDPOINT) return { ok: false, reason: 'unconfigured' };
 
@@ -50,13 +75,18 @@ export async function submitLead(
         referrer: document.referrer,
         website: '',
         turnstile_token: turnstileToken() ?? '',
+        ...(checkout === 'widget' ? { checkout } : {}),
       }),
       signal: AbortSignal.timeout(SUBMIT_TIMEOUT_MS),
     });
     if (response.ok) {
       // Only a consultation that chose card and has an online price gets a URL;
       // every other accepted post is a bare { ok: true }.
-      const body = (await response.json().catch(() => null)) as { payment_url?: unknown } | null;
+      const body = (await response.json().catch(() => null)) as
+        | { payment_url?: unknown; widget?: unknown }
+        | null;
+      const widget = checkout === 'widget' ? parseWidget(body?.widget) : undefined;
+      if (widget) return { ok: true, widget };
       const paymentUrl = safePaymentUrl(body?.payment_url);
       return paymentUrl ? { ok: true, paymentUrl } : { ok: true };
     }
