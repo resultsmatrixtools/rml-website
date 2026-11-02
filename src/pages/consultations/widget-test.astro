@@ -93,14 +93,26 @@ const labelClasses = 'block text-sm font-semibold text-brand-950';
       const summary = document.getElementById('wt-summary') as HTMLElement;
       const log = document.getElementById('wt-log') as HTMLElement;
 
-      /** Event details can carry card-related fields, so only the keys are shown. */
+      /** A status or message from the widget, as short plain text. Never the data member. */
+      function reason(detail: unknown): string {
+        if (!detail || typeof detail !== 'object') return '';
+        const d = detail as Record<string, unknown>;
+        const parts = [d.status, d.message]
+          .filter((v): v is string | number => typeof v === 'string' || typeof v === 'number')
+          .map((v) => String(v).replace(/\s+/g, ' ').slice(0, 120));
+        return parts.length ? ` [${parts.join(' | ')}]` : '';
+      }
+
+      /**
+       * Event details can carry card-related fields, so the log shows the key names
+       * and the status/message only. The raw detail is never logged or shown.
+       */
       function note(event: string, detail?: unknown) {
         const keys =
           detail && typeof detail === 'object' ? ` {${Object.keys(detail as object).join(', ')}}` : '';
         const item = document.createElement('li');
-        item.textContent = `${new Date().toLocaleTimeString()}  ${event}${keys}`;
+        item.textContent = `${new Date().toLocaleTimeString()}  ${event}${keys}${reason(detail)}`;
         log.appendChild(item);
-        console.log(`[widget-test] ${event}`, detail);
       }
 
       form.addEventListener('submit', async (e) => {
@@ -127,7 +139,17 @@ const labelClasses = 'block text-sm font-semibold text-brand-950';
         );
 
         if (!result.ok || !result.widget) {
-          note(result.ok ? 'No widget order returned (no online price, or DimePay not configured)' : `Request failed: ${result.reason}`);
+          const failure: Record<string, string> = {
+            rate_limited: 'Too many requests: the form allows 5 per hour from one address. Try again later.',
+            invalid: 'The request was rejected as invalid (check the Turnstile box and the fields).',
+            network: 'The request could not be sent. Check the connection and the endpoint.',
+            unconfigured: 'PUBLIC_CRM_ENDPOINT is not set.',
+          };
+          note(
+            result.ok
+              ? 'No widget order returned (no online price, or DimePay not configured)'
+              : (failure[result.reason] ?? `Request failed: ${result.reason}`),
+          );
           button.disabled = false;
           return;
         }

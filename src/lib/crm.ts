@@ -21,7 +21,7 @@ export interface WidgetCheckout {
 
 export type CrmResult =
   | { ok: true; paymentUrl?: string; widget?: WidgetCheckout }
-  | { ok: false; reason: 'unconfigured' | 'invalid' | 'network' };
+  | { ok: false; reason: 'unconfigured' | 'invalid' | 'rate_limited' | 'network' };
 
 /**
  * The only places a visitor may be sent to pay. lead-capture generates this URL
@@ -91,6 +91,7 @@ export async function submitLead(
       return paymentUrl ? { ok: true, paymentUrl } : { ok: true };
     }
     console.error(`[rml] lead-capture rejected the ${form} submission (${response.status})`);
+    if (response.status === 429) return { ok: false, reason: 'rate_limited' };
     return { ok: false, reason: response.status === 400 ? 'invalid' : 'network' };
   } catch (error) {
     console.error('[rml] lead-capture submission could not be sent:', error);
