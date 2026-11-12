@@ -45,7 +45,7 @@ const SUBMIT_TIMEOUT_MS = 15_000;
 
 export type SubmitResult =
   | { ok: true; paymentUrl?: string }
-  | { ok: false; reason: 'unconfigured' | 'invalid' | 'rate_limited' | 'network' };
+  | { ok: false; reason: 'unconfigured' | 'invalid' | 'rate_limited' | 'unavailable' | 'network' };
 
 /** Reads the HubSpot tracking cookie, absent unless the visitor accepted cookies. */
 function readTrackingCookie(): string | undefined {

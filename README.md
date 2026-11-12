@@ -335,6 +335,38 @@ There is no automated email delivery: the HubSpot free tier has no workflow
 automation, so the on-page reveal (or a consultant sending the file) is the
 whole delivery mechanism.
 
+### Advisory services (managed in the CRM)
+
+`/consultations` lists the advisory services and each has its own page,
+`/consultations/<slug>/`, with the booking form. **Nothing about a service is
+written in this repo.** Names, prices (standard and NGO), descriptions, what the
+client receives, what to bring and optional extras are edited in PRISM under
+**CRM > Pricing**; a service appears here only when its **On website** switch is on.
+
+- **Where it comes from.** The build reads the CRM's public `crm-services`
+  function (`src/lib/services-feed.ts`). Its address is `PUBLIC_CRM_SERVICES_URL`,
+  or, when that is unset, `PUBLIC_CRM_ENDPOINT` with `lead-capture` swapped for
+  `crm-services`, so one setting normally covers both.
+- **It is read at build time.** The site is static, so a change in the CRM shows
+  up on the next build. `scripts/cron_deploy.sh` fingerprints the feed on every
+  run and rebuilds when it changes (a CRM edit goes live within about five
+  minutes). It also skips the run, rather than building, when the feed cannot be
+  read, because a failed build can leave the served site half-written.
+- **If the feed breaks during a build, the build fails** instead of quietly
+  publishing an empty page. With no CRM address set (local work) the page builds
+  with no services and says so.
+- **The visitor chooses an organization type** (standard or NGO) and the page
+  shows that price. It is remembered for the visit only (`sessionStorage`). When a
+  service costs the same for both there is one price and no switch. The wording
+  is in `ORG_TYPES` in `src/lib/services.ts`.
+- **The form sends a service id, the organization type and the extras ticked,
+  never a price.** The CRM works the amount out and stores it (`lead-capture`).
+  A service that is quoted by scope shows "Request a proposal" and has no payment.
+- **Two slugs are reserved** (`thanks`, `widget-test`); a service with one of
+  those names is left out. Renaming a service changes its address.
+- `npm test` runs the unit tests for the parsing and price rules
+  (`src/lib/services.test.ts`, Node's built-in runner).
+
 ### Online card payment (DimePay)
 
 `/consultations` offers two payment paths (BRIEF.md §6), deliberately of equal
@@ -357,9 +389,10 @@ stays off until all of this is true in the Supabase project:
 - the secrets `DIMEPAY_CLIENT_KEY`, `DIMEPAY_SIGNING_SECRET`,
   `DIMEPAY_SITE_URL` (this site's origin) and, for live, `DIMEPAY_API_BASE` are
   set, and `lead-capture` and `dimepay-webhook` are deployed;
-- `crm_settings.session_prices` has a price for each session focus, keyed by
-  the exact option text in `consultations.astro`. A focus with no price falls
-  back to the invoice route.
+- the service has a fixed price under CRM > Pricing. The card charges the quote
+  that `lead-capture` stored for the request (organization type and extras
+  included). A service with no fixed price, or a quote of zero, falls back to the
+  invoice route.
 
 `/consultations/thanks/` is where DimePay may send the payer afterwards. It does
 not claim the payment succeeded; only the webhook knows.
@@ -368,10 +401,8 @@ Two rules that are not negotiable, both from the brief:
 
 - **Banking details never appear on the site.** They go out with the invoice by
   email, after a request comes through the form.
-- **The scheduling link is never rendered publicly.** It is sent to the payer
-  once payment is confirmed. There is a marked `TODO` in
-  `src/pages/consultations.astro` where a future payment-webhook function would
-  mint a one-time booking link; that integration is explicitly out of scope.
+- **No scheduling link is rendered publicly.** Anything sent after payment
+  goes by email from the CRM.
 
 ### DNS cutover checklist (from old WordPress droplet)
 
