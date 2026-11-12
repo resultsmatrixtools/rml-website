@@ -23,7 +23,10 @@ cd "$SITE_DIR"
 #   prints nothing, exits 0   no CRM address is configured (nothing to watch)
 #   prints a hash, exits 0    the feed was read
 #   exits 1                   the feed is configured but could not be read
+# What the last successful build used. Both are written only after a build succeeds, so a
+# failed build (of new code or of new services) is retried on the next run.
 FEED_STATE="$SITE_DIR/.services-feed.sha256"
+BUILT_STATE="$SITE_DIR/.last-built-commit"
 feed_hash() {
     local url body
     url=$(
@@ -39,7 +42,7 @@ feed_hash() {
     )
     [ -z "$url" ] && return 0
     body=$(curl -fsS --max-time 20 "$url") || return 1
-    printf '%s' "$body" | sed 's/"generated_at":"[^"]*",\{0,1\}//' | sha256sum | cut -d' ' -f1
+    printf '%s' "$body" | sed 's/"generated_at" *: *"[^"]*" *,\{0,1\}//' | sha256sum | cut -d' ' -f1
 }
 
 # 1. Fetch latest state from remote main
@@ -56,10 +59,12 @@ if ! FEED_HASH=$(feed_hash); then
     exit 0
 fi
 LAST_FEED_HASH=$(cat "$FEED_STATE" 2>/dev/null || true)
+# First run after this was added: assume the checked-out commit is the one that was built.
+LAST_BUILT_COMMIT=$(cat "$BUILT_STATE" 2>/dev/null || echo "$LOCAL_HASH")
 
 # 2. Check if anything changed: new commits on main, or a change in the CRM services
 CODE_CHANGED=false
-[ "$LOCAL_HASH" != "$REMOTE_HASH" ] && CODE_CHANGED=true
+[ "$LAST_BUILT_COMMIT" != "$REMOTE_HASH" ] && CODE_CHANGED=true
 if [ "$CODE_CHANGED" = false ] && [ "$FEED_HASH" = "$LAST_FEED_HASH" ]; then
     # No changes — exit silently
     exit 0
@@ -69,7 +74,7 @@ fi
 echo "----------------------------------------------------------------------"
 if [ "$CODE_CHANGED" = true ]; then
     echo "[$(date -u)] New changes detected on origin/main!"
-    echo "Local commit:  $LOCAL_HASH"
+    echo "Last built:    $LAST_BUILT_COMMIT"
     echo "Remote commit: $REMOTE_HASH"
 else
     echo "[$(date -u)] The CRM services changed; rebuilding."
@@ -102,6 +107,11 @@ fi
 
 PUBLIC_SITE_URL="https://resultsmatrix.com" npm run build
 
+# The build succeeded: remember what it used, so the next run only rebuilds on a real change.
+# (Written before the reload so a failed reload cannot cause a rebuild loop.)
+printf '%s' "$REMOTE_HASH" > "$BUILT_STATE"
+printf '%s' "$FEED_HASH" > "$FEED_STATE"
+
 # Reload web server
 echo "--> Reloading Nginx..."
 if command -v systemctl &> /dev/null; then
@@ -109,9 +119,6 @@ if command -v systemctl &> /dev/null; then
 else
     nginx -s reload
 fi
-
-# Remember which services this build used, so the next run only rebuilds on a change.
-printf '%s' "$FEED_HASH" > "$FEED_STATE"
 
 echo "[$(date -u)] ✓ Deployment completed successfully!"
 echo "----------------------------------------------------------------------"
