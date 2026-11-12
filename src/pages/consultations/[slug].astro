@@ -174,7 +174,7 @@ const sectionHeading = 'text-sm font-bold uppercase tracking-wider text-slate-60
               </p>
             </div>
 
-            <form id="book-form" class="grid gap-5 sm:grid-cols-2">
+            <form id="book-form" class="grid gap-5 sm:grid-cols-2" hidden>
               <div class="sm:col-span-2 border border-slate-200 bg-slate-50 p-4" aria-live="polite">
                 <p class="text-sm font-semibold text-brand-950">{service.name}</p>
                 <p class="mt-1 text-sm text-slate-700" data-summary></p>
@@ -319,6 +319,9 @@ const sectionHeading = 'text-sm font-bold uppercase tracking-wider text-slate-60
       // totalFor only needs the price and the extras.
       const service = { ...data, slug: '', summary: '', description: [], deliveryDays: null, deliverables: [], bring: [] } as Service;
 
+      // Shown only when JavaScript can send it: without it the form would reload the page and put
+      // the visitor's details in the address. The <noscript> message below covers that case.
+      form.hidden = false;
       void mountTurnstile(document.getElementById('book-turnstile') as HTMLElement);
       const button = document.getElementById('book-submit') as HTMLButtonElement;
       const success = document.getElementById('book-success') as HTMLElement;
@@ -368,7 +371,11 @@ const sectionHeading = 'text-sm font-bold uppercase tracking-wider text-slate-60
         const chosen = data.quoted ? 'bank_transfer' : method();
 
         // Honeypot: take the identical success path so a bot learns nothing.
-        if (value('website').trim()) { reveal(); return; }
+        if (value('website').trim()) {
+          successText.textContent = 'We will email your invoice and banking details within one business day.';
+          reveal();
+          return;
+        }
 
         error.hidden = true;
         button.disabled = true;

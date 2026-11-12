@@ -348,12 +348,16 @@ client receives, what to bring and optional extras are edited in PRISM under
   or, when that is unset, `PUBLIC_CRM_ENDPOINT` with `lead-capture` swapped for
   `crm-services`, so one setting normally covers both.
 - **It is read at build time.** The site is static, so a change in the CRM shows
-  up on the next build. `scripts/cron_deploy.sh` fingerprints the feed on every
+  up on the next build. A visitor who opened a page just before an edit can see
+  the old price for a few minutes; the CRM always charges the current one. `scripts/cron_deploy.sh` fingerprints the feed on every
   run and rebuilds when it changes (a CRM edit goes live within about five
   minutes). It also skips the run, rather than building, when the feed cannot be
   read, because a failed build can leave the served site half-written.
 - **If the feed breaks during a build, the build fails** instead of quietly
-  publishing an empty page. With no CRM address set (local work) the page builds
+  publishing an empty page. A feed that lists services but yields none usable
+  (its shape changed) also fails the build; a few unusable entries are logged
+  and skipped. Service addresses must be lowercase words joined by hyphens, and
+  a repeated id or address keeps only the first. With no CRM address set (local work) the page builds
   with no services and says so.
 - **The visitor chooses an organization type** (standard or NGO) and the page
   shows that price. It is remembered for the visit only (`sessionStorage`). When a
@@ -365,7 +369,12 @@ client receives, what to bring and optional extras are edited in PRISM under
 - **Two slugs are reserved** (`thanks`, `widget-test`); a service with one of
   those names is left out. Renaming a service changes its address.
 - `npm test` runs the unit tests for the parsing and price rules
-  (`src/lib/services.test.ts`, Node's built-in runner).
+  (`src/lib/services.test.ts`, Node's built-in runner). It needs Node 22.18 or
+  newer (it runs the TypeScript files directly).
+- The deploy script keeps two small state files in the site folder,
+  `.last-built-commit` and `.services-feed.sha256`, written only after a build
+  succeeds. Delete them to force a rebuild. While the feed is unreadable the
+  script skips every run, so an urgent code push waits until the CRM answers.
 
 ### Online card payment (DimePay)
 

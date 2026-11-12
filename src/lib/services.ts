@@ -47,6 +47,8 @@ export interface Service {
 export interface ServiceFeed {
   currency: 'USD' | 'JMD';
   services: Service[];
+  /** How many entries in the feed were unusable and left out. */
+  dropped: number;
 }
 
 type Raw = Record<string, unknown>;
@@ -54,6 +56,10 @@ const isObject = (v: unknown): v is Raw => typeof v === 'object' && v !== null &
 const str = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
 const strings = (v: unknown): string[] =>
   Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string' && x.trim() !== '').map((x) => x.trim()) : [];
+/** Lowercase words joined by single hyphens: safe as a URL path and as a file name. */
+const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+/** Ids travel in a comma-separated list, so they may not contain a comma or anything odd. */
+const ID = /^[A-Za-z0-9_-]{1,64}$/;
 const money = (v: unknown): number | null =>
   typeof v === 'number' && Number.isFinite(v) && v >= 0 ? v : null;
 
@@ -63,7 +69,7 @@ export function parseService(raw: unknown): Service | null {
   const id = str(raw.id);
   const slug = str(raw.slug);
   const name = str(raw.name);
-  if (!id || !slug || !name) return null;
+  if (!ID.test(id) || !SLUG.test(slug) || !name) return null;
 
   const quoted = raw.quoted === true;
   let price: Service['price'] = null;
@@ -79,7 +85,7 @@ export function parseService(raw: unknown): Service | null {
   for (const a of Array.isArray(raw.addons) ? raw.addons : []) {
     if (!isObject(a)) continue;
     const addonPrice = money(a.price);
-    if (str(a.id) && str(a.name) && addonPrice !== null) addons.push({ id: str(a.id), name: str(a.name), price: addonPrice });
+    if (ID.test(str(a.id)) && str(a.name) && addonPrice !== null) addons.push({ id: str(a.id), name: str(a.name), price: addonPrice });
   }
 
   const days = raw.delivery_days;
@@ -104,8 +110,23 @@ export function parseFeed(raw: unknown): ServiceFeed {
   if (!isObject(raw) || !Array.isArray(raw.services)) throw new Error('The services feed is not in the expected shape');
   const currency = raw.currency === 'JMD' ? 'JMD' : raw.currency === 'USD' ? 'USD' : null;
   if (!currency) throw new Error('The services feed has an unknown currency');
-  const services = raw.services.map(parseService).filter((s): s is Service => s !== null);
-  return { currency, services };
+  const services: Service[] = [];
+  const seenIds = new Set<string>();
+  const seenSlugs = new Set<string>();
+  for (const entry of raw.services) {
+    const service = parseService(entry);
+    // A repeated id or slug would make one page silently overwrite another.
+    if (!service || seenIds.has(service.id) || seenSlugs.has(service.slug)) continue;
+    seenIds.add(service.id);
+    seenSlugs.add(service.slug);
+    services.push(service);
+  }
+  const dropped = raw.services.length - services.length;
+  // A feed that lists services but yields none means the shape changed, not that nothing is for sale.
+  if (raw.services.length > 0 && services.length === 0) {
+    throw new Error('Every service in the feed was unusable; the feed shape has probably changed');
+  }
+  return { currency, services, dropped };
 }
 
 /** Slugs the site already uses under /consultations/. A service with one of these is left out. */

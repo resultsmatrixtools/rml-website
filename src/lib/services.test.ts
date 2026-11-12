@@ -47,6 +47,14 @@ describe('parseService', () => {
     const s = svc({ description: undefined, deliverables: undefined, bring: undefined, summary: undefined });
     assert.deepEqual([s.summary, s.description, s.deliverables, s.bring], ['', [], [], []]);
   });
+  it('refuses a slug or id that is not safe as a path or in a comma list', () => {
+    for (const slug of ['Has Caps', 'a/b', '../x', 'a b', '-lead', 'trail-', 'double--hyphen', '']) {
+      assert.equal(parseService(raw({ slug })), null, `slug ${slug}`);
+    }
+    assert.equal(parseService(raw({ id: 'has,comma' })), null);
+    const s = svc({ addons: [{ id: 'bad,id', name: 'Extra', price: 5 }, { id: 'ok-1', name: 'Fine', price: 5 }] });
+    assert.deepEqual(s.addons.map((a) => a.id), ['ok-1']);
+  });
   it('ignores a delivery time that is not a positive whole number', () => {
     assert.equal(svc({ delivery_days: 0 }).deliveryDays, null);
     assert.equal(svc({ delivery_days: 2.5 }).deliveryDays, null);
@@ -58,6 +66,15 @@ describe('parseFeed', () => {
     const feed = parseFeed({ currency: 'USD', services: [raw(), { nonsense: true }] });
     assert.equal(feed.currency, 'USD');
     assert.equal(feed.services.length, 1);
+    assert.equal(feed.dropped, 1);
+  });
+  it('keeps the first of two services that share a slug or an id', () => {
+    const feed = parseFeed({ currency: 'USD', services: [raw(), raw({ id: 'b2' }), raw({ slug: 'other' })] });
+    assert.deepEqual(feed.services.map((s) => s.id), ['a1']);
+    assert.equal(feed.dropped, 2);
+  });
+  it('stops the build when the feed lists services but none are usable', () => {
+    assert.throws(() => parseFeed({ currency: 'USD', services: [{ nonsense: true }] }), /unusable/);
   });
   it('refuses something that is not a feed, so a broken response stops the build', () => {
     assert.throws(() => parseFeed(null));
@@ -65,7 +82,7 @@ describe('parseFeed', () => {
     assert.throws(() => parseFeed({ currency: 'EUR', services: [] }));
   });
   it('accepts an empty list', () => {
-    assert.deepEqual(parseFeed({ currency: 'JMD', services: [] }), { currency: 'JMD', services: [] });
+    assert.deepEqual(parseFeed({ currency: 'JMD', services: [] }), { currency: 'JMD', services: [], dropped: 0 });
   });
 });
 

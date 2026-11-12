@@ -35,3 +35,7 @@ Thumbs.db
 
 .agents/
 skills-lock.json
+
+# Deploy state kept by scripts/cron_deploy.sh on the server
+.last-built-commit
+.services-feed.sha256

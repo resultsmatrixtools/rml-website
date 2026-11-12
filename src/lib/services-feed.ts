@@ -35,7 +35,7 @@ async function fetchServices(): Promise<ServiceFeed> {
   const url = servicesFeedUrl();
   if (!url) {
     console.warn('[rml] No CRM address set (PUBLIC_CRM_ENDPOINT or PUBLIC_CRM_SERVICES_URL): building with no services.');
-    return { currency: 'USD', services: [] };
+    return { currency: 'USD', services: [], dropped: 0 };
   }
   let response: Response;
   try {
@@ -45,5 +45,6 @@ async function fetchServices(): Promise<ServiceFeed> {
   }
   if (!response.ok) throw new Error(`The services feed answered ${response.status}`);
   const feed = parseFeed(await response.json());
+  if (feed.dropped > 0) console.warn(`[rml] ${feed.dropped} service(s) in the feed were unusable and left out.`);
   return { ...feed, services: routableServices(feed.services) };
 }

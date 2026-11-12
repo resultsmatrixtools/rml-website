@@ -16,6 +16,11 @@ export type OrgType = 'standard' | 'ngo';
 const KEY = 'rml-org-type';
 
 export function getOrgType(): OrgType {
+  // What the page is showing wins. It is set on load from storage and on every click, so
+  // when storage is blocked the visitor's choice still survives within the page and what
+  // they were shown is what gets sent.
+  const shown = document.documentElement.dataset.org;
+  if (shown === 'ngo' || shown === 'standard') return shown;
   try {
     return sessionStorage.getItem(KEY) === 'ngo' ? 'ngo' : 'standard';
   } catch {
