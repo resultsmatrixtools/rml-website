@@ -1,0 +1,85 @@
+---
+// "I am booking for": the organization-type choice that sets which price every
+// service shows. Two buttons, one pressed at a time. Wording lives in
+// lib/services.ts (ORG_TYPES).
+//
+// The inline script runs before the services below it are drawn, so the right
+// price is showing on first paint with no flash. The behaviour script then
+// wires the buttons. Without JavaScript the buttons do nothing, and the page
+// shows both prices with labels instead (see the styles).
+import { ORG_TYPES } from '../lib/services';
+
+interface Props {
+  class?: string;
+  /** One button above the other, each full width: for a narrow column. */
+  stacked?: boolean;
+}
+
+const { class: className = '', stacked = false } = Astro.props;
+---
+
+<script is:inline>
+  (function () {
+    var org = 'standard';
+    try {
+      if (sessionStorage.getItem('rml-org-type') === 'ngo') org = 'ngo';
+    } catch (e) {}
+    document.documentElement.dataset.org = org;
+  })();
+</script>
+
+<div class={`org-switch ${className}`} data-org-switch hidden>
+  <p class="text-sm font-semibold text-brand-950" id="org-switch-label">I am booking for</p>
+  <div
+    class={`mt-2 border border-slate-300 ${stacked ? 'grid w-full' : 'inline-flex flex-wrap'}`}
+    role="group"
+    aria-labelledby="org-switch-label"
+  >
+    {
+      ORG_TYPES.map((org) => (
+        <button
+          type="button"
+          data-org-btn={org.value}
+          aria-pressed={org.value === 'standard' ? 'true' : 'false'}
+          class={`press px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 aria-pressed:bg-brand-800 aria-pressed:text-white aria-pressed:hover:bg-brand-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 [&+&]:border-slate-300 ${stacked ? 'text-left [&+&]:border-t' : '[&+&]:border-l'}`}
+        >
+          {org.label}
+        </button>
+      ))
+    }
+  </div>
+  <p class="mt-2 text-xs text-slate-600" data-org-note aria-live="polite"></p>
+</div>
+
+<script>
+  import { applyOrgType, getOrgType, setOrgType, type OrgType } from '../lib/org-type';
+  import { ORG_TYPES } from '../lib/services';
+
+  const wrapper = document.querySelector<HTMLElement>('[data-org-switch]');
+  const note = document.querySelector<HTMLElement>('[data-org-note]');
+  if (wrapper) {
+    wrapper.hidden = false; // shown only when JavaScript can make it work
+    const sync = (org: OrgType) => {
+      if (note) note.textContent = ORG_TYPES.find((o) => o.value === org)?.note ?? '';
+    };
+    document.addEventListener('orgchange', (event) => sync((event as CustomEvent<OrgType>).detail));
+    wrapper.querySelectorAll<HTMLButtonElement>('[data-org-btn]').forEach((button) => {
+      button.addEventListener('click', () => setOrgType(button.dataset.orgBtn === 'ngo' ? 'ngo' : 'standard'));
+    });
+    applyOrgType(getOrgType());
+  }
+</script>
+
+<style is:global>
+  /* One price per service, chosen by <html data-org>. Without it (no JavaScript)
+     both prices show, each with its label. */
+  html[data-org='standard'] [data-for='ngo'],
+  html[data-org='ngo'] [data-for='standard'],
+  html[data-org] .org-label {
+    display: none;
+  }
+  /* Both prices showing (no JavaScript): keep them apart. */
+  html:not([data-org]) [data-for='ngo'] {
+    margin-left: 0.75rem;
+  }
+</style>

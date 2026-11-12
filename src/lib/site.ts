@@ -22,10 +22,5 @@ export const SITE_NAME = 'Results Matrix';
 /** Effective date shown on every legal page. Bump when any policy text changes. */
 export const LEGAL_EFFECTIVE_DATE = 'October 26, 2026';
 
-/**
- * Online payment provider (eZeePayments or WiPay — BRIEF.md §1, undecided).
- * Replace with the provider's name once chosen; the legal pages read it from
- * here. Until then the bracketed text renders on purpose so it can't ship by
- * accident.
- */
-export const PAYMENT_PROVIDER = '[Payment Provider]';
+/** Online payment provider. The legal pages read the name from here. */
+export const PAYMENT_PROVIDER = 'DimePay';
