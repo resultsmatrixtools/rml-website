@@ -1,0 +1,47 @@
+---
+// Shared shell for the legal pages (terms, consultation terms, cookies).
+// The privacy page predates this and keeps its own markup.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from './PageHero.astro';
+import { LEGAL_EFFECTIVE_DATE } from '../lib/site';
+
+interface Props {
+  title: string;
+  heading: string;
+  description: string;
+}
+
+const { title, heading, description } = Astro.props;
+
+const policies = [
+  { href: '/privacy/', label: 'Privacy policy' },
+  { href: '/cookies/', label: 'Cookie policy' },
+  { href: '/terms/', label: 'Terms of use' },
+  { href: '/consultation-terms/', label: 'Consultation terms' },
+];
+const here = Astro.url.pathname;
+---
+
+<BaseLayout title={`${title} — Results Matrix Limited`} description={description}>
+  <PageHero title={heading} />
+
+  <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
+    <div class="prose-serif">
+      <p><strong>Effective date: {LEGAL_EFFECTIVE_DATE}</strong></p>
+      <slot />
+
+      <h2>Our other policies</h2>
+      <ul>
+        {
+          policies
+            .filter((policy) => policy.href !== here)
+            .map((policy) => (
+              <li>
+                <a href={policy.href}>{policy.label}</a>
+              </li>
+            ))
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

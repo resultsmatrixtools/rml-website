@@ -1,0 +1,42 @@
+---
+// The price of one service. When the two organization types pay differently,
+// both amounts are in the markup and <html data-org> (see OrgTypeSwitch.astro)
+// decides which is visible; without JavaScript both show, each labelled. When
+// they pay the same there is one price and no label.
+import { formatMoney, pricesDiffer, type Service, type ServiceFeed } from '../lib/services';
+
+interface Props {
+  service: Service;
+  currency: ServiceFeed['currency'];
+  class?: string;
+}
+
+const { service, currency, class: className = '' } = Astro.props;
+const unit = service.recurring ? ' a month' : '';
+---
+
+<span class={className}>
+  {
+    service.quoted || !service.price ? (
+      <span>Quoted by scope</span>
+    ) : pricesDiffer(service) ? (
+      <>
+        <span data-for="standard">
+          <span class="org-label text-xs font-semibold uppercase tracking-wider text-slate-600">Standard </span>
+          {formatMoney(service.price.standard, currency)}
+          {unit}
+        </span>
+        <span data-for="ngo">
+          <span class="org-label text-xs font-semibold uppercase tracking-wider text-slate-600">NGO </span>
+          {formatMoney(service.price.ngo, currency)}
+          {unit}
+        </span>
+      </>
+    ) : (
+      <span>
+        {formatMoney(service.price.standard, currency)}
+        {unit}
+      </span>
+    )
+  }
+</span>

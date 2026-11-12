@@ -1,0 +1,194 @@
+---
+// SANDBOX PROTOTYPE: DimePay's embedded card widget, for comparison with the
+// hosted checkout on /consultations/. Not linked from anywhere, noindex, and
+// only renders when PUBLIC_WIDGET_TEST=true at build time. Do not enable it on
+// the production build.
+//
+// The widget's callbacks run in the visitor's browser and are shown here as
+// information only. A payment is paid when dimepay-webhook says so, never because
+// onSuccess fired.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+import { crmEnabled } from '../../lib/crm';
+
+const enabled = crmEnabled && import.meta.env.PUBLIC_WIDGET_TEST === 'true';
+
+const inputClasses =
+  'mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-base text-slate-900 shadow-2xs focus:border-accent-600 focus:outline-hidden focus:ring-2 focus:ring-accent-600/20';
+const labelClasses = 'block text-sm font-semibold text-brand-950';
+---
+
+<BaseLayout
+  title="Widget checkout test — Results Matrix Limited"
+  description="Sandbox test of the embedded card widget."
+  noindex
+>
+  <section class="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+    <h1 class="text-2xl font-bold text-brand-950">Widget checkout test</h1>
+
+    {!enabled ? (
+      <p class="mt-4 rounded-lg border border-slate-300 bg-slate-50 p-4 text-sm text-slate-700">
+        This test page is switched off. It needs PUBLIC_CRM_ENDPOINT and PUBLIC_WIDGET_TEST=true, and a
+        sandbox DimePay configuration behind the endpoint.
+      </p>
+    ) : (
+      <>
+        <p class="mt-3 text-sm text-slate-600">
+          Sandbox only. Submitting saves a real consultation request in the CRM, so use test details.
+        </p>
+
+        <form id="wt-form" class="mt-8 grid gap-5 sm:grid-cols-2" novalidate>
+          <div>
+            <label for="wt-name" class={labelClasses}>Your name</label>
+            <input id="wt-name" name="name" type="text" required autocomplete="name" class={inputClasses} />
+          </div>
+          <div>
+            <label for="wt-email" class={labelClasses}>Email</label>
+            <input id="wt-email" name="email" type="email" required autocomplete="email" class={inputClasses} />
+          </div>
+          <div class="sm:col-span-2">
+            <label for="wt-focus" class={labelClasses}>Session focus</label>
+            <select id="wt-focus" name="session_focus" required class={inputClasses}>
+              <option value="Strategic planning">Strategic planning</option>
+              <option value="Theory of Change review">Theory of Change review</option>
+              <option value="Indicator design and validation">Indicator design and validation</option>
+            </select>
+          </div>
+          <div class="sm:col-span-2">
+            <div id="wt-turnstile" class="mb-4"></div>
+            <button
+              id="wt-submit"
+              type="submit"
+              class="press rounded-lg bg-brand-800 px-7 py-3 text-sm font-semibold text-white shadow-xs hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              Continue to card payment
+            </button>
+          </div>
+        </form>
+
+        <div id="wt-pay" hidden class="mt-8">
+          <p id="wt-summary" class="mb-4 text-sm font-semibold text-brand-950"></p>
+          <div id="dimepay-widget"></div>
+        </div>
+
+        <h2 class="mt-10 text-sm font-semibold text-brand-950">Widget events</h2>
+        <ol id="wt-log" class="mt-2 space-y-1 rounded-lg border border-slate-200 bg-slate-50 p-3 font-mono text-xs text-slate-700"></ol>
+      </>
+    )}
+  </section>
+
+  <script>
+    import { submitLead } from '../../lib/crm';
+    import { mountTurnstile } from '../../lib/turnstile';
+
+    // Pinned. 1.0.15 is the version read for this prototype; the README example
+    // shows 1.0.9. Loading remote code is acceptable for a sandbox test only.
+    const SDK_URL = 'https://unpkg.com/@dimepay/web-sdk@1.0.15/dist/dimepay.es.js';
+
+    const form = document.getElementById('wt-form') as HTMLFormElement | null;
+    if (form) {
+      void mountTurnstile(document.getElementById('wt-turnstile') as HTMLElement);
+      const button = document.getElementById('wt-submit') as HTMLButtonElement;
+      const pay = document.getElementById('wt-pay') as HTMLElement;
+      const summary = document.getElementById('wt-summary') as HTMLElement;
+      const log = document.getElementById('wt-log') as HTMLElement;
+
+      /** A status or message from the widget, as short plain text. Never the data member. */
+      function reason(detail: unknown): string {
+        if (!detail || typeof detail !== 'object') return '';
+        const d = detail as Record<string, unknown>;
+        const parts = [d.status, d.message]
+          .filter((v): v is string | number => typeof v === 'string' || typeof v === 'number')
+          .map((v) => String(v).replace(/\s+/g, ' ').slice(0, 120));
+        return parts.length ? ` [${parts.join(' | ')}]` : '';
+      }
+
+      /**
+       * Event details can carry card-related fields, so the log shows the key names
+       * and the status/message only. The raw detail is never logged or shown.
+       */
+      function note(event: string, detail?: unknown) {
+        const keys =
+          detail && typeof detail === 'object' ? ` {${Object.keys(detail as object).join(', ')}}` : '';
+        const item = document.createElement('li');
+        item.textContent = `${new Date().toLocaleTimeString()}  ${event}${keys}${reason(detail)}`;
+        log.appendChild(item);
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = new FormData(form);
+        const value = (field: string) => String(data.get(field) ?? '').trim();
+        if (!value('name') || !value('email')) {
+          note('Name and email are required');
+          return;
+        }
+
+        button.disabled = true;
+        note('Saving request and creating the order');
+        const result = await submitLead(
+          'consultation',
+          {
+            name: value('name'),
+            email: value('email'),
+            session_focus: value('session_focus'),
+            payment_method: 'card',
+          },
+          false,
+          'widget',
+        );
+
+        if (!result.ok || !result.widget) {
+          const failure: Record<string, string> = {
+            rate_limited: 'Too many requests: the form allows 5 per hour from one address. Try again later.',
+            invalid: 'The request was rejected as invalid (check the Turnstile box and the fields).',
+            network: 'The request could not be sent. Check the connection and the endpoint.',
+            unconfigured: 'PUBLIC_CRM_ENDPOINT is not set.',
+          };
+          note(
+            result.ok
+              ? 'No widget order returned (no online price, or DimePay not configured)'
+              : (failure[result.reason] ?? `Request failed: ${result.reason}`),
+          );
+          button.disabled = false;
+          return;
+        }
+
+        const w = result.widget;
+        form.hidden = true;
+        pay.hidden = false;
+        summary.textContent = `Order ${w.orderId.slice(0, 8)}: ${w.currency} ${w.total.toFixed(2)}${w.test ? ' (sandbox)' : ''}`;
+        note('Order created, loading the widget');
+
+        try {
+          const { initPayment } = await import(/* @vite-ignore */ SDK_URL);
+          initPayment({
+            mountId: 'dimepay-widget',
+            total: w.total,
+            currency: w.currency,
+            test: w.test,
+            order_id: w.orderId,
+            client_id: w.clientId,
+            origin: window.origin,
+            data: w.data,
+            styles: {
+              primaryColor: '#0057a8',
+              buttonColor: '#0057a8',
+              buttonTextColor: '#FFFFFF',
+              backgroundColor: '#FFFFFF',
+              noBorderRadius: false,
+            },
+            onReady: (d: unknown) => note('onReady', d),
+            onLoading: () => note('onLoading'),
+            onSuccess: (d: unknown) => note('onSuccess (not proof of payment; the webhook decides)', d),
+            onFailed: (d: unknown) => note('onFailed', d),
+            onError: (d: unknown) => note('onError', d),
+            onCancel: () => note('onCancel'),
+          });
+        } catch (error) {
+          note(`The widget script could not be loaded: ${(error as Error).message}`);
+        }
+      });
+    }
+  </script>
+</BaseLayout>

@@ -18,3 +18,9 @@ export const ORGANIZATION_NAME = 'Results Matrix Limited';
 
 /** Short name for title suffixes and og:site_name. */
 export const SITE_NAME = 'Results Matrix';
+
+/** Effective date shown on every legal page. Bump when any policy text changes. */
+export const LEGAL_EFFECTIVE_DATE = 'October 26, 2026';
+
+/** Online payment provider. The legal pages read the name from here. */
+export const PAYMENT_PROVIDER = 'DimePay';

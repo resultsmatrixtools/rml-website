@@ -9,6 +9,7 @@
 // download, so the page never links to a file that does not exist. See the
 // README runbook, "Adding a resource PDF".
 import BaseLayout from '../layouts/BaseLayout.astro';
+import MarketingConsent from '../components/MarketingConsent.astro';
 import PageHero from '../components/PageHero.astro';
 import CtaBand from '../components/CtaBand.astro';
 
@@ -210,6 +211,8 @@ const featuredResources: {
 
         <input type="hidden" id="resource-slug" name="resource_slug" value="" />
 
+        <MarketingConsent id="resource-consent" />
+
         <!-- Honeypot: hidden from humans, tempting to bots. -->
         <div class="hidden" aria-hidden="true">
           <label for="resource-website">Website</label>
@@ -403,6 +406,7 @@ const featuredResources: {
           resource_slug: value('resource_slug'),
         },
         `Resources — ${currentTitle}`,
+        { marketingConsent: value('marketing_consent') === 'on' },
       );
 
       if (result.ok) {

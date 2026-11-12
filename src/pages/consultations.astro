@@ -1,329 +1,113 @@
 ---
-// Consultations — Paid Advisory Sessions offer & dual payment path layout (BRIEF.md §6).
+// Consultations: the services RML sells, read from the CRM (PRISM) at build time.
+// Each service has its own page under /consultations/<slug>/ where the visitor
+// requests an invoice (or, once switched on, pays by card) for exactly that
+// service. Copy, prices and the on/off switch are managed in the CRM under
+// Pricing; nothing about a service is written in this repo.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import CtaBand from '../components/CtaBand.astro';
+import OrgTypeSwitch from '../components/OrgTypeSwitch.astro';
+import ServicePrice from '../components/ServicePrice.astro';
+import { loadServices } from '../lib/services-feed';
+import { deliveryLabel, pricesDiffer } from '../lib/services';
 
-const paymentUrl = import.meta.env.PUBLIC_CONSULTATION_PAYMENT_URL;
-const isPaymentUrlConfigured = Boolean(paymentUrl && paymentUrl !== '#');
-
-const sessionFeatures = [
-  '60-minute intensive 1:1 advisory session with a Senior RBM / M&E Consultant',
-  'Review of your project results framework, indicators, or Theory of Change',
-  'Actionable, written recommendations memo delivered within 48 hours',
-  'Follow-up Q&A email support for session deliverables',
-];
-
-// Sent to HubSpot as the `session_focus` property. A text property rather than
-// a dropdown on purpose: a dropdown is validated against its internal option
-// values and rejects the entire submission on a mismatch, so free text removes
-// a whole class of silent lead loss. See the README runbook.
-const sessionFocusOptions = [
-  'M&E framework or results matrix review',
-  'Indicator design and validation',
-  'Theory of Change review',
-  'Evaluation design or terms of reference',
-  'Strategic planning',
-  'ICT systems or data platform advice',
-  'Something else',
-];
-
-// The offline path is the one institutional clients actually use, so its
-// payment method is fixed rather than chosen (BRIEF.md §6).
-const PAYMENT_METHOD = 'Bank transfer/invoice';
-
-const inputClasses =
-  'mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-base text-slate-900 placeholder:text-slate-400 shadow-2xs transition-all duration-150 focus:border-accent-600 focus:outline-hidden focus:ring-2 focus:ring-accent-600/20';
-const labelClasses = 'block text-sm font-semibold text-brand-950';
-
-// TODO (post-launch, not in scope): when a payment provider is chosen, a
-// webhook receiver belongs here — payment confirmed -> mint a one-time
-// scheduling link -> email it to the payer. It would live alongside the OAuth
-// proxy in `functions/`. The scheduling link must never be rendered on this
-// page (BRIEF.md §6); until that exists, booking links are sent by hand.
+const { services, currency } = await loadServices();
+const showSwitch = services.some(pricesDiffer);
 ---
 
 <BaseLayout
-  title="Advisory Sessions & Help Desk — Results Matrix Limited"
-  description="Focused, 1:1 help-desk advisory sessions with senior RML consultants for M&E frameworks, project indicators, evaluation designs, and strategic planning."
+  title="Advisory Services — Results Matrix Limited"
+  description="Fixed-scope advisory services from senior Results Matrix consultants: report reviews, compliance checks, learning reviews and more. See your price and request an invoice."
 >
   <PageHero
-    title="Focused Advisory Sessions"
-    lede="Short, high-impact sessions with a senior consultant — bring a specific M&E question or framework challenge, leave with a clear, decision-ready roadmap."
+    title="Advisory Services"
+    lede="Fixed-scope services from senior consultants. Choose your organization type to see your price, open the service you need, and request your invoice."
   />
 
   <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
-    <!-- Value & Inclusion Grid -->
-    <div class="grid gap-12 lg:grid-cols-3">
-      <div class="lg:col-span-2">
-        <h2 class="text-2xl font-bold tracking-tight text-brand-950 sm:text-3xl">
-          What’s Included in an Advisory Session
-        </h2>
-        <p class="mt-3 font-serif text-lg leading-relaxed text-slate-700">
-          Designed for project managers, permanent secretaries, and MEL leads who need senior expert guidance on specific deliverables without entering a multi-month consulting engagement.
-        </p>
-
-        <ul class="mt-8 space-y-4">
-          {sessionFeatures.map((feature) => (
-            <li class="flex items-start gap-3">
-              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-100 text-accent-700 font-bold text-xs">
-                ✓
-              </span>
-              <span class="text-base leading-relaxed text-slate-800 font-medium">{feature}</span>
-            </li>
-          ))}
-        </ul>
-
-        <div class="mt-10 rounded-xl border border-slate-200 bg-slate-50/70 p-6 sm:p-7">
-          <h3 class="text-base font-bold text-brand-900">How Booking Works</h3>
-          <ol class="mt-4 grid gap-4 sm:grid-cols-3">
-            <li class="flex flex-col">
-              <span class="text-xs font-bold uppercase tracking-wider text-accent-700">Step 1</span>
-              <span class="mt-1 text-sm font-semibold text-brand-950">Select Payment Path</span>
-              <span class="mt-1 text-xs text-slate-600">Pay online or request an invoice for bank transfer.</span>
-            </li>
-            <li class="flex flex-col">
-              <span class="text-xs font-bold uppercase tracking-wider text-accent-700">Step 2</span>
-              <span class="mt-1 text-sm font-semibold text-brand-950">Receive Booking Link</span>
-              <span class="mt-1 text-xs text-slate-600">Your scheduling link is delivered as soon as payment is confirmed.</span>
-            </li>
-            <li class="flex flex-col">
-              <span class="text-xs font-bold uppercase tracking-wider text-accent-700">Step 3</span>
-              <span class="mt-1 text-sm font-semibold text-brand-950">Meet Your Consultant</span>
-              <span class="mt-1 text-xs text-slate-600">60-minute live session plus written recommendations memo.</span>
-            </li>
-          </ol>
-        </div>
-      </div>
-
-      <!-- Payment Paths Sidebar / Cards -->
-      <div class="space-y-6">
-        <!-- Path 1: Online Payment -->
-        <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs">
-          <span class="rounded bg-brand-50 px-2.5 py-1 text-xs font-bold text-brand-800">Path 01</span>
-          <h3 class="mt-3 text-lg font-bold text-brand-950">Pay Online</h3>
-          <p class="mt-2 text-xs leading-relaxed text-slate-600">
-            Instant online checkout via credit card or digital payment gateway.
+    {
+      services.length === 0 ? (
+        <div class="max-w-2xl">
+          <h2 class="text-2xl font-bold tracking-tight text-brand-950">Our services are being updated</h2>
+          <p class="mt-3 font-serif text-lg leading-relaxed text-slate-700">
+            The list of advisory services is not available right now. Tell us what you need and a senior consultant
+            will reply with the right service and its price.
           </p>
-          
-          <div class="mt-6">
-            {isPaymentUrlConfigured ? (
-              <a
-                href={paymentUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="press block w-full rounded-lg bg-brand-800 px-4 py-3 text-center text-sm font-semibold text-white shadow-xs hover:bg-brand-700"
-              >
-                Pay &amp; Book Session
-              </a>
-            ) : (
-              <div class="rounded bg-slate-100 p-3 text-center text-xs font-semibold text-slate-500">
-                Online payment integration coming soon
-              </div>
-            )}
-          </div>
+          <a
+            href="/contact/"
+            class="press mt-6 inline-block rounded bg-brand-800 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-700"
+          >
+            Contact us
+          </a>
         </div>
+      ) : (
+        <>
+          {showSwitch && <OrgTypeSwitch class="mb-10" />}
 
-        <!-- Path 2: Bank Transfer / Invoice -->
-        <div class="rounded-xl border-2 border-accent-600/80 bg-white p-6 shadow-xs relative">
-          <div class="absolute -top-3 right-4 rounded-full bg-accent-600 px-3 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-white">
-            Recommended for Ministries
-          </div>
-          <span class="rounded bg-accent-50 px-2.5 py-1 text-xs font-bold text-accent-700">Path 02</span>
-          <h3 class="mt-3 text-lg font-bold text-brand-950">Bank Transfer / Invoice</h3>
-          <p class="mt-2 text-xs leading-relaxed text-slate-600">
-            Ideal for government ministries, regional bodies, and international NGOs requiring standard corporate procurement invoicing.
+          <ul class="divide-y divide-slate-200 border-y border-slate-200">
+            {services.map((service) => (
+              <li>
+                <a
+                  href={`/consultations/${service.slug}/`}
+                  class="group grid gap-x-8 gap-y-2 py-6 hover:bg-brand-50/50 sm:grid-cols-[minmax(0,1fr)_auto] sm:px-3"
+                >
+                  <span class="min-w-0">
+                    <span class="block text-lg font-bold text-brand-950 group-hover:text-brand-700">{service.name}</span>
+                    {service.summary && (
+                      <span class="mt-1 block max-w-3xl font-serif text-base leading-relaxed text-slate-700">{service.summary}</span>
+                    )}
+                    <span class="mt-2 block text-sm font-medium text-slate-600">{deliveryLabel(service)}</span>
+                  </span>
+                  <span class="flex items-baseline gap-3 sm:flex-col sm:items-end sm:gap-1 sm:text-right">
+                    <ServicePrice service={service} currency={currency} class="text-lg font-bold tabular-nums text-brand-950" />
+                    <span class="text-sm font-semibold text-accent-700 underline-offset-2 group-hover:underline">
+                      {service.quoted ? 'Request a proposal' : 'View and book'}
+                    </span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p class="mt-4 text-sm text-slate-600">
+            All prices are in {currency === 'JMD' ? 'Jamaican dollars (JMD)' : 'US dollars (USD)'}.
           </p>
-          
-          <div class="mt-6">
-            <a
-              href="#request-invoice"
-              class="press block w-full rounded-lg border-2 border-brand-900 bg-brand-900 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-brand-800"
-            >
-              Request Invoice &amp; Details
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
+        </>
+      )
+    }
   </section>
 
-  <!-- Path 02's destination: the invoice / bank-transfer request form. Given
-       equal standing to paying online because ministries and development
-       partners usually cannot pay any other way (BRIEF.md §6). -->
-  <section id="request-invoice" class="border-t border-slate-200 bg-slate-50/60 scroll-mt-24">
-    <div class="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:py-16">
-      <h2 class="text-2xl font-bold tracking-tight text-brand-950 sm:text-3xl">
-        Request an Invoice or Banking Details
-      </h2>
-      <p class="mt-3 font-serif text-lg leading-relaxed text-slate-700">
-        Standard procurement route for ministries, regional institutions, and development
-        partners. Tell us who to invoice and what you want the session to cover, and we will do
-        the rest by email.
+  <section class="border-t border-slate-200 bg-slate-50/60">
+    <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
+      <h2 class="text-2xl font-bold tracking-tight text-brand-950">How it works</h2>
+      <ol class="mt-6 grid gap-8 sm:grid-cols-3">
+        <li>
+          <span class="text-xs font-bold uppercase tracking-wider text-accent-700">Step 1</span>
+          <span class="mt-1 block text-base font-semibold text-brand-950">Choose a service</span>
+          <span class="mt-1 block text-sm leading-relaxed text-slate-700">Pick your organization type to see your price, then open the service you need.</span>
+        </li>
+        <li>
+          <span class="text-xs font-bold uppercase tracking-wider text-accent-700">Step 2</span>
+          <span class="mt-1 block text-base font-semibold text-brand-950">Request your invoice</span>
+          <span class="mt-1 block text-sm leading-relaxed text-slate-700">We email your invoice and banking details within one business day.</span>
+        </li>
+        <li>
+          <span class="text-xs font-bold uppercase tracking-wider text-accent-700">Step 3</span>
+          <span class="mt-1 block text-base font-semibold text-brand-950">Send your documents</span>
+          <span class="mt-1 block text-sm leading-relaxed text-slate-700">We confirm your delivery date once payment terms are met and your documents are complete.</span>
+        </li>
+      </ol>
+      <p class="mt-8 text-sm text-slate-600">
+        Payment, rescheduling and refund details are in our
+        <a href="/consultation-terms/" class="font-medium text-accent-700 underline underline-offset-2 hover:text-accent-800">advisory session terms</a>.
       </p>
-
-      <div class="mt-10 rounded-xl border border-slate-200 bg-white p-6 shadow-xs sm:p-8">
-        <!-- Submitted state: replaces the form on success. -->
-        <div
-          id="consult-success"
-          hidden
-          tabindex="-1"
-          role="status"
-          class="rounded-lg border border-accent-200 bg-accent-50/60 p-6 focus:outline-hidden"
-        >
-          <h3 class="text-base font-bold text-brand-950">Request received — thank you.</h3>
-          <p class="mt-2 text-sm leading-relaxed text-slate-700">
-            We’ll send your invoice and banking details within one business day; your booking link
-            follows once payment is confirmed.
-          </p>
-        </div>
-
-        <form id="consult-form" class="grid gap-5 sm:grid-cols-2">
-          <div>
-            <label for="consult-name" class={labelClasses}>Your name</label>
-            <input id="consult-name" name="name" type="text" required autocomplete="name" class={inputClasses} />
-          </div>
-          <div>
-            <label for="consult-email" class={labelClasses}>Your email</label>
-            <input
-              id="consult-email"
-              name="email"
-              type="email"
-              required
-              autocomplete="email"
-              spellcheck="false"
-              class={inputClasses}
-            />
-          </div>
-          <div>
-            <label for="consult-organization" class={labelClasses}>Your organization</label>
-            <input
-              id="consult-organization"
-              name="organization"
-              type="text"
-              required
-              autocomplete="organization"
-              placeholder="Name to appear on the invoice"
-              class={inputClasses}
-            />
-          </div>
-          <div>
-            <label for="consult-phone" class={labelClasses}>Your phone number</label>
-            <input id="consult-phone" name="phone" type="tel" required autocomplete="tel" class={inputClasses} />
-          </div>
-          <div class="sm:col-span-2">
-            <label for="consult-focus" class={labelClasses}>Preferred session focus</label>
-            <select id="consult-focus" name="session_focus" required class={inputClasses}>
-              <option value="">— Please choose an option —</option>
-              {sessionFocusOptions.map((option) => <option value={option}>{option}</option>)}
-            </select>
-          </div>
-
-          <!-- Payment method is fixed for this path, not chosen (BRIEF.md §6).
-               Banking details are never published on the site — they go out
-               with the invoice by email. -->
-          <input type="hidden" name="payment_method" value={PAYMENT_METHOD} />
-
-          <!-- Honeypot: hidden from humans, tempting to bots. -->
-          <div class="hidden" aria-hidden="true">
-            <label for="consult-website">Website</label>
-            <input id="consult-website" name="website" type="text" tabindex="-1" autocomplete="off" />
-          </div>
-
-          <div class="sm:col-span-2 pt-1">
-            <p
-              id="consult-error"
-              hidden
-              role="alert"
-              class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm leading-relaxed text-red-900"
-            >
-              We could not send your request just now. Please try again, or email us directly at <a href="mailto:info@resultsmatrix.com" class="font-semibold underline underline-offset-2">info@resultsmatrix.com</a>.
-            </p>
-            <div id="consult-form-turnstile" class="mb-4"></div>
-            <button
-              id="consult-submit"
-              type="submit"
-              class="press rounded-lg bg-brand-800 px-7 py-3 text-sm font-semibold text-white shadow-xs hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              Request Invoice &amp; Banking Details
-            </button>
-            <p class="mt-3 text-xs text-slate-500">
-              Payment by bank transfer or invoice. We handle your details strictly in accordance with our <a href="/privacy/" class="font-medium text-accent-700 underline underline-offset-2 hover:text-accent-800">privacy policy</a>.
-            </p>
-          </div>
-        </form>
-
-        <noscript>
-          <p class="mt-6 rounded-lg border border-slate-300 bg-slate-50 p-4 text-sm leading-relaxed text-slate-700">
-            This form needs JavaScript to send your details securely. With it disabled, please email <a href="mailto:info@resultsmatrix.com" class="font-semibold text-accent-700 underline underline-offset-2">info@resultsmatrix.com</a> and mention the session focus you need.
-          </p>
-        </noscript>
-      </div>
     </div>
   </section>
 
   <CtaBand
-    heading="Have questions before booking?"
-    text="A free 20-minute discovery session can help clarify your requirements before committing to a paid session."
+    heading="Not sure which service you need?"
+    text="A free 20-minute discovery session can help clarify your requirements before you choose."
     primaryHref="/contact/"
     primaryLabel="Book a free discovery session"
   />
-
-  <script>
-    import { splitName, submitForm } from '../lib/hubspot';
-    import { mountTurnstile } from '../lib/turnstile';
-
-    const form = document.getElementById('consult-form') as HTMLFormElement;
-    void mountTurnstile(document.getElementById('consult-form-turnstile') as HTMLElement);
-    const button = document.getElementById('consult-submit') as HTMLButtonElement;
-    const success = document.getElementById('consult-success') as HTMLElement;
-    const error = document.getElementById('consult-error') as HTMLElement;
-
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-
-      const data = new FormData(form);
-      const value = (field: string) => String(data.get(field) ?? '');
-
-      // Honeypot: take the identical success path so a bot learns nothing.
-      if (value('website').trim()) {
-        reveal();
-        return;
-      }
-
-      error.hidden = true;
-      button.disabled = true;
-      const label = button.textContent;
-      button.textContent = 'Sending…';
-
-      const result = await submitForm(
-        'consult',
-        {
-          ...splitName(value('name')),
-          email: value('email'),
-          company: value('organization'),
-          phone: value('phone'),
-          session_focus: value('session_focus'),
-          payment_method: value('payment_method'),
-        },
-        'Consultations — Request an invoice',
-      );
-
-      if (result.ok) {
-        reveal();
-        return;
-      }
-
-      button.disabled = false;
-      button.textContent = label;
-      error.hidden = false;
-    });
-
-    /** Swaps the form for the confirmation and moves focus onto it. */
-    function reveal() {
-      form.hidden = true;
-      success.hidden = false;
-      success.focus();
-    }
-  </script>
 </BaseLayout>

@@ -14,7 +14,7 @@ export default defineConfig({
       // The privacy policy carries no search intent and the tag archives are
       // thin duplicates of the blog index — both stay crawlable but out of
       // the sitemap so it advertises only pages worth ranking.
-      filter: (page) => !/\/(privacy|blog\/tags)\//.test(page),
+      filter: (page) => !/\/(privacy|blog\/tags|consultations\/widget-test)\//.test(page),
     }),
   ],
   vite: {

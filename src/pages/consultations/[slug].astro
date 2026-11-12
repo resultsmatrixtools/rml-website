@@ -1,0 +1,458 @@
+---
+// One service, read from the CRM (PRISM) at build time. The visitor reads what
+// it is, what they receive and what to bring, sees their price, and requests an
+// invoice for exactly this service. Card payment is offered only while
+// PUBLIC_ONLINE_PAYMENT is on and the service has a fixed price.
+//
+// The form sends the service id, the organization type and the extras ticked.
+// It never sends a price: the CRM works the amount out from those (lead-capture).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import MarketingConsent from '../../components/MarketingConsent.astro';
+import OrgTypeSwitch from '../../components/OrgTypeSwitch.astro';
+import ServicePrice from '../../components/ServicePrice.astro';
+import { crmEnabled } from '../../lib/crm';
+import { PAYMENT_PROVIDER } from '../../lib/site';
+import { loadServices } from '../../lib/services-feed';
+import { deliveryLabel, formatMoney, pricesDiffer } from '../../lib/services';
+
+export async function getStaticPaths() {
+  const { services, currency } = await loadServices();
+  return services.map((service) => ({ params: { slug: service.slug }, props: { service, currency } }));
+}
+
+const { service, currency } = Astro.props;
+
+// Card needs the CRM (it starts the checkout), an explicit switch, and a fixed price.
+const cardOffered = crmEnabled && import.meta.env.PUBLIC_ONLINE_PAYMENT === 'true' && !service.quoted;
+const differs = pricesDiffer(service);
+
+const clientData = {
+  id: service.id,
+  name: service.name,
+  currency,
+  quoted: service.quoted,
+  recurring: service.recurring,
+  price: service.price,
+  addons: service.addons,
+  card: cardOffered,
+};
+
+const description =
+  service.summary || service.description[0]?.slice(0, 200) || `${service.name}: a fixed-scope advisory service from Results Matrix Limited.`;
+
+const inputClasses =
+  'mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-base text-slate-900 placeholder:text-slate-400 shadow-2xs transition-all duration-150 focus:border-accent-600 focus:outline-hidden focus:ring-2 focus:ring-accent-600/20';
+const labelClasses = 'block text-sm font-semibold text-brand-950';
+const sectionHeading = 'text-sm font-bold uppercase tracking-wider text-slate-600';
+---
+
+<BaseLayout title={`${service.name} — Results Matrix Limited`} description={description}>
+  <PageHero title={service.name} lede={service.summary || undefined} />
+
+  <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:py-16">
+    <a href="/consultations/" class="text-sm font-medium text-accent-700 underline underline-offset-2 hover:text-accent-800">
+      ← All advisory services
+    </a>
+
+    <div class="mt-8 grid gap-12 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <div class="min-w-0 space-y-10">
+        <dl class="flex flex-wrap gap-x-10 gap-y-3 border-y border-slate-200 py-4 text-sm">
+          <div>
+            <dt class="font-semibold text-slate-600">Delivery</dt>
+            <dd class="mt-0.5 font-bold text-brand-950">{deliveryLabel(service)}</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-slate-600">Price</dt>
+            <dd class="mt-0.5 font-bold text-brand-950">
+              <ServicePrice service={service} currency={currency} />
+            </dd>
+          </div>
+        </dl>
+
+        {
+          service.description.length > 0 && (
+            <div>
+              <h2 class={sectionHeading}>About this service</h2>
+              <div class="mt-3 space-y-4 font-serif text-lg leading-[1.7] text-slate-800">
+                {service.description.map((paragraph) => <p>{paragraph}</p>)}
+              </div>
+            </div>
+          )
+        }
+
+        {
+          service.deliverables.length > 0 && (
+            <div>
+              <h2 class={sectionHeading}>What you receive</h2>
+              <ul class="mt-3 space-y-3">
+                {service.deliverables.map((item) => (
+                  <li class="flex items-start gap-3">
+                    <span class="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-100 text-xs font-bold text-accent-700" aria-hidden="true">✓</span>
+                    <span class="text-base leading-relaxed text-slate-800">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+
+        {
+          service.bring.length > 0 && (
+            <div>
+              <h2 class={sectionHeading}>What to bring</h2>
+              <p class="mt-2 text-sm text-slate-600">
+                We confirm your delivery date once your documents are complete.
+              </p>
+              <ul class="mt-3 list-disc space-y-1.5 pl-5 text-base leading-relaxed text-slate-800 marker:text-slate-400">
+                {service.bring.map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+          )
+        }
+      </div>
+
+      <aside class="lg:sticky lg:top-24 lg:self-start">
+        <div class="border border-slate-200 bg-white p-6">
+          {differs && <OrgTypeSwitch class="mb-6" stacked />}
+          <p class={sectionHeading}>{service.quoted ? 'Fee' : 'Your price'}</p>
+          <p class="mt-2 text-3xl font-bold tabular-nums text-brand-950" data-total>
+            <ServicePrice service={service} currency={currency} />
+          </p>
+          {service.addons.length > 0 && <p class="mt-1 text-xs text-slate-600">Optional extras can be added when you book.</p>}
+          <a
+            href="#book"
+            class="press mt-6 block w-full rounded-lg bg-brand-800 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-brand-700"
+          >
+            {service.quoted ? 'Request a proposal' : 'Book this service'}
+          </a>
+          <p class="mt-3 text-xs leading-relaxed text-slate-600">
+            {
+              service.quoted
+                ? 'The fee depends on the scope. We reply with a proposal.'
+                : 'Pay by invoice and bank transfer, the usual route for ministries and development partners.'
+            }
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="book" class="scroll-mt-24 border-t border-slate-200 bg-slate-50/60">
+    <div class="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:py-16">
+      <h2 class="text-2xl font-bold tracking-tight text-brand-950 sm:text-3xl">
+        {service.quoted ? 'Request a proposal' : 'Book this service'}
+      </h2>
+      <p class="mt-3 font-serif text-lg leading-relaxed text-slate-700">
+        {
+          service.quoted
+            ? 'Tell us who you are and what you need. A senior consultant will reply with the scope, timeline and fee.'
+            : 'Tell us who you are. We email your invoice and banking details, or, when it is open, you can pay by card.'
+        }
+      </p>
+
+      {
+        !crmEnabled ? (
+          <p class="mt-8 border border-slate-300 bg-white p-5 text-sm leading-relaxed text-slate-700">
+            Booking is not open on this version of the site. Please email
+            <a href="mailto:info@resultsmatrix.com" class="font-semibold text-accent-700 underline underline-offset-2">info@resultsmatrix.com</a>
+            and name the service.
+          </p>
+        ) : (
+          <div class="mt-10 border border-slate-200 bg-white p-6 sm:p-8">
+            <div id="book-success" hidden tabindex="-1" role="status" class="rounded-lg border border-accent-200 bg-accent-50/60 p-6 focus:outline-hidden">
+              <h3 class="text-base font-bold text-brand-950">Request received. Thank you.</h3>
+              <p id="book-success-text" class="mt-2 text-sm leading-relaxed text-slate-700"></p>
+            </div>
+
+            <div id="book-redirect" hidden tabindex="-1" role="status" class="rounded-lg border border-accent-200 bg-accent-50/60 p-6 focus:outline-hidden">
+              <h3 class="text-base font-bold text-brand-950">Taking you to secure checkout…</h3>
+              <p class="mt-2 text-sm leading-relaxed text-slate-700">
+                Your request is saved. If the payment page does not open,
+                <a id="book-redirect-link" href="#book" class="font-semibold text-accent-700 underline underline-offset-2">use this link</a>.
+              </p>
+            </div>
+
+            <form id="book-form" class="grid gap-5 sm:grid-cols-2" hidden>
+              <div class="sm:col-span-2 border border-slate-200 bg-slate-50 p-4" aria-live="polite">
+                <p class="text-sm font-semibold text-brand-950">{service.name}</p>
+                <p class="mt-1 text-sm text-slate-700" data-summary></p>
+              </div>
+
+              {
+                service.addons.length > 0 && (
+                  <fieldset class="sm:col-span-2">
+                    <legend class={labelClasses}>Optional extras</legend>
+                    <div class="mt-2 divide-y divide-slate-200 border-y border-slate-200">
+                      {service.addons.map((addon, i) => (
+                        <label for={`addon-${i}`} class="flex cursor-pointer items-center gap-3 py-3 text-sm text-slate-800">
+                          <input id={`addon-${i}`} type="checkbox" name="addon" value={addon.id} class="h-4 w-4 accent-accent-700" />
+                          <span class="flex-1">{addon.name}</span>
+                          <span class="font-semibold tabular-nums">+ {formatMoney(addon.price, currency)}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+                )
+              }
+
+              <div>
+                <label for="book-name" class={labelClasses}>Your name</label>
+                <input id="book-name" name="name" type="text" required autocomplete="name" class={inputClasses} />
+              </div>
+              <div>
+                <label for="book-email" class={labelClasses}>Your email</label>
+                <input id="book-email" name="email" type="email" required autocomplete="email" spellcheck="false" class={inputClasses} />
+              </div>
+              <div>
+                <label for="book-organization" class={labelClasses}>Your organization</label>
+                <input
+                  id="book-organization"
+                  name="organization"
+                  type="text"
+                  required
+                  autocomplete="organization"
+                  placeholder="Name to appear on the invoice"
+                  class={inputClasses}
+                />
+              </div>
+              <div>
+                <label for="book-phone" class={labelClasses}>Your phone number</label>
+                <input id="book-phone" name="phone" type="tel" required autocomplete="tel" class={inputClasses} />
+              </div>
+              <div class="sm:col-span-2">
+                <label for="book-message" class={labelClasses}>Anything we should know? (optional)</label>
+                <textarea
+                  id="book-message"
+                  name="message"
+                  rows="3"
+                  maxlength="2000"
+                  placeholder="Your donor, a deadline, or the document you will send"
+                  class={inputClasses}
+                ></textarea>
+              </div>
+
+              {
+                cardOffered && (
+                  <fieldset class="sm:col-span-2">
+                    <legend class={labelClasses}>How would you like to pay?</legend>
+                    <div class="mt-2 grid gap-3 sm:grid-cols-2">
+                      <label for="pay-invoice" class="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-300 bg-white p-4 has-checked:border-accent-600 has-checked:ring-2 has-checked:ring-accent-600/20">
+                        <input id="pay-invoice" type="radio" name="payment_method" value="bank_transfer" checked class="mt-1 accent-accent-700" />
+                        <span>
+                          <span class="block text-sm font-semibold text-brand-950">Invoice / bank transfer</span>
+                          <span class="mt-0.5 block text-xs text-slate-600">We email an invoice with our bank details.</span>
+                        </span>
+                      </label>
+                      <label for="pay-card" class="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-300 bg-white p-4 has-checked:border-accent-600 has-checked:ring-2 has-checked:ring-accent-600/20">
+                        <input id="pay-card" type="radio" name="payment_method" value="card" class="mt-1 accent-accent-700" />
+                        <span>
+                          <span class="block text-sm font-semibold text-brand-950">Pay online by card</span>
+                          <span class="mt-0.5 block text-xs text-slate-600">Secure checkout on {PAYMENT_PROVIDER}.</span>
+                        </span>
+                      </label>
+                    </div>
+                  </fieldset>
+                )
+              }
+
+              <MarketingConsent id="book-consent" class="sm:col-span-2" />
+
+              <div class="hidden" aria-hidden="true">
+                <label for="book-website">Website</label>
+                <input id="book-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+              </div>
+
+              <div class="sm:col-span-2 pt-1">
+                <p id="book-error" hidden role="alert" class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm leading-relaxed text-red-900"></p>
+                <div id="book-turnstile" class="mb-4"></div>
+                <button
+                  id="book-submit"
+                  type="submit"
+                  class="press rounded-lg bg-brand-800 px-7 py-3 text-sm font-semibold text-white shadow-xs hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {service.quoted ? 'Send request' : 'Request invoice and banking details'}
+                </button>
+                <p id="book-note" class="mt-3 text-xs text-slate-500">
+                  We handle your details strictly in accordance with our{' '}
+                  <a href="/privacy/" class="font-medium text-accent-700 underline underline-offset-2 hover:text-accent-800">privacy policy</a>{' '}
+                  and the <a href="/consultation-terms/" class="font-medium text-accent-700 underline underline-offset-2 hover:text-accent-800">advisory session terms</a>.
+                </p>
+              </div>
+            </form>
+
+            <noscript>
+              <p class="mt-6 rounded-lg border border-slate-300 bg-slate-50 p-4 text-sm leading-relaxed text-slate-700">
+                This form needs JavaScript to send your details securely. With it disabled, please email
+                <a href="mailto:info@resultsmatrix.com" class="font-semibold text-accent-700 underline underline-offset-2">info@resultsmatrix.com</a>
+                and name the service.
+              </p>
+            </noscript>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Have questions before booking?"
+    text="A free 20-minute discovery session can help clarify your requirements before you commit."
+    primaryHref="/contact/"
+    primaryLabel="Book a free discovery session"
+  />
+
+  <script id="service-data" type="application/json" set:html={JSON.stringify(clientData).replace(/</g, '\\u003c')} />
+
+  <script>
+    import { splitName, submitForm } from '../../lib/hubspot';
+    import { mountTurnstile } from '../../lib/turnstile';
+    import { getOrgType, type OrgType } from '../../lib/org-type';
+    import { formatMoney, ORG_TYPES, totalFor, type Service } from '../../lib/services';
+
+    const form = document.getElementById('book-form') as HTMLFormElement | null;
+    if (form) {
+      const data = JSON.parse(document.getElementById('service-data')!.textContent ?? '{}') as {
+        id: string; name: string; currency: 'USD' | 'JMD'; quoted: boolean; recurring: boolean;
+        price: Service['price']; addons: Service['addons']; card: boolean;
+      };
+      // totalFor only needs the price and the extras.
+      const service = { ...data, slug: '', summary: '', description: [], deliveryDays: null, deliverables: [], bring: [] } as Service;
+
+      // Shown only when JavaScript can send it: without it the form would reload the page and put
+      // the visitor's details in the address. The <noscript> message below covers that case.
+      form.hidden = false;
+      void mountTurnstile(document.getElementById('book-turnstile') as HTMLElement);
+      const button = document.getElementById('book-submit') as HTMLButtonElement;
+      const success = document.getElementById('book-success') as HTMLElement;
+      const successText = document.getElementById('book-success-text') as HTMLElement;
+      const redirect = document.getElementById('book-redirect') as HTMLElement;
+      const redirectLink = document.getElementById('book-redirect-link') as HTMLAnchorElement;
+      const error = document.getElementById('book-error') as HTMLElement;
+      const summary = form.querySelector<HTMLElement>('[data-summary]') as HTMLElement;
+      const totalEls = Array.from(document.querySelectorAll<HTMLElement>('[data-total]'));
+      const originalTotals = totalEls.map((el) => el.innerHTML);
+
+      const INVOICE_LABEL = button.textContent ?? '';
+      const CARD_LABEL = 'Continue to secure payment';
+      const MAIL = '<a href="mailto:info@resultsmatrix.com" class="font-semibold underline underline-offset-2">info@resultsmatrix.com</a>';
+      const orgLabel = (org: OrgType) => ORG_TYPES.find((o) => o.value === org)?.short ?? '';
+
+      const method = () => (new FormData(form).get('payment_method') === 'card' && data.card ? 'card' : 'bank_transfer');
+      const addonIds = () => Array.from(form.querySelectorAll<HTMLInputElement>('input[name="addon"]:checked')).map((i) => i.value);
+
+      /** Keeps the summary, the price panel and the button in step with the choices made. */
+      function sync() {
+        const org = getOrgType();
+        const total = totalFor(service, org, addonIds());
+        const extras = addonIds().length;
+        if (total === null) {
+          summary.textContent = 'The fee is quoted by scope. We reply with a proposal.';
+        } else {
+          const unit = data.recurring ? ' a month' : '';
+          summary.textContent = `${orgLabel(org)}${extras ? `, with ${extras} extra${extras > 1 ? 's' : ''}` : ''}: ${formatMoney(total, data.currency)}${unit}`;
+        }
+        // The price panel shows the built-in price until extras are ticked, then the running total.
+        totalEls.forEach((el, i) => {
+          if (total !== null && extras > 0) el.textContent = `${formatMoney(total, data.currency)}${data.recurring ? ' a month' : ''}`;
+          else el.innerHTML = originalTotals[i];
+        });
+        button.textContent = method() === 'card' ? CARD_LABEL : INVOICE_LABEL;
+      }
+
+      form.addEventListener('change', sync);
+      document.addEventListener('orgchange', sync);
+      sync();
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(form);
+        const value = (field: string) => String(formData.get(field) ?? '');
+        const chosen = data.quoted ? 'bank_transfer' : method();
+
+        // Honeypot: take the identical success path so a bot learns nothing.
+        if (value('website').trim()) {
+          successText.textContent = 'We will email your invoice and banking details within one business day.';
+          reveal();
+          return;
+        }
+
+        error.hidden = true;
+        button.disabled = true;
+        const label = button.textContent;
+        button.textContent = chosen === 'card' ? 'Preparing checkout…' : 'Sending…';
+
+        const result = await submitForm(
+          'consult',
+          {
+            ...splitName(value('name')),
+            email: value('email'),
+            company: value('organization'),
+            phone: value('phone'),
+            message: value('message'),
+            service_id: data.id,
+            org_type: getOrgType(),
+            addon_ids: addonIds().join(','),
+            payment_method: chosen === 'card' ? 'card' : 'Bank transfer/invoice',
+          },
+          `Consultations: ${data.name}`,
+          { marketingConsent: value('marketing_consent') === 'on' },
+        );
+
+        if (result.ok) {
+          if (chosen === 'card' && result.paymentUrl) { goToCheckout(result.paymentUrl); return; }
+          if (data.quoted) {
+            successText.textContent = 'A senior consultant will reply with the scope, timeline and fee.';
+          } else if (chosen === 'card') {
+            successText.textContent = 'We could not open online checkout just now, so we will email you an invoice with payment details within one business day. We confirm your delivery date once payment terms are met and your documents are complete.';
+          } else {
+            successText.textContent = 'We will email your invoice and banking details within one business day. We confirm your delivery date once payment terms are met and your documents are complete.';
+          }
+          reveal();
+          return;
+        }
+
+        button.disabled = false;
+        button.textContent = label;
+        error.innerHTML =
+          result.reason === 'unavailable'
+            ? `This service has just changed or is no longer available. Please reload the page, or email ${MAIL}.`
+            : result.reason === 'rate_limited'
+              ? `Too many requests from your connection. Please wait a few minutes and try again, or email ${MAIL}.`
+              : `We could not send your request just now. Please try again, or email us directly at ${MAIL}.`;
+        error.hidden = false;
+      });
+
+      function reveal() {
+        form!.hidden = true;
+        success.hidden = false;
+        success.focus();
+      }
+
+      function goToCheckout(url: string) {
+        redirectLink.href = url;
+        form!.hidden = true;
+        redirect.hidden = false;
+        redirect.focus();
+        window.location.assign(url);
+      }
+
+      // Back from the payment page restores this page with the "taking you to
+      // checkout" panel still showing. Say so truthfully, and keep the link.
+      window.addEventListener('pageshow', (event) => {
+        if (event.persisted && !redirect.hidden) {
+          const heading = redirect.querySelector('h3');
+          const text = redirect.querySelector('p');
+          if (heading) heading.textContent = 'Your request is saved. Payment is not complete';
+          if (text) {
+            const link = document.createElement('a');
+            link.href = redirectLink.href;
+            link.className = 'font-semibold text-accent-700 underline underline-offset-2';
+            link.textContent = 'continue to payment';
+            text.replaceChildren('Open the payment page again to finish paying: ', link, '.');
+          }
+        }
+      });
+    }
+  </script>
+</BaseLayout>

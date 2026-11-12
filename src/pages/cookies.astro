@@ -1,0 +1,91 @@
+---
+// Cookie policy. Mirrors ConsentBanner.astro: HubSpot's tracker loads only
+// after the visitor accepts; the choice itself lives in localStorage.
+// If the banner's behaviour changes, update this page with it.
+// Draft — REQUIRES LEGAL REVIEW before DNS cutover.
+import LegalPage from '../components/LegalPage.astro';
+---
+
+<LegalPage
+  title="Cookie Policy"
+  heading="Cookie Policy"
+  description="The cookies and similar technologies used on resultsmatrix.com, and how to control them."
+>
+  <p>
+    This policy explains the cookies and similar storage that resultsmatrix.com (the "Site") uses.
+    It should be read with our <a href="/privacy/">privacy policy</a>. We use as little as we can:
+    no advertising cookies, no remarketing, and no social media tracking pixels.
+  </p>
+
+  <h2>What these technologies are</h2>
+  <p>
+    Cookies are small text files a website stores in your browser. "Local storage" is a similar
+    browser feature that keeps a small piece of data on your device. Both let a site remember
+    something between pages or visits.
+  </p>
+
+  <h2>What the Site uses</h2>
+
+  <h3>Strictly necessary</h3>
+  <p>These do not need your consent because the Site cannot respect your choices without them.</p>
+  <ul>
+    <li>
+      <strong>rml-cookie-consent</strong> (local storage). Remembers whether you accepted or
+      declined analytics cookies, so we do not ask you on every page. It stays until you clear
+      your browser data or change your choice.
+    </li>
+    <li>
+      <strong>Form security check.</strong> Our forms use Cloudflare Turnstile to tell people from
+      automated bots. It runs a short check in your browser and may process your IP address and
+      browser signals to do so. We use it to protect the forms, not to track you.
+    </li>
+  </ul>
+
+  <h3>Analytics (only if you accept)</h3>
+  <p>
+    If you press Accept on the banner, the Site loads HubSpot's tracking script, which sets the
+    cookies below. They tell us which pages are visited, how long people stay, and how they
+    arrived, and they let HubSpot link a later form submission to your earlier visits. If you
+    decline, none of this loads.
+  </p>
+  <ul>
+    <li><strong>hubspotutk</strong>. Identifies you as a visitor. Typically lasts about 6 months.</li>
+    <li><strong>__hstc</strong>. Records visit times and counts. Typically lasts about 6 months.</li>
+    <li><strong>__hssc</strong>. Tracks the current session. Typically lasts 30 minutes.</li>
+    <li><strong>__hssrc</strong>. Detects whether your browser restarted. Lasts for the session.</li>
+  </ul>
+  <p>
+    HubSpot sets these on our behalf and describes them in
+    <a href="https://knowledge.hubspot.com/privacy-and-consent/what-cookies-does-hubspot-set-in-a-visitor-s-browser" rel="noopener noreferrer">its cookie documentation</a>.
+    Lifetimes can change on HubSpot's side.
+  </p>
+
+  <h2>Your choices</h2>
+  <p>
+    Use the button below to reopen the banner and change your choice at any time. If you switch
+    from Accept to Decline, the tracking script stops loading on your next page, and you can also
+    delete the cookies above in your browser settings. Most browsers also let you block or delete
+    cookies altogether. Blocking local storage means the Site cannot remember your choice, so
+    the banner may reappear.
+  </p>
+  <p>
+    <button
+      type="button"
+      onclick="window.rmlResetConsent && window.rmlResetConsent()"
+      class="cursor-pointer font-sans text-sm font-medium text-accent-700 underline underline-offset-2 hover:text-accent-800"
+    >
+      Change your cookie choice
+    </button>
+  </p>
+
+  <h2>Changes</h2>
+  <p>
+    If we add or remove a cookie or tracking tool, we will update this page and the effective date
+    above before it goes live, and ask for your consent again where the law requires it.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    Questions: <strong><a href="mailto:info@resultsmatrix.com">info@resultsmatrix.com</a></strong>.
+  </p>
+</LegalPage>
