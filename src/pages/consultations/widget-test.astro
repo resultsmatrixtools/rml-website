@@ -10,8 +10,15 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 import { crmEnabled } from '../../lib/crm';
+import { loadServices } from '../../lib/services-feed';
+import { formatMoney } from '../../lib/services';
 
 const enabled = crmEnabled && import.meta.env.PUBLIC_WIDGET_TEST === 'true';
+
+// Fixed-price services only: a quoted service has no card price. The price shown here is
+// for reading; the CRM works out the amount charged from the service and organization type.
+const feed = enabled ? await loadServices() : { currency: 'USD', services: [], dropped: 0 };
+const payable = feed.services.filter((s) => !s.quoted && s.price);
 
 const inputClasses =
   'mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-base text-slate-900 shadow-2xs focus:border-accent-600 focus:outline-hidden focus:ring-2 focus:ring-accent-600/20';
@@ -34,7 +41,7 @@ const labelClasses = 'block text-sm font-semibold text-brand-950';
     ) : (
       <>
         <p class="mt-3 text-sm text-slate-600">
-          Sandbox only. Submitting saves a real consultation request in the CRM, so use test details.
+          Sandbox only. Submitting saves a real consultation request in the CRM, so use test details. The amount comes from the CRM, not this page.
         </p>
 
         <form id="wt-form" class="mt-8 grid gap-5 sm:grid-cols-2" novalidate>
@@ -47,11 +54,20 @@ const labelClasses = 'block text-sm font-semibold text-brand-950';
             <input id="wt-email" name="email" type="email" required autocomplete="email" class={inputClasses} />
           </div>
           <div class="sm:col-span-2">
-            <label for="wt-focus" class={labelClasses}>Session focus</label>
-            <select id="wt-focus" name="session_focus" required class={inputClasses}>
-              <option value="Strategic planning">Strategic planning</option>
-              <option value="Theory of Change review">Theory of Change review</option>
-              <option value="Indicator design and validation">Indicator design and validation</option>
+            <label for="wt-service" class={labelClasses}>Service</label>
+            <select id="wt-service" name="service_id" required class={inputClasses}>
+              {payable.map((s) => (
+                <option value={s.id}>
+                  {s.name} ({formatMoney(s.price!.standard, feed.currency)} standard / {formatMoney(s.price!.ngo, feed.currency)} NGO)
+                </option>
+              ))}
+            </select>
+          </div>
+          <div class="sm:col-span-2">
+            <label for="wt-org" class={labelClasses}>Organization type</label>
+            <select id="wt-org" name="org_type" class={inputClasses}>
+              <option value="standard">Standard</option>
+              <option value="ngo">NGO / non-profit</option>
             </select>
           </div>
           <div class="sm:col-span-2">
@@ -131,7 +147,9 @@ const labelClasses = 'block text-sm font-semibold text-brand-950';
           {
             name: value('name'),
             email: value('email'),
-            session_focus: value('session_focus'),
+            service_id: value('service_id'),
+            org_type: value('org_type'),
+            message: 'E2E TEST (widget)',
             payment_method: 'card',
           },
           false,
@@ -147,7 +165,7 @@ const labelClasses = 'block text-sm font-semibold text-brand-950';
           };
           note(
             result.ok
-              ? 'No widget order returned (no online price, or DimePay not configured)'
+              ? 'No widget order returned (service has no card price, or DimePay not configured)'
               : (failure[result.reason] ?? `Request failed: ${result.reason}`),
           );
           button.disabled = false;
